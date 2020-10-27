@@ -1,0 +1,218 @@
+id,label,group,title
+n21, S/T ratio,Game Structure, S/T ratio
+n22, S/T ratio competitive,Game Structure, S/T ratio competitive
+n115,1wordBelief,Features of the Person,1wordBelief
+n226,Academic Grade,Features of the Person,Academic Grade
+n139,Achievement,Features of the Person,Achievement
+n93,Active Prosociality,Features of the Person,Active Prosociality
+n136,Affect,Features of the Person,Affect
+n140,Affiliation,Features of the Person,Affiliation
+n8,Agent,Features of the Person,Agent
+n105,Aggression,Features of the Person,Aggression
+n85,Agreeableness,Features of the Person,Agreeableness
+n198,Alternative Method,Game Structure,Alternative Method
+n98,Altruism,Features of the Person,Altruism
+n63,Anger,Features of the Person,Anger
+n104,Antisocial Tendency,Features of the Person,Antisocial Tendency
+n132,Anxiety,Features of the Person,Anxiety
+n141,Approach,Features of the Person,Approach
+n24,Average advantage of competition,Game Structure,Average advantage of competition
+n138,Avoidance,Features of the Person,Avoidance
+n20,b/c ratio,Game Structure,b/c ratio
+n28,Baseline,Game Structure,Baseline
+n44,Behavioural Trust,Features of the Person,Behavioural Trust
+n113,Belief,Features of the Person,Belief
+n216,Benevolence,Features of the Person,Benevolence
+n84,BroadTrait,Features of the Person,BroadTrait
+n51,Career-orented GenderRole,Features of the Person,Career-orented GenderRole
+n119,Collectivism,Features of the Person,Collectivism
+n0,Communication,Features of Decision,Communication
+n37,Communication Medium,Features of Decision,Communication Medium
+n107,Competitiveness,Features of the Person,Competitiveness
+n59,Computer,Features of the Person,Computer
+n39,Computer Mediated,Features of Decision,Computer Mediated
+n196,Conceptual,Game Structure,Conceptual
+n99,Concern ForOthers,Features of the Person,Concern ForOthers
+n17,Conflict-/CooperationIndex,Game Structure,Conflict-/CooperationIndex
+n222,Conformity,Features of the Person,Conformity
+n86,Conscientiousness,Features of the Person,Conscientiousness
+n68,Contempt,Features of the Person,Contempt
+n171,Context Framing,Features of Decision,Context Framing
+n163,Continuous PGG,Game Structure,Continuous PGG
+n206,Control,Game Structure,Control
+n81,Criticism,Game Structure,Criticism
+n192,Delay Discounting,Game Structure,Delay Discounting
+n202,Democratic Power,Game Structure,Democratic Power
+n187,Dictator Game,Game Structure,Dictator Game
+n229,Discount Consistency,Game Structure,Discount Consistency
+n66,Disgust,Features of the Person,Disgust
+n43,Dispositional Trust,Features of the Person,Dispositional Trust
+n70,Embarassment,Features of the Person,Embarassment
+n61,Emotion,Features of the Person,Emotion
+n142,Emotional Intelligence,Features of the Person,Emotional Intelligence
+n87,Emotionality,Features of the Person,Emotionality
+n114,Empathy  (emotion),Features of the Person,Empathy  (emotion)
+n100,Empathy (trait),Features of the Person,Empathy (trait)
+n199,Endowment,Game Structure,Endowment
+n106,Envy,Features of the Person,Envy
+n231,Ex-post Communication,Features of Decision,Ex-post Communication
+n204,Exogeneous Power,Game Structure,Exogeneous Power
+n194,Experiencial,Game Structure,Experiencial
+n15,Experimenter,Features of the Person,Experimenter
+n181,External MPCR,Game Structure,External MPCR
+n88,Extraversion,Features of the Person,Extraversion
+n5,EyeComm,Features of Decision,EyeComm
+n38,FaceToFace,Features of Decision,FaceToFace
+n64,Fear,Features of the Person,Fear
+n161,Feedback,Game Structure,Feedback
+n92,FiveFactor Model,Features of the Person,FiveFactor Model
+n34,Focal Agent,Features of the Person,Focal Agent
+n169,FocalPoint Framing,Features of Decision,FocalPoint Framing
+n102,Forgiveness,Features of the Person,Forgiveness
+n168,Framing,Features of Decision,Framing
+n75,Game,Game Structure,Game
+n245,Game Structure,Game Structure,Game Structure
+n6,GazeComm,Features of Decision,GazeComm
+n49,Gender,Features of the Person,Gender
+n50,GenderRole,Features of the Person,GenderRole
+n109,Greed,Features of the Person,Greed
+n209,GRIM,Game Structure,GRIM
+n14,Group,Features of the Person,Group
+n148,GSS,Study Setting,GSS
+n62,Guilt,Features of the Person,Guilt
+n117,Guilt proneness,Features of the Person,Guilt proneness
+n67,Happiness,Features of the Person,Happiness
+n220,Hedonism,Features of the Person,Hedonism
+n151,HEXACO Model,Study Setting,HEXACO Model
+n224,HoltLaury,Features of the Person,HoltLaury
+n89,Honesty-humility,Features of the Person,Honesty-humility
+n184,Identification Type,Game Structure,Identification Type
+n124,Identity/Society relatedAttitude,Features of the Person,Identity/Society relatedAttitude
+n128,Impulsivity,Features of the Person,Impulsivity
+n77,Incentive (Currency),Game Structure,Incentive (Currency)
+n23,Index of correspondence,Game Structure,Index of correspondence
+n232,IndirectReciprocity Game,Game Structure,IndirectReciprocity Game
+n180,Individual MPCR,Game Structure,Individual MPCR
+n121,Individualism,Features of the Person,Individualism
+n95,Inequity Adversion,Features of the Person,Inequity Adversion
+n9,Institution,Features of the Person,Institution
+n249,Institutional Mechanism,Institutions,Institutional Mechanism
+n118,Integrity,Features of the Person,Integrity
+n166,Interaction Partner,Features of Decision,Interaction Partner
+n183,InterGroup Game,Game Structure,InterGroup Game
+n160,InterGroup MD-PDG,Game Structure,InterGroup MD-PDG
+n159,InterGroup PDG,Game Structure,InterGroup PDG
+n158,InterGroup PGG,Game Structure,InterGroup PGG
+n130,Intuitive Thinking,Features of the Person,Intuitive Thinking
+n212,Iterative Strategy,Game Structure,Iterative Strategy
+n26,IV/T,Game Structure,IV/T
+n18,K-index,Game Structure,K-index
+n19,K*-index,Game Structure,K*-index
+n10,Leader,Features of the Person,Leader
+n144,Locus Ofcontrol,Features of the Person,Locus Ofcontrol
+n108,Machiavellianism,Features of the Person,Machiavellianism
+n48,Manipulation Technique,Study Setting,Manipulation Technique
+n79,MaterialIncentive,Game Structure,MaterialIncentive
+n31,"MeasureInstrument",Study Setting,"MeasureInstrument"
+n27,MinimalGroup Paradigm,Game Structure,MinimalGroup Paradigm
+n60,Mood,Features of the Person,Mood
+n116,Morality,Features of the Person,Morality
+n137,Motivation,Features of the Person,Motivation
+n177,MPCR,Game Structure,MPCR
+n178,MRS,Game Structure,MRS
+n111,Narcissism,Features of the Person,Narcissism
+n94,NarrowTrait,Features of the Person,NarrowTrait
+n133,Negative Affect,Features of the Person,Negative Affect
+n90,Neuroticism,Features of the Person,Neuroticism
+n2,NonVerbal Communication,Features of Decision,NonVerbal Communication
+n213,One-shot Strategy,Game Structure,One-shot Strategy
+n91,Openness (to experience),Features of the Person,Openness (to experience)
+n145,Optimism,Features of the Person,Optimism
+n205,Ostracism,Game Structure,Ostracism
+n147,Other,Study Setting,Other
+n235,Other Strategy,Game Structure,Other Strategy
+n189,OtherProsocialityM,Game Structure,OtherProsocialityM
+n251,Payoff,Institutions,Payoff
+n46,Payoff Feedback,Game Structure,Payoff Feedback
+n155,PDG,Game Structure,PDG
+n13,Peer/Partner,Features of the Person,Peer/Partner
+n83,Personality Trait,Features of the Person,Personality Trait
+n156,PGG,Game Structure,PGG
+n179,PGG ConflictIndex,Game Structure,PGG ConflictIndex
+n197,Physical,Game Structure,Physical
+n134,Positive Affect,Features of the Person,Positive Affect
+n103,Positive Reciprocity,Features of the Person,Positive Reciprocity
+n120,Power,Features of the Person,Power
+n230,Power (trait),Features of the Person,Power (trait)
+n193,Power Manipulation Techniques,Game Structure,Power Manipulation Techniques
+n242,Power(Value),Features of the Person,Power(Value)
+n78,Praise,Game Structure,Praise
+n152,Praise,Game Structure,Praise
+n210,Pre-programmed CooperationRate,Game Structure,Pre-programmed CooperationRate
+n25,Priming,Game Structure,Priming
+n237,Prior Contribution,Game Structure,Prior Contribution
+n238,Prior Cooperation,Game Structure,Prior Cooperation
+n236,Prior Defection,Game Structure,Prior Defection
+n239,Prior Withdrawal,Game Structure,Prior Withdrawal
+n101,Pro-environ mentalism,Features of the Person,Pro-environ mentalism
+n96,Prosociality,Features of the Person,Prosociality
+n153,Prosociality Measure,Study Setting,Prosociality Measure
+n110,Psychopathy,Features of the Person,Psychopathy
+n35,Punishment,Game Structure,Punishment
+n246,Punishment,Institutions,Punishment
+n157,RDG,Game Structure,RDG
+n97,Reactive Prosociality,Features of the Person,Reactive Prosociality
+n201,Recall,Game Structure,Recall
+n131,Reflective Thinking,Features of the Person,Reflective Thinking
+n73,Reward,Institutions,Reward
+n248,Reward,Institutions,Reward
+n122,Right-wing Authoritatianism,Features of the Person,Right-wing Authoritatianism
+n223,RiskPreference,Features of the Person,RiskPreference
+n200,Role Assignment,Game Structure,Role Assignment
+n149,Rotter,Study Setting,Rotter
+n112,Sadism,Features of the Person,Sadism
+n47,Scenario,Game Structure,Scenario
+n215,Schwartz ValuesScale,Features of the Person,Schwartz ValuesScale
+n221,Security,Features of the Person,Security
+n127,Self Presentation,Features of the Person,Self Presentation
+n125,Self Regulation,Features of the Person,Self Regulation
+n218,Self-direction,Features of the Person,Self-direction
+n143,Self-esteem,Features of the Person,Self-esteem
+n126,SelfControl,Features of the Person,SelfControl
+n173,Shadow OfTheFuture,Features of Decision,Shadow OfTheFuture
+n69,Shame,Features of the Person,Shame
+n135,Shame proneness,Features of the Person,Shame proneness
+n16,Single,Features of the Person,Single
+n123,SocialDominance orientation,Features of the Person,SocialDominance orientation
+n80,SocialIncentive,Game Structure,SocialIncentive
+n7,SoundComm,Features of Decision,SoundComm
+n42,StateTrust,Features of the Person,StateTrust
+n164,StepLevel PGG,Game Structure,StepLevel PGG
+n219,Stimulation,Features of the Person,Stimulation
+n207,Strategy,Game Structure,Strategy
+n195,Structural,Game Structure,Structural
+n252,Structural Method,Game Structure,Structural Method
+n56,Subliminal Priming,Features of Decision,Subliminal Priming
+n57,Supraliminar Priming,Features of Decision,Supraliminar Priming
+n65,Surprise,Features of the Person,Surprise
+n29,SVO,Features of the Person,SVO
+n30,SVOmeasure,Study Setting,SVOmeasure
+n32,Target,Features of the Person,Target
+n225,Taxation,Institutions,Taxation
+n247,Taxation,Institutions,Taxation
+n129,Thinking Style,Features of the Person,Thinking Style
+n11,ThirdParty,Features of the Person,ThirdParty
+n190,Time Pressure,Game Structure,Time Pressure
+n208,Tit-for-Tat,Game Structure,Tit-for-Tat
+n4,TouchComm,Features of Decision,TouchComm
+n211,Tradition,Game Structure,Tradition
+n52,Tradition-oriented GenderRole,Features of the Person,Tradition-oriented GenderRole
+n40,Trust,Features of the Person,Trust
+n146,TrustMeasure,Study Setting,TrustMeasure
+n217,Universalism,Features of the Person,Universalism
+n170,Valence Framing,Features of Decision,Valence Framing
+n214,Value,Features of the Person,Value
+n1,VerbalCommunication,Features of Decision,VerbalCommunication
+n203,Voluntary Power,Game Structure,Voluntary Power
+n150,WVS,Study Setting,WVS
+n188,ZurichProsocial Game,Game Structure,ZurichProsocial Game

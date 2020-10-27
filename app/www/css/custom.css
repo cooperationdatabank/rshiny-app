@@ -1,0 +1,16 @@
+.main-header .logo {
+  font-family: "Georgia", Times, "Times New Roman", serif;
+  font-size: 24px;
+}
+
+
+#studies td {width: 125px !important}
+
+
+/*.skin-blue .main-header .logo {
+          background-color: orange;
+ }
+
+ .skin-blue .main-header .logo:hover {
+     background-color: orange;
+}*/
