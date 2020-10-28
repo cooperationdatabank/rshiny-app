@@ -4,9 +4,6 @@
 # File with all the libraries.
 source('loadLibraries.R');
 
-
-
-
 # The header includes a picture that must be in the app/www.
 header <- dashboardHeader(
   title = "Cooperation Databank",

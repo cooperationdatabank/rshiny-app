@@ -1369,15 +1369,16 @@ shinyServer(function(input, output, session) {
     }
     
     filteredObservationData <- filteredObservationData %>%
-      # Sample one variable per study, retaining all treatments that fit the
+      # Sample the first variable per study, retaining all treatments that fit the
       # selection criteria. Sampling one variable avoids duplicates if multiple
       # variables fit the selection criteria.
       mutate(variable_ID = sub( "(^[^.]+[.][^.]+)(.+$)", "\\1", observationName),
              treatment_1 = sub( "(^[^.]+[.][^.]+[.][^.]+)(.+$)", "\\1", observationName),
              treatment_2 = splitObservationName(observationName)) %>%
       group_by(studyName) %>%
-      filter(variable_ID %in% sample(unique(variable_ID), 1)) %>%
-      slice(sample(row_number())) %>%
+      # filter(variable_ID %in% sample(unique(variable_ID), 1)) %>%
+      # slice(sample(row_number())) %>%
+      filter(as.numeric(sub('.*\\.', '', variable_ID)) == min(as.numeric(sub('.*\\.', '', variable_ID)))) %>%
       # Transform wide to long; one row per treatment
       as.data.frame() %>%
       reshape(.,
@@ -1385,15 +1386,17 @@ shinyServer(function(input, output, session) {
                              c("treatment_1", "treatment_2")),
               v.names = c("treatmentValue", "treatment_ID"),
               direction = "long") %>%
-      # Sample one row per treatment
-      # This is necessary because data are organised by observation; i.e., a
-      # treatment may occur in more than one observation.
+      # Filter treatment by selection
       group_by(treatment_ID) %>%
-      sample_n(1) %>%
       dplyr::filter(str_contains(treatmentValue,
                                  paste0(input$treatmentSubpropSelection1a, " : ", 
                                         input$valueOptionsSelection1a), 
                                  ignore.case = TRUE)) %>%
+      # Sample one row per treatment
+      # This is necessary because data are organised by observation; i.e., a
+      # treatment may occur in more than one observation.
+      # sample_n(1) %>%
+      filter(as.numeric(sub('.*\\.', '', treatment_ID)) == min(as.numeric(sub('.*\\.', '', treatment_ID)))) %>%
       ungroup() %>%
       # Filter out overall study iff substudies are present
       group_by(studyNameGeneral) %>%
