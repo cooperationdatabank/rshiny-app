@@ -105,7 +105,11 @@ observationData <- citations %>%
   rename(paperTitle = Title,
          citation = Authors...year) %>%
   mutate(paperYear = str_extract_all(citation, "[:digit:]+"),
-         authorNames = str_replace_all(str_replace_all(str_replace(citation, " \\([:alnum:]+\\)", ""), ", &", ","), " &", ",")) %>%
+         authorNames = str_replace_all(str_replace_all(str_replace_all(str_replace(citation, 
+                                                                                   " \\([:alnum:]+\\)", ""), 
+                                                                       ", &", ","), 
+                                                       " &", ","),
+                                       ", ", ",")) %>%
   unnest(paperYear) %>%
   merge(observationData, ., 
         by.x = "paperName", by.y = "paper_ID",
@@ -116,8 +120,8 @@ observationData <- citations %>%
 
 # The authornames in the data are concatenated per paper in the SPARQL query, we keep that structure but also use a
 # list with all the Authors separately for selection.
-authorList <- unique(observationData$authorNames)
-authors <- trimws(unlist(str_split(unique(observationData$authorNames),", ")))
+# authorList <- unique(observationData$authorNames)
+authors <- trimws(unlist(str_split(unique(observationData$authorNames),",")))
 
 # For the selections of the Independent variable and its categories we only use the list of relations between the ivs and their categories.
 subPropertyList <- unique(observationData$treatmentSubproperties)
@@ -653,7 +657,6 @@ shinyServer(function(input, output, session) {
     
     ##### metadata #####
     # The list of papers is updated with the selection of individual authors
-#    authorList <- authorList[sapply(authorList, function(x) { any(str_contains(x, input$author))}, USE.NAMES = FALSE)]
     
     if (!is.null(input$author) && input$author != "") {
       filteredObservationData <- filteredObservationData %>%
@@ -983,10 +986,9 @@ shinyServer(function(input, output, session) {
     }
 
      # end filters
-
+    
     # Return output 
     filteredObservationData
-
   }
   )
 
@@ -994,7 +996,7 @@ shinyServer(function(input, output, session) {
 
   matchedData <- reactive({
     filteredObservationData <- filteredObservationData()
-    
+
     # Helper functions
     ## Checks whether a variable has a certain level.
     checkLevel <- function(data, var, level){
