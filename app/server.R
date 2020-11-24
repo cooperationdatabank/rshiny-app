@@ -105,7 +105,7 @@ observationData <- citations %>%
   rename(paperTitle = Title,
          citation = Authors...year) %>%
   mutate(paperYear = str_extract_all(citation, "[:digit:]+"),
-         authorNames = str_replace_all(str_replace_all(str_replace(citation, " \\([:alnum:]+\\)", ""), ",", " &"), "& &", "&")) %>%
+         authorNames = str_replace_all(str_replace_all(str_replace(citation, " \\([:alnum:]+\\)", ""), ", &", ","), " &", ",")) %>%
   unnest(paperYear) %>%
   merge(observationData, ., 
         by.x = "paperName", by.y = "paper_ID",
@@ -117,14 +117,17 @@ observationData <- citations %>%
 # The authornames in the data are concatenated per paper in the SPARQL query, we keep that structure but also use a
 # list with all the Authors separately for selection.
 authorList <- unique(observationData$authorNames)
-authors <- unlist(str_split(unique(observationData$authorNames)," & "))
+authors <- trimws(unlist(str_split(unique(observationData$authorNames),", ")))
 
 # For the selections of the Independent variable and its categories we only use the list of relations between the ivs and their categories.
 subPropertyList <- unique(observationData$treatmentSubproperties)
 selections <- content(GET(paste0(api, "taxonomy-iv-prop/run"), add_headers(Accept = "text/csv")))
 
 # The same is done for the values that are relevant for effect sizes
-selectionsValues <- content(GET(paste0(api, "taxonomy-iv-prop-values/run"), add_headers(Accept = "text/csv")))
+# To accommodate booleans, set the valueName based on the range (to 0,1), then separate into rows
+selectionsValues <- content(GET(paste0(api, "taxonomy-iv-prop-values/run"), add_headers(Accept = "text/csv"))) %>%
+  mutate(valueName = ifelse(treatmentSubpropertyRange == "http://www.w3.org/2001/XMLSchema#boolean", "0,1", valueName)) %>%
+  separate_rows(valueName, sep = ",")
 
 # We get a list of moderators with labels from a query
 studyMods <- content(GET(paste0(api, "moderators/run"), add_headers(Accept = "text/csv")))
@@ -652,10 +655,10 @@ shinyServer(function(input, output, session) {
     # The list of papers is updated with the selection of individual authors
 #    authorList <- authorList[sapply(authorList, function(x) { any(str_contains(x, input$author))}, USE.NAMES = FALSE)]
     
-    if (!is.null(input$authorNames) && input$authorNames != "") {
+    if (!is.null(input$author) && input$author != "") {
       filteredObservationData <- filteredObservationData %>%
         filter(
-          checkSelection(authorNames, input$authorNames)
+          checkSelection(authorNames, input$author)
         )
     }
     
