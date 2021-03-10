@@ -3,7 +3,7 @@ FROM rocker/shiny:3.6.3
 
 # Install Ubuntu packages
 RUN apt-get update && apt-get install -y \
-    libssl-dev libpng-dev libjpeg-dev libxml2-dev zlib1g-dev
+    libssl-dev libpng-dev libjpeg-dev libxml2-dev zlib1g-dev libgit2-dev
 
 # Install R packages
 COPY app/loadLibraries.R /tmp/

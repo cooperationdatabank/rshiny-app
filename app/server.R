@@ -263,6 +263,24 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "valueOptionsSelection1a", choices = c("",valueOptionUpdateGen(input$treatmentSubpropSelection1a)))
     })
 
+    observe({
+      updateSelectInput(session, "addGenIVselectionTreatment1", choices = c("",sort(selections$ivname)))
+    })
+
+    observe({
+      updateSelectInput(session, "addTreatmentSubpropSelectionTreatment1", choices = c("",ivLabelsGen(input$addGenIVselectionTreatment1)))
+    })
+
+    observe({
+      value_choice <- valueOptionUpdateGen(input$addTreatmentSubpropSelectionTreatment1)
+      allow_create <- FALSE
+      if (identical(value_choice, character(0))){
+        allow_create <- TRUE
+      }
+      updateSelectizeInput(session, "addValueOptionsSelectionTreatment1",
+                        choices = c("", value_choice), options = list(create = allow_create))
+    })
+
     output$descriptionCategory1a <- renderUI({
       em(class = "text-muted",
         generateCategoryString(input$genIVselection1a)
@@ -412,7 +430,7 @@ shinyServer(function(input, output, session) {
   
   observe({
     updateSelectizeInput(session, "lang", choices = sort(unique(substr(observationData$observationName, 1,3))) )
-  })  
+  })
   
   # countries
   
@@ -421,8 +439,13 @@ shinyServer(function(input, output, session) {
   })
   
   observe({
-    updateSelectInput(session, "acquaintance", choices = sort(unique(observationData$acquaintance) ))
+    updateSelectInput(session, "studyAcquaintance", choices = sort(unique(unlist(str_split(observationData$studyAcquaintance, ",")) )))
   })
+
+  observe({
+    updateSelectInput(session, "addStudyAcquaintance", choices = sort(unique(unlist(str_split(observationData$studyAcquaintance, ",")) )))
+  })
+
 
        ## Moderator selection meta-analysis #####
 
@@ -1200,6 +1223,10 @@ shinyServer(function(input, output, session) {
     
     filtered
   })
+
+  # Counter for Forest plots height,
+  metaRegressionForestHeightCount <- 0
+  metaAnalysisForestHeightCount <- 0
   
        ## metaAnalysisSelection ####
   
@@ -1287,6 +1314,8 @@ shinyServer(function(input, output, session) {
         }
     }
     }
+
+    metaAnalysisForestHeightCount <<- nrow(filteredObservationData)
     
     filteredObservationData
     
@@ -1418,6 +1447,8 @@ shinyServer(function(input, output, session) {
       # Drop NAs to show labels on plots
       drop_na(logPropContributed, coefficientOfVariation) %>%
       arrange(logPropContributed)
+
+    metaRegressionForestHeightCount <<- nrow(filteredObservationData)
     
     filteredObservationData
     
@@ -1451,6 +1482,13 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$clearFilters, {
     shinyjs::reset("whole_dashboard")
+    output$forests_reg_ui <- renderUI({plotOutput("get_forests_reg", height = paste0(toString(metaRegressionForestHeightCount*10 + 400),'px')) })
+    output$get_forests_ui <- renderUI({
+      plotOutput("get_forests", height = paste0(toString(metaAnalysisForestHeightCount*10 + 400),'px'))
+    })
+    regressionForms <<- data.frame(matrix(ncol = countColumnsRegression, nrow = 0))
+    analysisForms <<-  data.frame(matrix(ncol = countColumns, nrow = 0))
+
   })
   
 
@@ -1567,6 +1605,10 @@ shinyServer(function(input, output, session) {
       hide(id = "resultBoxReg" )
       hide(id ="modelBoxReg" )
       show(selector = "div.validationBox" )
+      hide(id = "addedPaperData")
+      hide(id = "analysisForm")
+      hide(id = "addedPaperDataRegression")
+      hide(id = "regressionForm")
     } else {
       show(id = "resultBox" )
       show(id ="modelBox" )
@@ -1627,6 +1669,12 @@ shinyServer(function(input, output, session) {
                                                                           "Analyze the effect of punishment on cooperation, comparing a punishment treatment vs. any other treatment." = 2,
                                                                           "Compare the effects of punishment vs. reward on cooperation." = 3
       ))
+      output$forests_reg_ui <- renderUI({plotOutput("get_forests_reg", height = paste0(toString(metaRegressionForestHeightCount*10 + 400),'px')) })
+      output$get_forests_ui <- renderUI({
+        plotOutput("get_forests", height = paste0(toString(metaAnalysisForestHeightCount*10 + 400),'px'))
+      })
+      analysisForms <<-  data.frame(matrix(ncol = countColumns, nrow = 0))
+      regressionForms <<- data.frame(matrix(ncol = countColumnsRegression, nrow = 0))
     }
     #print(input$selectionExample)
   })
@@ -1884,20 +1932,16 @@ shinyServer(function(input, output, session) {
   
   })
 
-  get_meta_analysis <- reactive({
-    
+  calculate_meta_analysis <- function(dataSelection) {
     # Helper functions
     changeRoundingOutput <- function(numberToRound){
       result <- as.numeric(round(numberToRound,3))
     }
-    
-    # Get inputs
-    dataSelection <- metaAnalysisSelection()
-    
+
     # Define moderator input
     ## One vector containing all selected or created moderators
     all_mods <- get_all_mods()
-    
+
     ## Moderator formula
     if(length(all_mods) == 0){  # Or use a different condition
       mods <- NULL
@@ -1905,7 +1949,7 @@ shinyServer(function(input, output, session) {
     if(length(all_mods) > 0){
       mods <- as.formula(paste("~", paste0("`", all_mods,"`" , collapse = " + ")))
     }
-    
+
     # Multilevel formula
     # Note that this is hardcoded to only allow study, paper and country,
     # with studies nested within papers and otherwise crossed factors.
@@ -1921,11 +1965,11 @@ shinyServer(function(input, output, session) {
       random = list(as.formula(paste0("~ 1 | ", input$multilevel_variables[[1]])),
                     as.formula(paste0("~ 1 | ", input$multilevel_variables[[2]])))
     } else random = NULL
-    
+
     # Run meta-analysis
     ## Simple or multilevel model
     if(is.null(random)){
-      
+
       result_rma <- rma.uni(yi=effectSize,
                             vi=variance,
                             data=dataSelection,
@@ -1941,7 +1985,7 @@ shinyServer(function(input, output, session) {
                            mods = mods,
                            slab = reference)
     }
-    
+
     # Format output tables for meta-analysis or moderated meta-analysis
     if(is.null(mods)){
       resultsTable <- data.frame(Effect = paste0(input$treatmentSubpropSelection1a, ": ", input$valueOptionsSelection1a,
@@ -1957,9 +2001,9 @@ shinyServer(function(input, output, session) {
                                  p = ifelse(changeRoundingOutput(result_rma$pval) == 0,
                                             "<.001",
                                             changeRoundingOutput(result_rma$pval)),
-                                 PI = ifelse(input$ma_model == "FE", 
+                                 PI = ifelse(input$ma_model == "FE",
                                              "",
-                                             paste0("[", changeRoundingOutput(predict(result_rma)$cr.lb), ", ", 
+                                             paste0("[", changeRoundingOutput(predict(result_rma)$cr.lb), ", ",
                                                     changeRoundingOutput(predict(result_rma)$cr.ub), "]")),
                                  T2 = changeRoundingOutput(result_rma$tau2),
                                  I2 = ifelse(is.null(random), changeRoundingOutput(result_rma$I2), "NA")
@@ -1977,26 +2021,107 @@ shinyServer(function(input, output, session) {
                                             "<.001",
                                             changeRoundingOutput(result_rma$pval)))
     }
-    
+
     # Return output
     result <- list()
     result$rma <- result_rma
     result$table <- resultsTable
     result$mods <- mods
-    
+
     return(result)
+  }
+
+  # Short metaAnalysis input form: Store form data from a single form
+  analysisFormData <- reactive({
+    analysisFormData <- sapply(metaAnalysisFields, function(x) input[[x]])
+    analysisFormData <- c(analysisFormData)
+    analysisFormData <- t(analysisFormData)
+    analysisFormData <- data.frame(analysisFormData, stringsAsFactors=F)
+    return(analysisFormData)
   })
-  
-  output$rma <- DT::renderDataTable({
-    
-    analysis <- get_meta_analysis()
-    
+
+  # Short metaAnalysis input form: Init a data frame to store multiple records
+  countColumns <- length(metaAnalysisFields)
+  analysisForms <- data.frame(matrix(ncol = countColumns, nrow = 0))
+  colnames(analysisForms) <- names(metaAnalysisFields)
+
+  formDataReady <- eventReactive(input$addAnalysisPaper,{
+    shinyjs::show(id="addedPaperData")
+    shinyjs::hide(id="analysisForm")
+    analysisForms <<- rbind(analysisForms, analysisFormData())
+
+    output$addedPaper <- DT::renderDataTable({
+      datatable(analysisForms,
+                colnames = c('Title', 'Authors', 'Year', 'Effect Size', 'Variance','Sample Size'),
+                options = list(columnDefs = list(list(className = 'dt-right', targets = 2:5)),
+                               pageLength = 10,
+                               scrollX = TRUE,
+                               dom = 'lftp'),
+                class="stripe" ,
+                escape = FALSE
+      )
+    })
+    return(analysisForms)
+  })
+  observe(formDataReady())
+
+  get_meta_analysis <- reactive({
+    # Get inputs
+    dataSelection <- metaAnalysisSelection()
+    cat('%%%%% return original meta analysis result %%%%%%')
+    # Get results
+    result <- calculate_meta_analysis(dataSelection)
+    result
+  })
+
+  # Record self-added paper reference for coloring the element in forest plot
+  addedPaperReference <- c()
+
+  # Update metaAnalysisSelection() with user's input
+  get_updated_data_for_meta_analysis <- reactive({
+    dataSelection <- metaAnalysisSelection()
+    dataSelectionNames <- names(dataSelection)
+    new_rows <- c()
+    for (i in dataSelectionNames){
+      new_rows[[i]] <- NA
+    }
+    formData <- formDataReady()
+    new_rows$effectSize<-as.numeric(formData$effectSizeEstimate)
+    new_rows$yearOfDataCollection<-as.numeric(formData$analysisPublicationYear)
+    new_rows$paperTitle<-formData$analysisTitle
+    new_rows$authorNames<-formData$analysisAuthor
+    new_rows$effectSizeMeasure<-input$es_measure
+    new_rows$variance<-as.numeric(formData$effectSizeVariance)
+    new_rows$effectSizeSampleSize<-as.numeric(formData$effectSizeSampleSize)
+    new_rows$reference <- paste0(new_rows$authorNames, ' (', new_rows$yearOfDataCollection, ')')
+    new_rows$citation <- new_rows$reference
+
+    addedPaperReference <<- append(addedPaperReference, new_rows$reference)
+    if (dim(analysisForms)[1] != 0) {
+      selfAddedPaper <- data.frame(new_rows)
+      dataSelection <- rbind(dataSelection, selfAddedPaper) %>% arrange(effectSize)
+    }
+
+    metaAnalysisForestHeightCount <<- nrow(dataSelection)
+    return(dataSelection)
+  })
+
+  # Get updated results with updated user input data
+  get_updated_meta_analysis <- reactive({
+    dataSelection <- get_updated_data_for_meta_analysis()
+    updatedResult <- calculate_meta_analysis(dataSelection)
+    cat('%%%%% return updated meta analysis result %%%%%%')
+    return(updatedResult)
+  })
+
+  get_rma_output <- function(metaAnalysisResult) {
+    analysis <- metaAnalysisResult
     mods <- analysis$mods
     result_rma <- analysis$rma
     resultsTable <- analysis$table
-    
+
     effsize <- input$es_measure
-    
+
     # Container for datatable
     metaoutput = htmltools::withTags(table(
       class = 'display',
@@ -2012,117 +2137,80 @@ shinyServer(function(input, output, session) {
         )
       )
     ))
-    
+
     # Formatted table output, conditional on presence of moderators
     if(is.null(mods)){
       DT::datatable(resultsTable, rownames = FALSE, container = metaoutput,
                     options = list(columnDefs = list(list(className = 'dt-right', targets = 1:7)),
-                                   pageLength = 10, 
-                                   scrollX = TRUE, 
+                                   pageLength = 10,
+                                   scrollX = TRUE,
                                    dom = 'lftp'),  # dom : control (see https://datatables.net/reference/option/dom)
                     class="stripe" , #selection = 'none' ,
-                    
+
                     escape = FALSE )
     } else {
       DT::datatable(resultsTable,
                     options = list(columnDefs = list(list(className = 'dt-right', targets = 2:5)),
-                                   pageLength = 10, 
-                                   scrollX = TRUE, 
+                                   pageLength = 10,
+                                   scrollX = TRUE,
                                    dom = 'lftp'),  # dom : control (see https://datatables.net/reference/option/dom)
                     class="stripe" , #selection = 'none' ,
-                    
+
                     escape = FALSE )
     }
-  })
-  
-  output$metaforSummary <- renderPrint({
-    
-    analysis <- get_meta_analysis()
+  }
+
+  get_metaforSummary_output <- function (metaAnalysisResult) {
+    analysis <- metaAnalysisResult
     result_rma <- analysis$rma
-    
+
     ### td : update estimate (needed for power analysis)
     current_es_val(result_rma$beta)
     ###
-    
+
     summ <- summary(result_rma)
-    
+
     return(summ)
-  })
-  
-       ## Data table ####
-  
-  metaTableData <- reactive({
-    metaAnalysisSelection() %>%
-      mutate(effectSize = round(effectSize, 2),
-             CI = paste0("[", round(effectSizeLowerLimit, 2), ", ", round(effectSizeUpperLimit, 2), "]")) %>%
-      select(citation, paperTitle, country, effectSizeSampleSize, effectSize, variance, CI, get_all_mods()) %>%
-      rename(Citation = citation,
-             Title = paperTitle,
-             Country = country, 
-             `Sample Size` = effectSizeSampleSize, 
-             `Effect Size` = effectSize,
-             Variance = variance,
-             `95% CI` = CI)
-  })
-  
-  output$metatable <- DT::renderDataTable({
-    DT::datatable(metaTableData(),
-                  options = list(pageLength = 10, 
-                                 scrollX = TRUE, 
-                                 dom = 'lftp'),  # dom : control (see https://datatables.net/reference/option/dom)
-                  class="stripe" , #selection = 'none' ,
-                  
-                  escape = FALSE )
-  })
-  
-  output$downloadMetaData <- downloadHandler(
-    filename = function() {
-      paste('data-', Sys.Date(), '.csv', sep='')
-    },
-    content = function(con) {
-      write.csv(metaTableData(), con, col.names = TRUE, row.names = FALSE)
-    }
-  )
+  }
 
-       ## Visualise results tab (forest plot and density plot) #####
+  get_metatable_output <- function (metaTableData) {
+    DT::datatable(metaTableData,
+              options = list(pageLength = 10,
+                             scrollX = TRUE,
+                             dom = 'lftp'),  # dom : control (see https://datatables.net/reference/option/dom)
+              class="stripe" , #selection = 'none' ,
 
-  output$get_forests <- renderPlotly({
-    
-    # shiny::validate(
-    #   need(nrow(metaAnalysisSelection()) != 0, "Your selection did not result in a valid output, please change your selection.")
-    # )
-    
-    # shiny::validate(
-    #   need(!is.numeric(as.data.frame(metaAnalysisSelection())[,input$vis_moderator_variables[[1]]]), 
-    #        "Visualisation is not available for models with continuous moderators.")
-    # )
-    
-    result_rma <- get_meta_analysis()$rma
+              escape = FALSE )
+  }
+
+  get_forest_output <- function (metaAnalysisResult) {
+    result_rma <- metaAnalysisResult$rma
     effsize <- ifelse(input$es_measure == "d", "Cohen's d", "Correlation coefficient r")
-    
-    fplot <- viz_forest(x = result_rma, 
+    # add match_list for highlighting the self-added studies
+    match_list <- c()
+    for (i in result_rma[['slab']]) {
+      if (i %in% addedPaperReference || str_sub(i,1,-3) %in% addedPaperReference) {
+        match_list <- append(match_list, 1)
+      } else {
+        match_list <- append(match_list, 2)
+      }
+    }
+    fplot <- viz_forest(x = result_rma,
                         study_labels = result_rma$slab,
                         summary_label = "Meta-analytic estimate",
                         xlab = effsize,
-                        col = "#87C211",
-                        variant = "classic")
-    
-    ggplotly(fplot, height = result_rma$k * 9 + 100, tooltip = c("x"))
-  })
+                        col = c("red","#87C211")[match_list],
+                        variant = "classic",
+                        summary_col = c("steelblue4"),
+                        annotate_CI = TRUE,
+                        text_size = 4,
+                        )
+    #ggplotly has open issues with coloring point: https://github.com/ropensci/plotly/issues/1234
+    #ggplotly(fplot, height = result_rma$k * 9 + 100, tooltip = c("x"))
+    fplot
+  }
 
-  # violins plot
-  output$get_violin <- renderPlotly({
-
-
-    # shiny::validate(
-    #   need(nrow(metaAnalysisSelection()) != 0, "Your selection did not result in a valid output, please change your selection")
-    # )
-    # 
-    # shiny::validate(
-    #   need(!is.numeric(as.data.frame(metaAnalysisSelection())[,input$vis_moderator_variables[[1]]]), 
-    #        "Visualisation is not available for models with continuous moderators.")
-    # )
-
+  get_violin_output <- function (metaAnalysisSelectionData) {
     if (is.null(input$vis_moderator_variables) | input$vis_moderator_variables == ""){
       all_mods <- input$moderator_variables
     } else {
@@ -2146,12 +2234,12 @@ shinyServer(function(input, output, session) {
       return(c(y=m,ymin=ymin,ymax=ymax))
     }
 
-    d <- metaAnalysisSelection() %>%
+    d <- metaAnalysisSelectionData %>%
       separate_rows(treatmentSubproperties,sep = ",") %>%
       filter(treatmentSubproperties %in% input$treatmentSubpropSelection1a)
 
     violin_p <- d %>%
-      mutate(reference = paste0(sub(" &.*"," et al.", authorNames), 
+      mutate(reference = paste0(sub(" &.*"," et al.", authorNames),
                                "(", paperYear, ")", ", ",
                                paste(gsub("(?:[^.]+\\.){2}([^.]+).*", "\\1", observationName),
                                      gsub("(?:[^.]+\\.){3}([^.]+).*", "\\1", observationName),
@@ -2174,7 +2262,7 @@ shinyServer(function(input, output, session) {
             panel.grid.minor = element_blank()) +
       # add custom color
       scale_fill_manual(values=c( "#87C211", "#FBAC0C",  "#026EA4", "#D8D8D8", "#CEE3E8"))+
-        
+
       #Specify the limits of the x-axis and relabel it to something more meaningful
       scale_y_continuous(name='Effect Size') +
       #Give y-axis a meaningful label
@@ -2190,110 +2278,12 @@ shinyServer(function(input, output, session) {
     res$x$data[[1]]$hoverinfo <- "none"
 
     return(res)
-  })
+  }
 
-
-       ## Publication bias #####
-
-  # Publication bias analyses
-  get_publication_bias <- reactive({
-    
-    changeRoundingOutput <- function(numberToRound){
-      result <- as.numeric(round(numberToRound,3))
-    }
-    
-    # If the meta-analysis uses moderators or a multilevel model, refit as
-    # rma.uni() without moderators
-    result_rma <- get_meta_analysis()$rma
-    if(("rma.mv" %in% class(result_rma)) | !is.null(result_rma$formula.mods)){
-      dataSelection <- metaAnalysisSelection()
-      result_rma <- rma.uni(yi=effectSize,
-                            vi=variance,
-                            data=dataSelection,
-                            method = input$ma_model,
-                            slab = reference)
-    }
-    
-    # Run publication bias analyses
-    trimfill <- trimfill(result_rma)
-    ranktest <- ranktest(result_rma)
-    regtest <- regtest(result_rma)
-    hc <- hc(result_rma)
-    
-    # Publication bias test interpretation
-    resultInterpretation <- paste0("The rank correlation test for funnel plot asymmetry was statistically ", 
-                                   ifelse(!is.null(ranktest),
-                                          paste0(ifelse(ranktest$pval < .05, "significant", "non-significant"), 
-                                                 ", Kendall's tau = ", changeRoundingOutput(ranktest$tau), 
-                                                 ", <i>p</i> = ", changeRoundingOutput(ranktest$pval), ". "), ""),
-                                   ifelse(!is.null(regtest),
-                                          paste0("Egger's regression test for funnel plot asymmetry was statistically ",
-                                                 ifelse(regtest$pval < .05, "significant", "non-significant"), 
-                                                 ", <i>Z</i> = ", changeRoundingOutput(regtest$zval), 
-                                                 ", <i>p</i> = ", changeRoundingOutput(regtest$pval), ". "), ""),
-                                   "The trim-and-fill method estimated <i>k</i> = ", trimfill$k0,
-                                   " missing studies on the ", trimfill$side, " side of the funnel plot.")
-    
-    # Table
-    resultsTable <- data.frame(Method = c(input$ma_model, "Trim-and-Fill", "Henmi-Copas"),
-                               k = c(result_rma$k, trimfill$k, result_rma$k),
-                               Estimate = c(changeRoundingOutput(result_rma$b), 
-                                            changeRoundingOutput(trimfill$b), 
-                                            changeRoundingOutput(hc$beta)),
-                               CI = c(paste0("[", changeRoundingOutput(result_rma$ci.lb),
-                                             ", ",
-                                             changeRoundingOutput(result_rma$ci.ub),
-                                             "]"),
-                                      paste0("[", changeRoundingOutput(trimfill$ci.lb),
-                                             ", ",
-                                             changeRoundingOutput(trimfill$ci.ub),
-                                             "]"),
-                                      paste0("[", changeRoundingOutput(hc$ci.lb),
-                                             ", ",
-                                             changeRoundingOutput(hc$ci.ub),
-                                             "]")),
-                               Z = c(changeRoundingOutput(result_rma$zval),
-                                     changeRoundingOutput(trimfill$zval),
-                                     ""),
-                               p = c(ifelse(changeRoundingOutput(result_rma$pval) == 0,
-                                            "<.001",
-                                            changeRoundingOutput(result_rma$pval)),
-                                     ifelse(changeRoundingOutput(trimfill$pval) == 0,
-                                            "<.001",
-                                            changeRoundingOutput(trimfill$pval)),
-                                     ""),
-                               PI = ifelse(input$ma_model == "FE", 
-                                           c("", "", ""),
-                                           c(paste0("[", changeRoundingOutput(predict(result_rma)$cr.lb), ", ", 
-                                                    changeRoundingOutput(predict(result_rma)$cr.ub), "]"),
-                                             paste0("[", changeRoundingOutput(predict(trimfill)$cr.lb), ", ", 
-                                                    changeRoundingOutput(predict(trimfill)$cr.ub), "]"),
-                                             "")),
-                               T2 = c(changeRoundingOutput(result_rma$tau2),
-                                      changeRoundingOutput(trimfill$tau2),
-                                      changeRoundingOutput(hc$tau2)),
-                               I2 = c(changeRoundingOutput(result_rma$I2),
-                                      changeRoundingOutput(trimfill$I2),
-                                      "")
-    )
-
-    result <- list()
-    result$resultInterpretation <- resultInterpretation
-    result$resultsTable <- resultsTable
-    
-    return(result)
-  })
-  
-  output$publicationbias_interpretation <- renderUI({
-    tagList(
-      HTML(get_publication_bias()$resultInterpretation)
-      )
-  })
-  
-  output$publicationbias_table <- DT::renderDataTable({
-    publication_bias <- get_publication_bias()
+  get_publication_bias_table <- function (publication_bias_result) {
+    publication_bias <- publication_bias_result
     effsize = input$es_measure
-    
+
     # Container for datatable
     metaoutput = htmltools::withTags(table(
       class = 'display',
@@ -2309,56 +2299,44 @@ shinyServer(function(input, output, session) {
         )
       )
     ))
-    
+
     # Formatted table output, conditional on presence of moderators
     DT::datatable(publication_bias$resultsTable,
-                  rownames = FALSE, 
+                  rownames = FALSE,
                   container = metaoutput,
                   options = list(dom = '',
                                  columnDefs = list(list(className = 'dt-right', targets = 1:7)),
                                  "pageLength" = 40)
     )
-  })
-    
-  output$get_funnels <- renderPlot ({
+  }
 
+  get_funnels_output <- function (metaAnalysisSelectionData, metaAnalysisResult) {
     shiny::validate(
       need(input$treatmentSubpropSelection1a !="", "We have too little information to perform this analysis.  Please change your selection criteria on the left-hand side.")
     )
 
     shiny::validate(
-      need(nrow(metaAnalysisSelection()) != 0, "Your selection did not result in a valid output, please change your selection")
+      need(nrow(metaAnalysisSelectionData) != 0, "Your selection did not result in a valid output, please change your selection")
     )
-  
+
     if(input$trimfill){
-      funnel(trimfill(get_meta_analysis()$rma),
+      funnel(trimfill(metaAnalysisResult$rma),
              level=c(90, 95, 99),
-             xlab="Study result (effect size)", 
-             ylab="Study precision (std err)", 
+             xlab="Study result (effect size)",
+             ylab="Study precision (std err)",
              shade=c("#F7FBFD", "#87C211", '#FBAC0C'))
     }
     else
-      funnel(get_meta_analysis()$rma,
+      funnel(metaAnalysisResult$rma,
              level=c(90, 95, 99),
-             xlab="Study result (effect size)", 
-             ylab="Study precision (std err)", 
+             xlab="Study result (effect size)",
+             ylab="Study precision (std err)",
              shade=c("#F7FBFD", "#87C211", "#FBAC0C"))
+  }
 
-  }, height = 'auto')
-  
-       ## Statistical power analysis tab ####
-  # select test type
-  observe({
-    tests <- tests %>% filter(tests$Family == input$test_fam)
-    updateSelectInput(session, "test_type", choices=tests$Test, selected = "two sample t-test")
-  })
-
-
-  # statistical power analysis parameters
-  output$get_es_val <- renderUI({
-    
+  get_es_val_output <- function (metaAnalysisResult) {
     shiny::validate(
-      need(is.null(get_meta_analysis()$rma$formula.mods), "Please run a meta-analysis without moderators to obtain an effect size estimate.")
+      need(is.null(metaAnalysisResult$rma$formula.mods), "Please run a meta-analysis without moderators to obtain an effect size estimate.")
     )
 
     t <- tests
@@ -2369,24 +2347,22 @@ shinyServer(function(input, output, session) {
 
     fluidRow(
       #Changed es to declarative structure, otherwise there was no guarantee it would update when the power analysis is opened (otherwise it would be required to run meta-analysis first)
-      column(3, textInput("pwr.es", label = p("Effect size"), value = get_meta_analysis()$rma$beta )),
+      column(3, textInput("pwr.es", label = p("Effect size"), value = metaAnalysisResult$rma$beta )),
       column(3, textInput("pwr.power", label = p("Power"), value = 0.8)),
       column(3, textInput("pwr.siglev", label = p("Significance level"), value = 0.05)),
       column(12, code( style = "font-size:8pt", class = "text-muted",t$Par))
     )
-  })
+  }
 
-  # statistical power analysis plot
-  output$poweranalysis <- renderPlot({
- 
+  get_power_analysis_output <- function (metaAnalysisResult) {
     shiny::validate(
-      need(is.null(get_meta_analysis()$rma$formula.mods), "")
+      need(is.null(metaAnalysisResult$rma$formula.mods), "")
     )
-    
+
     pwr <- as.numeric(input$pwr.power)
     siglev <- as.numeric(input$pwr.siglev)
     #Changed es to declarative structure, otherwise there was no guarantee it would update when the power analysis is opened (otherwise it would be required to run meta-analysis first)
-    es <- as.numeric(get_meta_analysis()$rma$beta)
+    es <- as.numeric(metaAnalysisResult$rma$beta)
 
     if (input$test_type == "Single proportion test") {
       p.out <- pwr.p.test( h = es, power=pwr , sig.level = siglev)
@@ -2413,11 +2389,390 @@ shinyServer(function(input, output, session) {
       p.out <- pwr.chisq.test(w = es, N = 100, power=pwr , sig.level = siglev) #todo make N and Df selectable ?)
     }
     plot(p.out)
+  }
+
+  output$rma <- DT::renderDataTable({
+    get_rma_output(get_meta_analysis())
+  })
+  
+  output$metaforSummary <- renderPrint({
+    get_metaforSummary_output(get_meta_analysis())
+  })
+  
+  #### Data table ####
+  metaTableData <- reactive({
+    metaAnalysisSelection() %>%
+      mutate(effectSize = round(effectSize, 2),
+             CI = paste0("[", round(effectSizeLowerLimit, 2), ", ", round(effectSizeUpperLimit, 2), "]")) %>%
+      select(citation, paperTitle, country, effectSizeSampleSize, effectSize, variance, CI, get_all_mods()) %>%
+      rename(Citation = citation,
+             Title = paperTitle,
+             Country = country,
+             `Sample Size` = effectSizeSampleSize,
+             `Effect Size` = effectSize,
+             Variance = variance,
+             `95% CI` = CI)
+  })
+  output$metatable <- DT::renderDataTable({
+    get_metatable_output(metaTableData())
+  })
+  
+  output$downloadMetaData <- downloadHandler(
+    filename = function() {
+      paste('data-', Sys.Date(), '.csv', sep='')
+    },
+    content = function(con) {
+      write.csv(metaTableData(), con, col.names = TRUE, row.names = FALSE)
+    }
+  )
+
+       ## Visualise results tab (forest plot and density plot) #####
+
+  output$get_forests <- renderPlot({
+
+    # shiny::validate(
+    #   need(nrow(metaAnalysisSelection()) != 0, "Your selection did not result in a valid output, please change your selection.")
+    # )
+    
+    # shiny::validate(
+    #   need(!is.numeric(as.data.frame(metaAnalysisSelection())[,input$vis_moderator_variables[[1]]]), 
+    #        "Visualisation is not available for models with continuous moderators.")
+    # )
+    get_forest_output(get_meta_analysis())
+  })
+  output$get_forests_ui <- renderUI({
+      plotOutput("get_forests", height = paste0(toString(metaAnalysisForestHeightCount*10 + 400),'px'))
+  })
+
+  # violins plot
+  output$get_violin <- renderPlotly({
+
+    # shiny::validate(
+    #   need(nrow(metaAnalysisSelection()) != 0, "Your selection did not result in a valid output, please change your selection")
+    # )
+    # 
+    # shiny::validate(
+    #   need(!is.numeric(as.data.frame(metaAnalysisSelection())[,input$vis_moderator_variables[[1]]]), 
+    #        "Visualisation is not available for models with continuous moderators.")
+    # )
+    get_violin_output(metaAnalysisSelection())
+  })
+
+
+       ## Publication bias #####
+
+  run_publication_bias <- function (result_rma) {
+    changeRoundingOutput <- function(numberToRound){
+      result <- as.numeric(round(numberToRound,3))
+    }
+
+    # Run publication bias analyses
+    trimfill <- trimfill(result_rma)
+    ranktest <- ranktest(result_rma)
+    regtest <- regtest(result_rma)
+    hc <- hc(result_rma)
+
+    # Publication bias test interpretation
+    resultInterpretation <- paste0("The rank correlation test for funnel plot asymmetry was statistically ",
+                                   ifelse(!is.null(ranktest),
+                                          paste0(ifelse(ranktest$pval < .05, "significant", "non-significant"),
+                                                 ", Kendall's tau = ", changeRoundingOutput(ranktest$tau),
+                                                 ", <i>p</i> = ", changeRoundingOutput(ranktest$pval), ". "), ""),
+                                   ifelse(!is.null(regtest),
+                                          paste0("Egger's regression test for funnel plot asymmetry was statistically ",
+                                                 ifelse(regtest$pval < .05, "significant", "non-significant"),
+                                                 ", <i>Z</i> = ", changeRoundingOutput(regtest$zval),
+                                                 ", <i>p</i> = ", changeRoundingOutput(regtest$pval), ". "), ""),
+                                   "The trim-and-fill method estimated <i>k</i> = ", trimfill$k0,
+                                   " missing studies on the ", trimfill$side, " side of the funnel plot.")
+
+    # Table
+    resultsTable <- data.frame(Method = c(input$ma_model, "Trim-and-Fill", "Henmi-Copas"),
+                               k = c(result_rma$k, trimfill$k, result_rma$k),
+                               Estimate = c(changeRoundingOutput(result_rma$b),
+                                            changeRoundingOutput(trimfill$b),
+                                            changeRoundingOutput(hc$beta)),
+                               CI = c(paste0("[", changeRoundingOutput(result_rma$ci.lb),
+                                             ", ",
+                                             changeRoundingOutput(result_rma$ci.ub),
+                                             "]"),
+                                      paste0("[", changeRoundingOutput(trimfill$ci.lb),
+                                             ", ",
+                                             changeRoundingOutput(trimfill$ci.ub),
+                                             "]"),
+                                      paste0("[", changeRoundingOutput(hc$ci.lb),
+                                             ", ",
+                                             changeRoundingOutput(hc$ci.ub),
+                                             "]")),
+                               Z = c(changeRoundingOutput(result_rma$zval),
+                                     changeRoundingOutput(trimfill$zval),
+                                     ""),
+                               p = c(ifelse(changeRoundingOutput(result_rma$pval) == 0,
+                                            "<.001",
+                                            changeRoundingOutput(result_rma$pval)),
+                                     ifelse(changeRoundingOutput(trimfill$pval) == 0,
+                                            "<.001",
+                                            changeRoundingOutput(trimfill$pval)),
+                                     ""),
+                               PI = ifelse(input$ma_model == "FE",
+                                           c("", "", ""),
+                                           c(paste0("[", changeRoundingOutput(predict(result_rma)$cr.lb), ", ",
+                                                    changeRoundingOutput(predict(result_rma)$cr.ub), "]"),
+                                             paste0("[", changeRoundingOutput(predict(trimfill)$cr.lb), ", ",
+                                                    changeRoundingOutput(predict(trimfill)$cr.ub), "]"),
+                                             "")),
+                               T2 = c(changeRoundingOutput(result_rma$tau2),
+                                      changeRoundingOutput(trimfill$tau2),
+                                      changeRoundingOutput(hc$tau2)),
+                               I2 = c(changeRoundingOutput(result_rma$I2),
+                                      changeRoundingOutput(trimfill$I2),
+                                      "")
+    )
+
+    result <- list()
+    result$resultInterpretation <- resultInterpretation
+    result$resultsTable <- resultsTable
+
+    return(result)
+  }
+
+  # Publication bias analyses
+  get_publication_bias <- reactive({
+    
+    # If the meta-analysis uses moderators or a multilevel model, refit as
+    # rma.uni() without moderators
+    result_rma <- get_meta_analysis()$rma
+    if(("rma.mv" %in% class(result_rma)) | !is.null(result_rma$formula.mods)){
+      dataSelection <- metaAnalysisSelection()
+      result_rma <- rma.uni(yi=effectSize,
+                            vi=variance,
+                            data=dataSelection,
+                            method = input$ma_model,
+                            slab = reference)
+    }
+    result <- run_publication_bias(result_rma)
+    return(result)
+  })
+
+  # Publication bias analyses with user input data
+  get_updated_publication_bias <- reactive({
+    # If the meta-analysis uses moderators or a multilevel model, refit as
+    # rma.uni() without moderators
+    result_rma <- get_updated_meta_analysis()$rma
+    if(("rma.mv" %in% class(result_rma)) | !is.null(result_rma$formula.mods)){
+      dataSelection <- get_updated_data_for_meta_analysis()
+      result_rma <- rma.uni(yi=effectSize,
+                            vi=variance,
+                            data=dataSelection,
+                            method = input$ma_model,
+                            slab = reference)
+    }
+    result <- run_publication_bias(result_rma)
+    return(result)
+  })
+  
+  output$publicationbias_interpretation <- renderUI({
+    tagList(
+      HTML(get_publication_bias()$resultInterpretation)
+      )
+  })
+  
+  output$publicationbias_table <- DT::renderDataTable({
+    get_publication_bias_table(get_publication_bias())
+  })
+    
+  output$get_funnels <- renderPlot ({
+    get_funnels_output(metaAnalysisSelection(), get_meta_analysis())
+  }, height = 'auto')
+  
+       ## Statistical power analysis tab ####
+  # select test type
+  observe({
+    tests <- tests %>% filter(tests$Family == input$test_fam)
+    updateSelectInput(session, "test_type", choices=tests$Test, selected = "two sample t-test")
+  })
+
+
+  # statistical power analysis parameters
+  output$get_es_val <- renderUI({
+    get_es_val_output(get_meta_analysis())
+  })
+
+  # statistical power analysis plot
+  output$poweranalysis <- renderPlot({
+    get_power_analysis_output(get_meta_analysis())
+  })
+
+  # Update data for metaAnalysis and Reload all relevant outputs.
+  observeEvent(input$reMetaAnalysis, {
+
+    # Reload rma output
+    output$rma <- DT::renderDataTable({
+      get_rma_output(get_updated_meta_analysis())
+    })
+
+    # Reload metaforSummary ouput
+    output$metaforSummary <- renderPrint({
+      get_metaforSummary_output(get_updated_meta_analysis())
+    })
+
+    #### Data table ####
+    # TODO: remove duplicate code for datatable
+    updatedMetaTableData <- reactive({
+    get_updated_data_for_meta_analysis() %>%
+      mutate(effectSize = round(effectSize, 2),
+             CI = paste0("[", round(effectSizeLowerLimit, 2), ", ", round(effectSizeUpperLimit, 2), "]")) %>%
+      select(citation, paperTitle, country, effectSizeSampleSize, effectSize, variance, CI, get_all_mods()) %>%
+      rename(Citation = citation,
+             Title = paperTitle,
+             Country = country,
+             `Sample Size` = effectSizeSampleSize,
+             `Effect Size` = effectSize,
+             Variance = variance,
+             `95% CI` = CI)
+  })
+
+    # Reload metatable output
+    output$metatable <- DT::renderDataTable({
+      get_metatable_output(updatedMetaTableData())
+    })
+
+    # Reload downloader
+    output$downloadMetaData <- downloadHandler(
+      filename = function() {
+        paste('data-', Sys.Date(), '.csv', sep='')
+      },
+      content = function(con) {
+        write.csv(metaTableData(), con, col.names = TRUE, row.names = FALSE)
+      }
+    )
+
+    # Reload forests graph
+    output$get_forests <- renderPlot({
+      get_forest_output(get_updated_meta_analysis())
+    })
+    output$get_forests_ui <- renderUI({
+      plotOutput("get_forests", height = paste0(toString(metaAnalysisForestHeightCount*10 + 400),'px'))
+    })
+
+    # Reload volin graph
+    output$get_violin <- renderPlotly({
+      get_violin_output(get_updated_data_for_meta_analysis())
+    })
+
+    # Reload publicationbias_interpretation
+    output$publicationbias_interpretation <- renderUI({
+      tagList(
+        HTML(get_updated_publication_bias()$resultInterpretation)
+        )
+    })
+
+    # Reload publication bias table
+    output$publicationbias_table <- DT::renderDataTable({
+      get_publication_bias_table(get_updated_publication_bias())
+    })
+
+    # Reload funnels output
+    output$get_funnels <- renderPlot ({
+      get_funnels_output(metaAnalysisSelection(), get_meta_analysis())
+    }, height = 'auto')
+
+    # Reload statistical power analysis parameters
+    output$get_es_val <- renderUI({
+      get_es_val_output(get_updated_meta_analysis())
+    })
+
+    # Reload statistical power analysis parameters
+    output$get_es_val <- renderUI({
+      get_es_val_output(get_updated_meta_analysis())
+    })
+
+    # Reload statistical power analysis plot
+    output$poweranalysis <- renderPlot({
+      get_power_analysis_output(get_updated_meta_analysis())
+    })
+
+    # TODO：Remove unnecessary reload
+
   })
 
 
   ####### Meta-regression tab #####
-       ## Meta-regression interpretation ####
+
+  # Short meta-regression input form: Store form data from a single form
+  regressionFormData <- reactive({
+    formData <- sapply(metaRegressionFields, function(x) input[[x]])
+    formData <- c(formData)
+    formData <- t(formData)
+    formData <- data.frame(formData, stringsAsFactors=F)
+    return(formData)
+  })
+  # Short meta-regression input form: Init a data frame to store multiple records
+  countColumnsRegression <- length(metaRegressionFields)
+  regressionForms <- data.frame(matrix(ncol = countColumnsRegression, nrow = 0))
+  colnames(regressionForms) <- names(metaRegressionFields)
+
+  formDataRegression <- eventReactive(input$addRegressionPaper,{
+    shinyjs::show(id="addedPaperDataRegression")
+    shinyjs::hide(id="regressionForm")
+    regressionForms <<- rbind(regressionForms, regressionFormData())
+
+    output$addedPaperRegression <- DT::renderDataTable({
+      datatable(regressionForms,
+                colnames = c('Title', 'Authors', 'Year', 'Logit-transformed cooperation', 'Variance', 'Sample size'),
+                options = list(columnDefs = list(list(className = 'dt-right')),
+                               pageLength = 10,
+                               scrollX = TRUE,
+                               dom = 'lftp'),
+                class="stripe" ,
+                escape = FALSE
+      )
+    })
+    return(regressionForms)
+  })
+  observe(formDataRegression())
+
+  # Record self-added paper reference for coloring the element in forest plot
+  addedPaperReferenceReg <- c()
+
+  # Update metaAnalysisSelection() with user's input
+  get_updated_data_for_meta_regression <- reactive({
+    dataSelection <- metaRegressionSelection()
+    dataSelectionNames <- names(dataSelection)
+    new_rows <- c()
+    for (i in dataSelectionNames){
+      new_rows[[i]] <- NA
+    }
+    formData <- formDataRegression()
+
+    new_rows$effectSize<-as.numeric(formData$regressionEffectSize)
+    new_rows$yearOfDataCollection<-as.numeric(formData$regressionYear)
+    new_rows$variance<-as.numeric(formData$regressionVariance)
+    new_rows$effectSizeSampleSize<-as.numeric(formData$regressionSampleSize)
+
+    new_rows$reference <- paste0(formData$regressionAuthor, ' (', formData$regressionYear, ')')
+    new_rows$logPropContributed <- as.numeric(formData$regressionEffectSize)
+    new_rows$coefficientOfVariation<-as.numeric(formData$regressionVariance)
+    new_rows$sampleSize <- as.numeric(formData$regressionSampleSize)
+    addedPaperReferenceReg <<- append(addedPaperReferenceReg, new_rows$reference)
+
+    new_rows$paperTitle <- formData$regressionTitle
+    new_rows$citation <- new_rows$reference
+
+    if (dim(regressionForms)[1] != 0) {
+      selfAddedPaper <- data.frame(new_rows)
+      dataSelection <- rbind(dataSelection, selfAddedPaper) %>%
+        arrange(effectSize)  %>%
+        arrange(logPropContributed)
+    }
+
+    # Count rows for later forest plot height computing
+    metaRegressionForestHeightCount <<- nrow(dataSelection)
+
+    return(dataSelection)
+  })
+
+  #### Meta-regression interpretation ####
   get_interpretation_reg <- reactive({
     
     # Function to generate strings describing treatments from inputs
@@ -2517,18 +2872,15 @@ shinyServer(function(input, output, session) {
   })
   
        ## Meta-regression models ####
-  
-  get_meta_regression <- reactive({
-    
+  call_meta_regression <- function(regressionData){
+    dataSelection <- regressionData
     changeRoundingOutput <- function(numberToRound){
       result <- as.numeric(round(numberToRound,3))
     }
-    
-    dataSelection <- metaRegressionSelection()
-    
-    # One vector containing all selected or created moderators
+
+        # One vector containing all selected or created moderators
     all_mods <- get_all_mods_reg()
-    
+
     # Moderator formula
     if(length(all_mods) == 0){  # Or use a different condition
       mods <- NULL
@@ -2536,7 +2888,7 @@ shinyServer(function(input, output, session) {
     if(length(all_mods) > 0){
       mods <- as.formula(paste("~", paste0("`",all_mods,"`", collapse = " + ")))
     }
-    
+
     # Multilevel formula
     # Note that this is hardcoded to only allow study, paper and country,
     # with studies nested within papers and otherwise crossed factors.
@@ -2552,7 +2904,7 @@ shinyServer(function(input, output, session) {
       random = list(as.formula(paste0("~ 1 | ", input$multilevel_variables_reg[[1]])),
                     as.formula(paste0("~ 1 | ", input$multilevel_variables_reg[[2]])))
     } else random = NULL
-    
+
     # Meta-regression
     if(is.null(random)){
       result_rma <- rma.uni(yi=logPropContributed,
@@ -2571,7 +2923,7 @@ shinyServer(function(input, output, session) {
                            mods = mods,
                            slab = reference)
     }
-    
+
     if(is.null(mods)){
       resultsTable <- data.frame(Effect = paste0(input$treatmentSubpropSelection1a, ": ", input$valueOptionsSelection1a),
                                  k = result_rma$k,
@@ -2584,9 +2936,9 @@ shinyServer(function(input, output, session) {
                                  p = ifelse(changeRoundingOutput(result_rma$pval) == 0,
                                             "<.001",
                                             changeRoundingOutput(result_rma$pval)),
-                                 PI = ifelse(input$ma_model == "FE", 
+                                 PI = ifelse(input$ma_model == "FE",
                                              "",
-                                             paste0("[", changeRoundingOutput(transf.ilogit(predict(result_rma)$cr.lb)), ", ", 
+                                             paste0("[", changeRoundingOutput(transf.ilogit(predict(result_rma)$cr.lb)), ", ",
                                              changeRoundingOutput(transf.ilogit(predict(result_rma)$cr.ub)), "]")),
                                  T2 = changeRoundingOutput(result_rma$tau2),
                                  I2 = ifelse(is.null(random), changeRoundingOutput(result_rma$I2), "")
@@ -2608,20 +2960,23 @@ shinyServer(function(input, output, session) {
     result$rma <- result_rma
     result$table <- resultsTable
     result$mods <- mods
-    
+
     return(result)
+
+  }
+
+  get_meta_regression <- reactive({
+    call_meta_regression(metaRegressionSelection())
   })
-  
-  output$reg <- DT::renderDataTable({
-    
-    analysis <- get_meta_regression()
-    
+
+  get_reg_output <- function (regResult) {
+    analysis <- regResult
     mods <- analysis$mods
     result_rma <- analysis$rma
     resultsTable <- analysis$table
-    
+
     # Container for datatable
-    
+
     metaoutput = htmltools::withTags(table(
       class = 'display',
       thead(
@@ -2636,81 +2991,86 @@ shinyServer(function(input, output, session) {
         )
       )
     ))
-    
+
     if(is.null(mods)){
       DT::datatable(resultsTable, rownames = FALSE, container = metaoutput,
                     options = list(columnDefs = list(list(className = 'dt-right', targets = 1:7)),
-                                   pageLength = 10, 
-                                   scrollX = TRUE, 
+                                   pageLength = 10,
+                                   scrollX = TRUE,
                                    dom = 'lftp'),  # dom : control (see https://datatables.net/reference/option/dom)
                     class="stripe" , #selection = 'none' ,
-                    
+
                     escape = FALSE )
     } else {
       DT::datatable(resultsTable,
                     options = list(columnDefs = list(list(className = 'dt-right', targets = 2:5)),
-                                   pageLength = 10, 
-                                   scrollX = TRUE, 
+                                   pageLength = 10,
+                                   scrollX = TRUE,
                                    dom = 'lftp'),  # dom : control (see https://datatables.net/reference/option/dom)
                     class="stripe" , #selection = 'none' ,
-                    
+
                     escape = FALSE )
     }
-  })
-  
-  output$regSummary <- renderPrint({
-    analysis <- get_meta_regression()
+  }
+
+  get_reg_summary <- function(regResult) {
+    analysis <- regResult
     result_rma <- analysis$rma
     summ <- summary(result_rma)
     return(summ)
-  })
-  
-       ## Visualise results tab (forest plot and density plot) #####
-  
-  output$get_forests_reg <- renderPlotly({
-    
+  }
+
+  get_forests_reg_output <- function (regSelectionData, regResult) {
     shiny::validate(
-      need(nrow(metaRegressionSelection()) != 0, "Your selection did not result in a valid output, please change your selection")
+      need(nrow(regSelectionData) != 0, "Your selection did not result in a valid output, please change your selection")
     )
-    
-    result_rma <- get_meta_regression()$rma
-    
-    fplot <- viz_forest(x = result_rma, 
-                        col = "#87C211",
+
+    result_rma <- regResult$rma
+
+    match_list <- c()
+    for (i in result_rma[['slab']]) {
+      if (i %in% addedPaperReferenceReg || str_sub(i,1,-3) %in% addedPaperReferenceReg) {
+        match_list <- append(match_list, 1)
+      } else {
+        match_list <- append(match_list, 2)
+      }
+    }
+
+    fplot <- viz_forest(x = result_rma,
+                        col = c("red","#87C211")[match_list],
                         study_labels = result_rma$slab,
                         summary_label = "Meta-analytic estimate",
-                        xlab = "Logged Proportion of Cooperation",
-                        variant = "classic")
-    
-    ggplotly(fplot, height = result_rma$k * 9 + 100, tooltip = c("x"))
-  })
-  
-  # violins plot
-  output$get_violin_reg <- renderPlotly({
-    
-    # validate(
-    #   need(input$treatmentSubpropSelection1a !="", "We have too little information to perform this analysis.  ")
-    # )
-    
-    shiny::validate(
-      need(nrow(metaRegressionSelection()) != 0, "Your selection did not result in a valid output, please change your selection")
+                        xlab = "Logit-transformed cooperation",
+                        variant = "classic",
+                        summary_col = c("steelblue4"),
+                        annotate_CI = TRUE,
+                        text_size = 4,
     )
-    
+
+    #ggplotly(fplot, height = result_rma$k * 9 + 100, tooltip = c("x"))
+    fplot
+  }
+
+  get_violin_reg_output <- function(regSelectionData) {
+    shiny::validate(
+      need(nrow(regSelectionData) != 0, "Your selection did not result in a valid output, please change your selection")
+    )
+
     if (is.null(input$vis_moderator_variables_reg) | input$vis_moderator_variables_reg == ""){
       all_mods <- input$moderator_variables_reg
     } else {
       all_mods <- input$vis_moderator_variables_reg
     }
-    
+
     if(length(all_mods) == 0){  # Or use a different condition
       facetFormula <- NULL
     }
-    
+
     # Uses first moderator only
     if(length(all_mods > 0)){
       facetFormula <- as.formula(paste0("`", all_mods[[1]], "`", " ~ ", "."))
     }
-    
+
     # NB needed for Violin plot
     data_summary <- function(x) {
       m <- mean(x)
@@ -2718,10 +3078,10 @@ shinyServer(function(input, output, session) {
       ymax <- m+sd(x)
       return(c(y=m,ymin=ymin,ymax=ymax))
     }
-    
-    d <- metaRegressionSelection() %>%
+
+    d <- regSelectionData %>%
       mutate(xaxis = "")
-    
+
     violin_p <- d %>%
       ggplot(., aes(x = xaxis, y = logPropContributed, fill = xaxis, text = logPropContributed)) +
       geom_violin(trim=FALSE, na.rm=TRUE, scale = "count") +
@@ -2736,20 +3096,61 @@ shinyServer(function(input, output, session) {
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank()) +
       # #Specify the limits of the x-axis and relabel it to something more meaningful
-      scale_y_continuous(name='Logged Proportion of Cooperation') +
+      scale_y_continuous(name='Logit-transformed Cooperation') +
       # #Give y-axis a meaningful label
       xlab('') +
       # #Add a vertical dashed line indicating an effect size of zero, for reference
       geom_hline(yintercept=0, color='black', linetype='dashed', size=0.2)
-    
+
     if(length(all_mods > 0)){
       violin_p <- violin_p + facet_grid(facetFormula, space = "free_y")
     }
-    
+
     res <- ggplotly(violin_p, height = 500, tooltip=c("text") )
     res$x$data[[1]]$hoverinfo <- "none"
-    
+
     return(res)
+
+  }
+
+  get_metatable_reg_output <- function(metaTableDataReg) {
+    DT::datatable(metaTableDataReg,
+              options = list(pageLength = 10,
+                             scrollX = TRUE,
+                             dom = 'lftp'),  # dom : control (see https://datatables.net/reference/option/dom)
+              class="stripe" , #selection = 'none' ,
+              escape = FALSE )
+  }
+  
+  output$reg <- DT::renderDataTable({
+    get_reg_output(get_meta_regression())
+  })
+  
+  output$regSummary <- renderPrint({
+    get_reg_summary(get_meta_regression())
+  })
+  
+       ## Visualise results tab (forest plot and density plot) #####
+  
+  output$get_forests_reg <- renderPlot({
+    metaRegData <- metaRegressionSelection()
+    get_forests_reg_output(
+      metaRegData,
+      call_meta_regression(metaRegData)
+    )
+  })
+
+  output$forests_reg_ui <- renderUI({
+    plotOutput("get_forests_reg", height = paste0(toString(metaRegressionForestHeightCount*10 + 400),'px'))
+  })
+  
+  # violins plot
+  output$get_violin_reg <- renderPlotly({
+    
+    # validate(
+    #   need(input$treatmentSubpropSelection1a !="", "We have too little information to perform this analysis.  ")
+    # )
+    get_violin_reg_output(metaRegressionSelection())
   })
   
   
@@ -2764,17 +3165,11 @@ shinyServer(function(input, output, session) {
              Title = paperTitle,
              Country = country, 
              `Sample Size` = sampleSize, 
-             `Log. Rate of Cooperation` = yi,
-             `Coefficient of Variance` = vi)
+             `Logit-transformed Cooperation` = yi,
+             `Variance` = vi)
   })
-  
   output$metatable_reg <- DT::renderDataTable({
-    DT::datatable(metaTableData_reg(),
-                  options = list(pageLength = 10, 
-                                 scrollX = TRUE, 
-                                 dom = 'lftp'),  # dom : control (see https://datatables.net/reference/option/dom)
-                  class="stripe" , #selection = 'none' ,
-                  escape = FALSE )
+    get_metatable_reg_output(metaTableData_reg())
   })
   
   
@@ -2786,6 +3181,60 @@ shinyServer(function(input, output, session) {
       write.csv(metaTableData_reg(), con, col.names = TRUE, row.names = FALSE)
     }
   )
+  output$download_compute_logit <- downloadHandler(
+    filename="compute_logit_and_variance.xlsx",
+    content=function(con) {
+      file.copy("www/data/Computing_logit_and_variance.xlsx", con)
+    }
+  )
+
+  #TODO: LOWER SHOULD LESS THAN UPPER
+  observeEvent(input$reMetaRegression, {
+    # Reload output
+    output$reg <- DT::renderDataTable({
+      get_reg_output(call_meta_regression(get_updated_data_for_meta_regression()))
+    })
+    output$regSummary <- renderPrint({
+      get_reg_summary(call_meta_regression(get_updated_data_for_meta_regression()))
+    })
+    output$get_forests_reg <- renderPlot({
+      get_forests_reg_output(
+        get_updated_data_for_meta_regression(),
+        call_meta_regression(get_updated_data_for_meta_regression())
+      )
+    })
+    output$forests_reg_ui <- renderUI({
+      plotOutput("get_forests_reg", height = paste0(toString(metaRegressionForestHeightCount*10 + 400),'px'))
+    })
+
+    output$get_violin_reg <- renderPlotly({
+      get_violin_reg_output(get_updated_data_for_meta_regression())
+    })
+    updatedMetaTableData_reg <- reactive({
+      get_updated_data_for_meta_regression() %>%
+        mutate(yi = round(logPropContributed, 2),
+               vi = round(coefficientOfVariation, 2)) %>%
+        select(citation, paperTitle, country, sampleSize, yi, vi, get_all_mods_reg()) %>%
+        rename(Citation = citation,
+               Title = paperTitle,
+               Country = country,
+               `Sample Size` = sampleSize,
+               `Logit-transformed Cooperation` = yi,
+               `Variance` = vi)
+    })
+    output$metatable_reg <- DT::renderDataTable({
+      get_metatable_reg_output(updatedMetaTableData_reg())
+    })
+    output$downloadMetaData_reg <- downloadHandler(
+      filename = function() {
+        paste('data-', Sys.Date(), '.csv', sep='')
+      },
+      content = function(con) {
+        write.csv(get_updated_data_for_meta_regression(), con, col.names = TRUE, row.names = FALSE)
+      }
+    )
+
+  })
   
   ####### Taxonomy tab #####
   output$selected <- renderText({
@@ -2795,7 +3244,7 @@ shinyServer(function(input, output, session) {
   
   output$d3 <- renderD3({
     
-    json_data <- jsonlite::read_json("www/data/coda_data.json")
+    json_data <- jsonlite::read_json("www/data/new_ontology.json")
     r2d3(data = json_data, d3_version = 4, script = "www/js/circlepacking.js", css = "www/css/circlepacking.css")
     
     #flare =  read.csv("www/data/ivdata.csv")
@@ -2829,7 +3278,7 @@ shinyServer(function(input, output, session) {
     n$label = ifelse(n$label!='', paste0(n$label," (",n$year,")"), paste0("Unknown reference (",n$year,")"))
     
     #limit to nodes with *at least* 5 citations. Anything below does not add much, and affects performance
-    n <- n[n$value >=2,]
+    #n <- n[n$value >=2,]
     n$title <- paste0("<p><b>",n$label,"</b><br><a href='http://doi.org/",n$id,"'>http://doi.org/",n$id,"</a><br><small><a href='",n$paper,"'>",n$paper,"</a></small><br><small><i>IV</i>: ", n$iv ,"<br><i>Game</i>: ", n$game ,"<br><i>Country</i>: ", n$country ,"</small></p>")
     # sort
     n <- n[order(n$label),]
@@ -2842,27 +3291,34 @@ shinyServer(function(input, output, session) {
     e <- e[e$to %in% n$id ,]
 
     ### end of data wrangling
-    
     visNetwork(background= "#EFF8FB",nodes=n, edges=e,  width = "50%") %>%
       visNodes( scaling=list("min"=5, "max" = 80) ) %>%
-      visOptions( selectedBy= list(variable=as.character(input$citation_color_selector) ) , highlightNearest = list(enabled=T, algorithm="hierarchical"), nodesIdSelection = list(useLabels= T ,enabled=T,  style = 'width: 300px; height: 34px; background: #f8f8f8; margin: 15px; padding: 6px 12px;  background-color: #ffffff; border: 1px solid #cccccc;')
-                  )  %>%
-      # visPhysics(solver = "forceAtlas2Based", forceAtlas2Based=list(gravitationalConstant = -100000), stabilization = T) %>%
+      visOptions( selectedBy= list(variable=as.character(input$citation_color_selector) ) ,
+                  highlightNearest = list(enabled=T, algorithm="hierarchical"),
+                  nodesIdSelection = list(useLabels= T ,enabled=T,
+                                          style = 'width: 300px; height: 34px; background: #f8f8f8; margin: 15px; padding: 6px 12px;  background-color: #ffffff; border: 1px solid #cccccc;'),
+      )  %>%
+      #visPhysics(solver = "forceAtlas2Based", forceAtlas2Based=list(gravitationalConstant = -100000), stabilization = T) %>%
       visIgraphLayout(layout = "layout_with_graphopt",randomSeed = 123) %>%
       visInteraction(navigationButtons = T, hideEdgesOnDrag = T) %>%
       visLegend(width = 0.2, position = "right", main = list(text=input$color_selector,style = "font-size:20px")) %>%
-      visEdges(hidden=input$remove_edges, arrows = list(from = list(enabled = TRUE, scaleFactor = 0.2)))
-
+      visEdges(hidden=input$remove_edges, arrows = list(from = list(enabled = TRUE, scaleFactor = 0.2)), smooth = FALSE)
   })
   
   filteredCitations <- reactive({
     
 
-    if (!is.null(input$citation_year[1]) && input$citation_year[1] != "" && !is.null(input$citation_year[2]) && input$citation_year[2] != "" ) {
+    if (!is.null(input$citation_year[1]) && input$citation_year[1] != "" &&
+        !is.null(input$citation_year[2]) && input$citation_year[2] != "" &&
+        !is.null(input$citation_number[1]) && input$citation_number[1] != "" &&
+        !is.null(input$citation_number[2]) && input$citation_number[2] != ""
+       ) {
        nodes <-  citation_nodes %>%
         filter(# 
           ( year >= input$citation_year[1]) &
-            ( year <= input$citation_year[2])
+            ( year <= input$citation_year[2]) &
+              (indegree >= input$citation_number[1]) &
+                (indegree <= input$citation_number[2])
         )
     }
      print(nrow(nodes))
@@ -2890,4 +3346,580 @@ shinyServer(function(input, output, session) {
     ))
   })
 
+  ######### Long InputForm ##########
+  # Input form for submitting papers
+
+  # Disable the submit button if not all the mandatory fields are filled
+  whether_all_mandatory_filled <- function (fields) {
+    mandatoryFilled <-
+      vapply(fields,
+             function(x) {
+               !is.null(input[[x]]) && input[[x]] != ""
+             },
+             logical(1))
+    mandatoryFilled <- all(mandatoryFilled)
+    if (is.na(mandatoryFilled)) {
+      mandatoryFilled <- FALSE
+    }
+    return(mandatoryFilled)
+  }
+  observe({
+    # must agree privacy terms and conditions
+    agree_privacy <- input$privacy
+    mandatoryFilled <- whether_all_mandatory_filled(fieldsMandatory)
+    enableSubmit <- all(mandatoryFilled, agree_privacy)
+    shinyjs::toggleState(id = "submit", condition = enableSubmit)
+  })
+  observe({
+    mandatoryFilled <- whether_all_mandatory_filled(metaAnalysisFields)
+    shinyjs::toggleState(id = "addAnalysisPaper", condition = mandatoryFilled)
+  })
+  observe({
+    mandatoryFilled <- whether_all_mandatory_filled(metaRegressionFields)
+    shinyjs::toggleState(id = "addRegressionPaper", condition = mandatoryFilled)
+  })
+
+  ## Add time at file name to indicate the submission time
+  humanTime <- function() format(Sys.time(), "%Y%m%d-%H%M%OS")
+  # Define the data to be saved
+  addedTreatments <- c('Treatment1')
+  addedVariables <- c()
+  longFormData <- reactive({
+    data <- sapply(fieldsAll, function(x) toString(input[[x]]))
+    treatments <- c()
+    for (i in c(addedTreatments, addedVariables)) {
+          treatmentFieldsWithID <- c()
+          #treatmentID <- paste0('treatment', i)
+          for (treatmentField in treatmentFields) {
+            treatmentFieldsWithID <- c(treatmentFieldsWithID, paste0(treatmentField, i))
+          }
+          treatment <- sapply(treatmentFieldsWithID, function(x) input[[x]])
+          #treatment[is.null(treatment)] <- ''
+          #treatment[is.na(treatment)] <- ''
+
+          treatment_dict <- c()
+          treatment_dict[[i]] <- as.list(treatment)
+          treatments <- c(treatments, treatment_dict)
+    }
+    treatmentsJSON <- toJSON(treatments)
+    data <- c(data, treatmentsValue = treatmentsJSON)
+
+    data <- c(data, timestamp = humanTime())
+    # note: data.frame(t(data) won't be accepted by google api, use the following line as a workaround. so weird...
+    data <- data.frame(t(data.frame(t(data.frame(t(data))))))
+    # fill NULL with NA to avoid misorder when add to sheet
+    data[data == 'NA'] <- ""
+    data
+  })
+
+  # Save submission in google sheets
+  saveData <- function(longFormData) {
+    SHEET_ID <- "1DxFQYx1SfzREuX4j9eZYWONRZkQDqmSzagwgb68sSSA"
+    # we are using googlesheet4 to access the google sheet, and for doing this, a google service account is needed.
+    # If you need to create a new google service account, follow this instruction:
+    # https://gspread.readthedocs.io/en/latest/oauth2.html#enable-api-access
+    gs4_auth(path = "unified-welder-284622-df7c91d6ba7f.json")
+    sheet_append(SHEET_ID, longFormData, sheet="LongInputForm")
+  }
+
+  # action to take when submit button is pressed
+  observeEvent(input$submit, {
+    shinyjs::disable("submit")
+    shinyjs::show("submit_msg")
+    shinyjs::hide("error")
+
+    tryCatch({
+      saveData(longFormData())
+      shinyjs::reset("form")
+      shinyjs::hide("form")
+      shinyjs::show("thankyou_msg")
+      shinyjs::hide("removeVariable")
+      shinyjs::hide("removeTreatment")
+
+      # remove UI for treatment variables
+      for (i in c(addedTreatments, addedVariables)) {
+       removeUI(
+          selector = paste0('#', i)
+        )
+      }
+
+      addedTreatments <<- c('Treatment1')
+      addedVariables <<- c()
+
+    },
+    error = function(err) {
+      shinyjs::html("error_msg", err$message)
+      shinyjs::show(id = "error", anim = TRUE, animType = "fade")
+    },
+    finally = {
+      shinyjs::enable("submit")
+      shinyjs::hide("submit_msg")
+    })
+  })
+
+  # Allow user to submit another paper after a successful submission
+  observeEvent(input$submit_another, {
+    shinyjs::show("form")
+    shinyjs::hide("thankyou_msg")
+  })
+
+  #### Meta-analysis Input Form ####
+  observeEvent(input$expand_analysisForm, {
+    show(id = "analysisForm")
+    shinyjs::show(id="analysisForm")
+    reset('analysisForm')
+    output$analysisTreatment1 <- renderUI({
+      em(class = "text-muted",
+         generateCategoryString(input$genIVselection1a), br(),
+         generateSubpropString(input$treatmentSubpropSelection1a))
+    })
+
+    output$analysisTreatment2 <- renderUI({
+      if (input$genIVselection2a==""){
+       em(class = 'text-muted', "N/A")
+      } else {
+      em(class = "text-muted",
+         generateCategoryString(input$genIVselection2a), br(),
+         generateSubpropString(input$treatmentSubpropSelection2a))
+      }
+    })
+
+    output$analysisModerators <- renderUI({
+      moderator_text1 <- ''
+      moderator_text2 <- ''
+
+      if (is.null(input$moderator_variables) & is.null(input$moderator_characteristics)){
+        return(em(class = "text-muted", "No moderator provided"))
+      }
+      if (!is.null(input$moderator_variables)){
+        if (length(input$moderator_variables)>1){
+          text <- toString(input$moderator_variables)
+        } else {
+          text <- input$moderator_variables
+        }
+        moderator_text1 <- paste("Variable Specific Moderators: ",
+                                text)
+      }
+      if (!is.null(input$moderator_characteristics)) {
+        if (length(input$moderator_characteristics)>1){
+          text <- toString(input$moderator_characteristics)
+        } else {
+          text <- input$moderator_characteristics
+        }
+        moderator_text2 <- paste("Study Specific Moderators: ",
+                                text)
+      }
+      em(class = "text-muted", moderator_text1, br(), moderator_text2)
+    })
+
+    output$analysisEffectMeasure <- renderUI({
+      # es_measure
+      if (is.null(input$es_measure)){
+        return(em(class = "text-muted", "No Measure provided"))
+      } else {
+        em(class = "text-muted", "Effect measure: ", input$es_measure)
+      }
+    })
+
+  })
+
+  # observe click on action link - add another paper
+  observeEvent(input$addAnotherMetaAnalysisPaper, {
+    shinyjs::show(id='analysisForm')
+    reset("analysisForm")
+  })
+
+  #### Meta-regression input form ####
+  observeEvent(input$expand_regressionForm, {
+    shinyjs::show(id="regressionForm")
+    reset('regressionForm')
+    output$regressionTreatment1 <- renderUI({
+      em(class = "text-muted",
+         generateCategoryString(input$genIVselection1a), br(),
+         generateSubpropString(input$treatmentSubpropSelection1a))
+    })
+
+    output$regressionModerators <- renderUI({
+      moderator_text1 <- ''
+      moderator_text2 <- ''
+
+      if (is.null(input$moderator_variables) & is.null(input$moderator_characteristics)){
+        return(em(class = "text-muted", "No moderator provided"))
+      }
+      if (!is.null(input$moderator_variables)){
+        if (length(input$moderator_variables)>1){
+          text <- toString(input$moderator_variables)
+        } else {
+          text <- input$moderator_variables
+        }
+        moderator_text1 <- paste("Variable Specific Moderators: ",
+                                text)
+      }
+      if (!is.null(input$moderator_characteristics)) {
+        if (length(input$moderator_characteristics)>1){
+          text <- toString(input$moderator_characteristics)
+        } else {
+          text <- input$moderator_characteristics
+        }
+        moderator_text2 <- paste("Study Specific Moderators: ",
+                                text)
+      }
+      em(class = "text-muted", moderator_text1, br(), moderator_text2)
+    })
+
+  })
+  # observe click on action link - add another paper
+  observeEvent(input$addAnotherMetaRegressionPaper, {
+    shinyjs::show(id='regressionForm')
+    reset("regressionForm")
+  })
+
+
+  insert_treatment <- function (treatmentId) {
+        insertUI(
+          selector = "#addAnotherVariable",
+          where = "beforeBegin",
+          ui = tags$div(
+            id = treatmentId,
+            hr(style="border-color: green;"),
+            h4(paste0('Add another treatment: ', treatmentId)),
+            fluidRow(
+                  column(6, selectInput(inputId = paste0("addGenIVselection",treatmentId),
+                            label = p(labelMandatory("Generic Independent Variable"), br(),
+                            helpText('Example: Punishment', br(),
+                            em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
+                            ),
+                            choices = c("",sort(selections$ivname))),),
+                ),
+                fluidRow(column(6,
+                                checkboxInput(paste0("addDescriptionGenericIV", treatmentId),
+                                              "Add description for Generic Independent Variable")
+                                )
+                ),
+                conditionalPanel(
+                                  condition = paste0('input.addDescriptionGenericIV',treatmentId,' == 1'),
+                                  fluidRow(column(8, textAreaInput(paste0("addDescriptionGenericIVText", treatmentId),
+                                                          "Description for Generic Independent Variable"))),
+                                   ),
+                conditionalPanel(
+                                  condition = paste0('input.addGenIVselection', treatmentId,' != ""'),
+                  fluidRow(
+                    column(6, selectInput(inputId = paste0("addTreatmentSubpropSelection", treatmentId), #name of input used to be "gen_iv", also removed selectInput for current_iv
+                               label = p("Specific Independent Variable",
+                                         helpText("Example: Punishment treatment", br(),
+                                                  em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
+                               ),
+                               choices = '', selected = ""),),
+                    ),
+                  fluidRow(column(6,
+                                checkboxInput(paste0("addDescriptionSpecificIV", treatmentId),
+                                              "Add description for Specific Independent Variable")
+                                )
+                  ),
+                  conditionalPanel(
+                                  condition = paste0('input.addDescriptionSpecificIV', treatmentId,' == 1'),
+                                  fluidRow(column(8, textAreaInput(paste0("addDescriptionSpecificIVText", treatmentId),
+                                                          "Description for Specific Independent Variable"))),
+                                   ),
+                     fluidRow(
+                       column(6, selectizeInput(inputId = paste0("addValueOptionsSelection", treatmentId),
+                               label = p("Specific Independent Variable values", br(),
+                               helpText("The possible values of a treatment.")
+                               ), #label displayed in ui
+                               choices = "", selected = "",
+                                                #options = list(create = TRUE)
+                       ),),
+                    ),
+                ),
+
+
+                fluidRow(column(8,
+                radioButtons(paste0('quantitativeMethod', treatmentId),
+                             "Please provide quantitative variables (either a or b) ",
+                              choices = c("a: Provide correlation and sample size" = "a", "b: Provide Mean, Standard Deviation, and sample size" = "b"),
+                             selected = character(0)
+                )
+                )),
+
+                conditionalPanel(
+                                  condition = paste0('input.quantitativeMethod',treatmentId,' == "a"'),
+
+                #fluidRow(column(
+                #4, selectInput(paste0('addEsMeasure', treatmentId), 'Choose an effect measure:',
+                #                 choices =c('',"Standardised Mean Difference" = "d", "Raw correlation coefficient" = "r"))
+                #)),
+                fluidRow(column(
+                4, numericInput(paste0('addCorrelation', treatmentId), labelMandatory('Correlation'), NULL)
+                )),
+                                  fluidRow(column(
+                4, numericInput(paste0('addSampleSizeA', treatmentId), labelMandatory('Sample size'), NULL)
+                )),
+
+                ),
+
+                conditionalPanel(
+                                  condition = paste0('input.quantitativeMethod', treatmentId,' == "b"'),
+                    fluidRow(column(
+                    4, selectInput(paste0('DVBehavior', treatmentId), labelMandatory('Behavior (dependent variable)'),
+                      choices = c('', 'Contributions', 'Cooperation', 'Withdrawals')
+                      )
+                    )),
+                    conditionalPanel(
+                                  condition = paste0('input.DVBehavior',treatmentId,' == "Contributions" || input.DVBehavior', treatmentId,' =="Withdrawals"'),
+
+                    fluidRow(column(
+                    4, numericInput(paste0('addMean', treatmentId), labelMandatory('Mean'), NULL)
+                    )),
+                    fluidRow(column(
+                    4, numericInput(paste0('addStandardDeviation', treatmentId), labelMandatory('Standard Deviation'), NULL)
+                    )),
+                    ),
+
+                    conditionalPanel(
+                                  condition = paste0('input.DVBehavior',treatmentId,' == "Cooperation" '),
+                                        fluidRow(column(
+                    4, numericInput(paste0('addProportionOfCooperation', treatmentId), labelMandatory('P(C) (proportion of cooperation'), NULL)
+                    )),
+
+                    ),
+                    fluidRow(column(
+                    4, numericInput(paste0('addSampleSizeB', treatmentId), labelMandatory('Sample size'), NULL)
+                    )),
+                    fluidRow(column(
+                    4, selectInput(paste0('betweenOrWithinSubjects', treatmentId), labelMandatory('Between or Within Subjects'),
+                                     choices = c('', "Between", "Within", 'Mixed'),)
+                    ))
+
+                )
+
+          )
+    )
+
+    observe({
+      updateSelectInput(session, paste0("addTreatmentSubpropSelection", treatmentId),
+                        choices = c("",ivLabelsGen(input[[paste0('addGenIVselection', treatmentId)]])))
+    })
+
+    observe({
+      value_choice <- valueOptionUpdateGen(input[[paste0('addTreatmentSubpropSelection',treatmentId)]])
+      allow_create <- FALSE
+      if (identical(value_choice, character(0))){
+        allow_create <- TRUE
+      }
+      updateSelectizeInput(session, paste0("addValueOptionsSelection", treatmentId),
+                        choices = c("", value_choice), options = list(create = allow_create))
+    })
+  }
+
+  # todo: remove duplicate code
+  insert_variable <- function (treatmentId) {
+        insertUI(
+          selector = "#addAnotherVariable",
+          where = "beforeBegin",
+          ui = tags$div(
+            id = treatmentId,
+            hr(),
+            h4(paste0('Add another variable for ', addedTreatments[length(addedTreatments)]
+                      )),
+            fluidRow(
+                  column(6, selectInput(inputId = paste0("addGenIVselection",treatmentId),
+                            label = p("Generic Independent Variable", br(),
+                            helpText('Example: Punishment', br(),
+                            em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
+                            ),
+                            choices = c("",sort(selections$ivname))),),
+                ),
+                fluidRow(column(6,
+                                checkboxInput(paste0("addDescriptionGenericIV", treatmentId),
+                                              "Add description for Generic Independent Variable")
+                                )
+                ),
+                conditionalPanel(
+                                  condition = paste0('input.addDescriptionGenericIV',treatmentId,' == 1'),
+                                  fluidRow(column(8, textAreaInput(paste0("addDescriptionGenericIVText", treatmentId),
+                                                          "Description for Generic Independent Variable"))),
+                                   ),
+                conditionalPanel(
+                                  condition = paste0('input.addGenIVselection', treatmentId,' != ""'),
+                  fluidRow(
+                    column(6, selectInput(inputId = paste0("addTreatmentSubpropSelection", treatmentId), #name of input used to be "gen_iv", also removed selectInput for current_iv
+                               label = p("Specific Independent Variable",
+                                         helpText("Example: Punishment treatment", br(),
+                                                  em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
+                               ),
+                               choices = '', selected = ""),),
+                    ),
+                  fluidRow(column(6,
+                                checkboxInput(paste0("addDescriptionSpecificIV", treatmentId),
+                                              "Add description for Specific Independent Variable")
+                                )
+                  ),
+                  conditionalPanel(
+                                  condition = paste0('input.addDescriptionSpecificIV', treatmentId,' == 1'),
+                                  fluidRow(column(8, textAreaInput(paste0("addDescriptionSpecificIVText", treatmentId),
+                                                          "Description for Specific Independent Variable"))),
+                                   ),
+                     fluidRow(
+                       column(6, selectizeInput(inputId = paste0("addValueOptionsSelection", treatmentId),
+                               label = p("Specific Independent Variable values", br(),
+                               helpText("The possible values of a treatment.")
+                               ), #label displayed in ui
+                               choices = "", selected = "",
+                                                #options = list(create = TRUE)
+                       ),),
+                    ),
+                ),
+
+          )
+    )
+
+    observe({
+      updateSelectInput(session, paste0("addTreatmentSubpropSelection", treatmentId),
+                        choices = c("",ivLabelsGen(input[[paste0('addGenIVselection', treatmentId)]])))
+    })
+
+    observe({
+      value_choice <- valueOptionUpdateGen(input[[paste0('addTreatmentSubpropSelection',treatmentId)]])
+      allow_create <- FALSE
+      if (identical(value_choice, character(0))){
+        allow_create <- TRUE
+      }
+      updateSelectizeInput(session, paste0("addValueOptionsSelection", treatmentId),
+                        choices = c("", value_choice), options = list(create = allow_create))
+    })
+  }
+
+  observeEvent(input$addAnotherTreatment, {
+    treatmentId <- paste0('Treatment',length(addedTreatments)+1)
+    insert_treatment(treatmentId)
+    addedTreatments <<- c(addedTreatments, treatmentId)
+    shinyjs::show('removeTreatment')
+  })
+
+  observeEvent(input$addAnotherVariable, {
+    treatmentId <- paste0(addedTreatments[length(addedTreatments)],'Variable',input$addAnotherVariable)
+    insert_variable(treatmentId)
+    addedVariables <<- c(addedVariables, treatmentId)
+    shinyjs::show('removeVariable')
+  })
+
+
+  observeEvent(input$removeTreatmentLink, {
+    removeUI(
+      selector = paste0('#', addedTreatments[length(addedTreatments)])
+    )
+    # also remove the variables under the treatment
+    remove_variables <- c()
+    for (v in addedVariables) {
+      if (startsWith(v, addedTreatments[length(addedTreatments)])) {
+            removeUI(
+              selector = paste0('#', v)
+            )
+            remove_variables <- c(remove_variables, v)
+      }
+    }
+
+    addedVariables <<- addedVariables[! addedVariables %in% remove_variables]
+
+    cat('\n removing', addedTreatments[length(addedTreatments)])
+
+    if  (length(addedTreatments) > 1) {
+      addedTreatments <<- addedTreatments[-length(addedTreatments)]
+    }
+  })
+  observe({
+    if (length(addedTreatments) == 1) {
+      shinyjs::hide('removeTreatment')
+    }
+  })
+
+  observeEvent(input$removeVariableLink, {
+    removeUI(
+      ## pass in appropriate div id
+      selector = paste0('#', addedVariables[length(addedVariables)])
+    )
+    cat('removing', addedVariables[length(addedVariables)])
+    addedVariables <<- addedVariables[-length(addedVariables)]
+  })
+  observe({
+    if (length(addedVariables) == 1) {
+      shinyjs::hide('removeVariable')
+    }
+  })
+  observeEvent(input$showTerms, {
+      showModal(modalDialog(
+        title = "Privacy statement: Cooperation Databank",
+        p("Date: [1/26/2021]", br(),
+          "The Vrije Universiteit Amsterdam (hereinafter: VU) attaches great importance to the protection of your privacy and the security of your personal data. In this privacy statement we describe how we handle your personal data within the Cooperation Databank (CoDa). We process your personal data in accordance with applicable privacy legislation, including the General Data Protection Act (GDPR) and the General Data Protection Implementation Act.",
+          h4('1. Who is responsible for the processing of my personal data?'),
+          "Stichting VU is responsible for the data processing operations described in this privacy statement. Stichting VU maintain the Vrije Universiteit Amsterdam as a privately run university in accordance with the Higher Education and Research Act of The Netherlands (‘Wet op het hoger onderwijs en wetenschappelijk onderzoek’). Stichting VU has its registered office at De Boelelaan 1105 in (1081 HV) Amsterdam and is registered with the Chamber of Commerce under number 53815211.",
+          h4('2. What (categories of) personal data will be processed?'),
+          'We will process the following personal data:',br(),
+          'a. Name;',br(),
+          'b. Email address', br(),
+          h4('3. For which purposes are my personal data processed, and on the basis of which legal grounds?'),
+          'The personal data will only be used for the following purposes:',br(),
+          '- To be used by the CoDa editorial team to contact you with any questions regarding the study you submit to the databank;', br(),
+          'We process your personal data on the basis of the following legal grounds:',br(),
+          '- You have given consent to the processing of your personal data. In that case you have the right to withdraw your consent at any time by contacting us via the contact details below.',
+          h4('4. Who has access to my personal data?'),
+          'The personal data will only be accessed by employees of the VU who by reason of their function have a role in the processing of your personal data for the abovementioned purposes and for whom it is necessary that they have access to the personal data.',br(),
+          h4('5. Will my personal data be shared with third parties?'),
+          "When processing your personal data, we may use service providers (processors) who process your personal data on behalf of and under the responsibility of the VU. The VU concludes processing agreements with these service providers to ensure that your personal data is processed carefully, securely and in accordance with the General Data Protection Regulation (GDPR). We remain solely responsible for these processing activities.",br(),
+          "The following categories of personal data shall be shared publicly on the CoDa website:", br(),
+          "a. Name (as Author of a study);",
+          "b. Your name could be associated with any information that you have provided about the study which you annotated and submitted to be included in the cooperation databank. This will happen if your name is listed as an author of the study;", br(),
+          "We process your personal data on the basis of the following legal grounds:",
+          "- You have given consent to the processing of your personal data. In that case you have the right to withdraw your consent at any time by contacting us via the contact details below.", br(),
+          "When processing your personal data, we may make use of service providers (processors) who process your personal data on behalf of and under the responsibility of the VU.  The VU concludes processing agreements with these service providers to ensure that your personal data is processed carefully, securely and in accordance with the General Data Protection Regulation (GDPR). We remain solely responsible for these processing activities.",
+          h4('6. Will my personal data be transferred to countries outside of the European Economic Area?'),
+          "Your name (as an author of the study) and information you share about your study can be made public on the cooperation databank – which is an open access databank of study on human cooperation. We will not make your email address public on the cooperation databank. Your email will only be accessible to the editorial team of the cooperation databank. ",
+          h4('7. For how long will my personal data be retained?'),
+          "We will not retain your personal data for longer than is necessary to achieve the predetermined purposes or as long as required by law. ", br(),
+
+          tags$table(
+            style = "border: 1px solid black; width: 100%; border-collapse: collapse;",
+                    tags$tr(
+                            tags$th('Categories of personal data', style = 'border: 1px solid black; padding: 2px; '),
+                            tags$th('Retention period', style = "width: 65%; border: 1px solid black; padding: 2px;"),
+                    ),
+                    tags$tr(
+                            tags$td('Email',style = 'border: 1px solid black;padding: 2px;'),
+                            tags$td('10 years after making the study public',style = 'border: 1px solid black;padding: 2px;'),
+                   ),
+                   tags$tr(
+                            tags$td('Name',style = 'border: 1px solid black;padding: 2px;'),
+                            tags$td('This information will be publicly available in the cooperation databank if you are listed as an author of the study, and will remain public until you exercise your right for the information to be deleted from the databank.  '
+                              ,style = 'border: 1px solid black;padding: 2px;'),
+                   )
+            ),
+
+          h4("8. How will my personal data be secured?"),
+          "The VU takes appropriate technical and organizational measures to protect your personal data against loss and any form of unlawful processing.", br(),
+          "Personal information will be contained in password protected spreadsheets, to which only members of the CoDa editorial team will be provided with access rights. ",
+          h4("9. Who can I contact with questions about the processing of my personal data?"),
+          "You can ask questions about how we process your personal data via [d.p.balliet@vu.nl] or [+31681459096].",
+          h4("10. How can I exercise my privacy rights?"),
+          "On the basis of the GDPR you have the right – under certain conditions – to access your personal data that we process, to correct your personal data if it contains factual inaccuracies, to delete your personal data, to limit the processing of your personal data, to portability of your personal data and to object to the processing of your personal data.", br(),
+          "If you wish to exercise any of these privacy rights, you can contact the Data Protection Officer of VU Amsterdam via:",br(),
+          HTML('&emsp;'),"Data Protection Officer",br(),
+          HTML('&emsp;'),"De Boelelaan 1105", br(),
+          HTML('&emsp;'),"1081 HV AMSTERDAM ", br(),
+          HTML('&emsp;'),"functionarisgegevensbescherming@vu.nl ", br(),
+          "To be able to deal with your request, you will be asked to provide proof of identity. In this way it will be verified that the request has been made by the right person. If you are not satisfied with the way in which we deal with your personal data, you have the right to submit a complaint with a supervisory authority."
+
+
+
+
+
+
+
+
+
+
+        ),
+
+        footer = modalButton("Agree")
+      ))
+  })
 })

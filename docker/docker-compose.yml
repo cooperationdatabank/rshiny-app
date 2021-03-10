@@ -2,7 +2,7 @@ version: "3"
 
 services:
   shiny:
-    image: triply/coda-shiny:latest
+    image: registry.triply.cc/coda/rshiny-app:latest
     build:
       context: ../
       dockerfile: docker/Dockerfile
