@@ -1,0 +1,3730 @@
+{
+    "name": "IndependentVariable",
+    "children": [
+        {
+            "name": "Punishment",
+            "children": [
+                {
+                    "name": "Punishment treatment",
+                    "children": [
+                        {
+                            "name": "1",
+                            "size": 739,
+                            "desc": "The punishment treatment"
+                        },
+                        {
+                            "name": "-1",
+                            "size": 361,
+                            "desc": "The baseline treatment. This is the treatment compared against any treatment coded as punishment treatment (= 1 identifies the punishment effect). This means that the treatment is equal to the punishment treatment, except for the availability of punishment (which includes other concepts that are part of punishment, such as punishment effectiveness, etc.)"
+                        },
+                        {
+                            "name": "0",
+                            "size": 81,
+                            "desc": "Is not a punishment treatment. This is any treatment that is neither a punishment treatment nor a baseline relative to the punishment treatment (In practice, these are ignored in the platform)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Sequential punishment",
+                    "children": [
+                        {
+                            "name": "Simultaneous",
+                            "size": 730,
+                            "desc": "Players make the punishment decision at the same time (i.e., without receiving information about others' punishment decisions on that trial)"
+                        },
+                        {
+                            "name": "Sequential turn-taking",
+                            "size": 5,
+                            "desc": "Each player makes a punishment decision in turn"
+                        },
+                        {
+                            "name": "Sequential leadership-by-example",
+                            "size": 3,
+                            "desc": "In a game with leadership by example, there is a single privileged player that makes a punishment decision before all others"
+                        }
+                    ]
+                },
+                {
+                    "name": "Punishment distribution rule",
+                    "children": [
+                        {
+                            "name": "Deductive",
+                            "size": 704,
+                            "desc": "The amount deducted from the account of a punished participant is destroyed"
+                        },
+                        {
+                            "name": "Redistributive",
+                            "size": 6,
+                            "desc": "The amount deducted from the account of a punished participant is redistributed to some or all of the other participants in the game"
+                        }
+                    ]
+                },
+                {
+                    "name": "Punishment incentive",
+                    "children": [
+                        {
+                            "name": "Monetary",
+                            "size": 625,
+                            "desc": "An amount of money often converted from game points"
+                        },
+                        {
+                            "name": "Non-monetary Social",
+                            "size": 45,
+                            "desc": "Participants receive social incentives, such as blame or praise, from others based on the outcomes of the game"
+                        },
+                        {
+                            "name": "Hypothetical",
+                            "size": 43,
+                            "desc": "Hypothetical value for participants (e.g., points)"
+                        },
+                        {
+                            "name": "Non-monetary Material",
+                            "size": 27,
+                            "desc": "Amount of other resources (e.g., candies, school supplies)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Punishment agent",
+                    "children": [
+                        {
+                            "name": "Peer",
+                            "size": 461,
+                            "desc": "Other participants of the same role  "
+                        },
+                        {
+                            "name": "Institution",
+                            "size": 230,
+                            "desc": "Institutional mechanism inside (e.g., impersonal sanctioning system) or outside (e.g., public institutions like government)"
+                        },
+                        {
+                            "name": "Network",
+                            "size": 21,
+                            "desc": "A peer in a game with network structure"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 17,
+                            "desc": "Other agent types not included in the current categories"
+                        },
+                        {
+                            "name": "Leader",
+                            "size": 12,
+                            "desc": "A participant with some form of higher, relative social power; see Power"
+                        },
+                        {
+                            "name": "Third Party",
+                            "size": 9,
+                            "desc": "A person who does not interact with the participants in the main game e.g., a third-party punisher"
+                        },
+                        {
+                            "name": "Experimenter",
+                            "size": 4,
+                            "desc": "The person in charge of running the experiment (e.g., principle investigator, research assistant)"
+                        },
+                        {
+                            "name": "Computer",
+                            "size": 1,
+                            "desc": "Computerized opponent, and players were informed to be interacting with a computer"
+                        }
+                    ]
+                },
+                {
+                    "name": "Punishment rule",
+                    "children": [
+                        {
+                            "name": "Contribution-based",
+                            "size": 172,
+                            "desc": "Players who made a contribution less (or more) than a specified amount are punished"
+                        },
+                        {
+                            "name": "Rank-based",
+                            "size": 80,
+                            "desc": "The n lowest- (or highest-) ranked players are punished"
+                        },
+                        {
+                            "name": "Random",
+                            "size": 5,
+                            "desc": "Random players are punished"
+                        },
+                        {
+                            "name": "Outcome-based",
+                            "size": 4,
+                            "desc": "Some set of players is punished if a collective threshold is (not) reached"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 3,
+                            "desc": "Other punishment rule"
+                        },
+                        {
+                            "name": "None",
+                            "size": 1,
+                            "desc": "No punishment rule"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Personality",
+            "children": [
+                {
+                    "name": "Individual difference",
+                    "children": [
+                        {
+                            "name": "Social value orientation",
+                            "size": 434,
+                            "desc": "Dispositional weights individuals assign to their own and to others\u00e2\u0080\u0099 outcomes in interdependent situations (Kuhlman, Camac, & Cunha, 1986; McClintock, 1972)"
+                        },
+                        {
+                            "name": "Trust propensity",
+                            "size": 160,
+                            "desc": "A person\u00e2\u0080\u0099s general willingness to trust others (Mayer, Davis, & Schoorman, 1995, p. 714) [based on] expectation of partner\u00e2\u0080\u0099s goodwill and benign intent (Yamagishi & Yamagishi, 1994, p. 131)"
+                        },
+                        {
+                            "name": "Self-control",
+                            "size": 85,
+                            "desc": "The ability to override or change one\u00e2\u0080\u0099s inner responses, as well as to interrupt undesired behavioral tendencies (such as impulses) and refrain from acting on them (Tangney, Baumeister, & Boone, 2004, p. 274)"
+                        },
+                        {
+                            "name": "Concern for others",
+                            "size": 48,
+                            "desc": "Individual differences in the extent to which [\u00e2\u0080\u00a6] other people\u00e2\u0080\u0099s interests serve as guides for behavior (Gerbasi & Prentice, 2013, p. 495)"
+                        },
+                        {
+                            "name": "Cognitive ability",
+                            "size": 43,
+                            "desc": "One's general mental capability involving reasoning, problem solving, planning, abstract thinking, complex idea comprehension, and learning from experience (Gottfredson, 1997)"
+                        },
+                        {
+                            "name": "Risk-taking",
+                            "size": 38,
+                            "desc": "One\u00e2\u0080\u0099s general degree of comfort with facing uncertain gains or losses (Ehrlich & Maestas, 2010, p. 658)"
+                        },
+                        {
+                            "name": "Risk-taking (behavioral measure)",
+                            "size": 34,
+                            "desc": "Risk-taking preferences are measured by participants  making a choice between options that involve probabilisic outcomes."
+                        },
+                        {
+                            "name": "Individualism",
+                            "size": 31,
+                            "desc": "Individualists will see themselves as more differentiated and separate from others, and place more importance on asserting their individuality (Bochner, 1994, p. 274)"
+                        },
+                        {
+                            "name": "Extraversion",
+                            "size": 31,
+                            "desc": "[Individual differences in] engagement in social endeavors (such as socializing, leading, or entertaining) (Ashton & Lee, 2007, p. 156)"
+                        },
+                        {
+                            "name": "Conscientiousness",
+                            "size": 30,
+                            "desc": "The proactive side of Conscientiousness is seen most clearly in the need for achievement and commitment to work; the inhibitive side is seen in moral scrupulousness and cautiousness (Costa et al., 1991, p. 889)"
+                        },
+                        {
+                            "name": "Openness to experience",
+                            "size": 29,
+                            "desc": "[Individual differences in] engagement in idea-related endeavors (such as learning, imagining, and thinking) (Ashton & Lee, 2007, p. 156)"
+                        },
+                        {
+                            "name": "Collectivism",
+                            "size": 28,
+                            "desc": "One\u00e2\u0080\u0099s tendency to give priority to the collective self over the private self, especially when these two come into conflict (Yamagishi, Kuhlman, & Sugimori, 1995, p. 659)"
+                        },
+                        {
+                            "name": "Competitiveness",
+                            "size": 28,
+                            "desc": "Individuals\u00e2\u0080\u0099 desire to do better than others, their desire to win in interpersonal situations, and their enjoyment of interpersonal competition (Houston, McIntire, Kinnie, & Terry, 2002, p. 286)"
+                        },
+                        {
+                            "name": "Agreeableness (FFM)",
+                            "size": 21,
+                            "desc": "[Individual] differences in the motivation to cooperate (vs. acting selfishly) in resource conflicts (Denissen & Penke, 2008, p. 1285)"
+                        },
+                        {
+                            "name": "Psychopathy",
+                            "size": 20,
+                            "desc": "A personality trait characterized by enduring antisocial behavior, diminished empathy and remorse, and disinhibited or bold behavior (Muris et al., 2017, p. 184)"
+                        },
+                        {
+                            "name": "Neuroticism",
+                            "size": 19,
+                            "desc": "A broad domain of negative affect, including predispositions to experience anxiety, anger, depression, shame, and other distressing emotions (Costa, Terracciano, & McCrae, 2001, p. 322)"
+                        },
+                        {
+                            "name": "Machiavellianism",
+                            "size": 18,
+                            "desc": "A duplicitous interpersonal style, characterized by a cynical disregard for morality and a focus on self-interest and personal gain (Muris et al., 2017, p. 184)"
+                        },
+                        {
+                            "name": "Right-wing authoritatianism",
+                            "size": 16,
+                            "desc": "Opposing any change in the social status quo, [\u00e2\u0080\u00a6] favouring tough punishment of deviance, nonconformity, or innovation, [and] favouring traditional, old-fashioned lifestyles, behavioural norms, and values (Duckitt, Bizumic, Krauss, & Heled, 2010, p. 691)\r"
+                        },
+                        {
+                            "name": "Honesty-humility",
+                            "size": 16,
+                            "desc": "The tendency to be fair and genuine in dealing with others, in the sense of cooperating with others even when one might exploit them without suffering retaliation (Ashton & Lee, 2007, p. 156)"
+                        },
+                        {
+                            "name": "Agreeableness (HEXACO)",
+                            "size": 12,
+                            "desc": "The tendency to be forgiving and tolerant of others, in the sense of cooperating with others even when one might be suffering exploitation by them (Ashton & Lee, 2007, p. 156)"
+                        },
+                        {
+                            "name": "Emotionality",
+                            "size": 12,
+                            "desc": "Tendencies relevant to the construct of kin altruism [...], including not only empathic concern and emotional attachment toward close others (who tend to be one\u00e2\u0080\u0099s kin) but also the harm-avoidant and help-seeking behaviors that are associated with investment in kin (Ashton & Lee, 2007, p. 156)"
+                        },
+                        {
+                            "name": "Self-presentation",
+                            "size": 11,
+                            "desc": "The extent to which individuals can and do monitor their self-presentation, expressive behavior, and non-verbal affective display (Snyder, 1974, pp. 526/527), [potentially motivated by] the identity concern of one\u00e2\u0080\u0099s [\u00e2\u0080\u00a6] evaluation (De Cremer & Tyler, 2005, p. 121)"
+                        },
+                        {
+                            "name": "Social desirability",
+                            "size": 11,
+                            "desc": "Tendency to provide answers that are considered socially acceptable in order to present themselves in a favorable light "
+                        },
+                        {
+                            "name": "Altruism",
+                            "size": 10,
+                            "desc": "A disposition that leads people who have more of it to be more compassionate and caring toward others in distress (Batson, Bolen, Cross, & Neuringer-Benefiel, 1986, p. 212)"
+                        },
+                        {
+                            "name": "Inequality aversion",
+                            "size": 9,
+                            "desc": "[Individual differences in] perceptions of and reactions to observed [\u00e2\u0080\u00a6] or committed injustice (Schmitt, Baumert, Gollwitzer, & Maes, 2010, p. 212); an individual is inequity averse if he dislikes outcomes that are perceived as inequitable (Fehr & Schmidt, 1999, p. 820). "
+                        },
+                        {
+                            "name": "Reflective thinking style",
+                            "size": 9,
+                            "desc": "Reliance on and enjoyment of thinking in an analytical, logical manner [and] a high level of ability to think logically and analytically (Pacini & Epstein, 1999, p. 974). "
+                        },
+                        {
+                            "name": "Social dominance orientation",
+                            "size": 8,
+                            "desc": "Individual differences in the preference for group based hierarchy and inequality (Ho et al., 2015, p. 1003)"
+                        },
+                        {
+                            "name": "Anxiety",
+                            "size": 8,
+                            "desc": "The stable tendency to attend to, experience, and report negative emotions such as fears, worries, and anxiety across many situations (Gidron, 2013, p. 1989)"
+                        },
+                        {
+                            "name": "Approach",
+                            "size": 8,
+                            "desc": "Proneness to engage in goal-directed efforts and to experience positive feelings when the person is exposed to cues of impending reward (Carver & White, 1994, p. 319)"
+                        },
+                        {
+                            "name": "Achievement",
+                            "size": 8,
+                            "desc": "Recurrent concern with a standard of excellence and the disposition to derive satisfaction from the mastery of challenging tasks (Sch\u00c3\u00b6nbrodt & Gerstenberg, 2012, p. 726)"
+                        },
+                        {
+                            "name": "Forgiveness",
+                            "size": 7,
+                            "desc": "Disposition to forgive interpersonal transgressions over time and across situations (Berry, Worthington, O\u00e2\u0080\u0099Connor, Parrott, & Wade, 2005, p. 183)"
+                        },
+                        {
+                            "name": "Self-esteem",
+                            "size": 7,
+                            "desc": "Individual differences in the evaluation of one\u00e2\u0080\u0099s self-worth and self-respect (Gnambs, Scharl, & Schroeders, 2018, p. 14)"
+                        },
+                        {
+                            "name": "SVO consistency",
+                            "size": 7,
+                            "desc": "Consistency in the choice pattern with which SVO is measured"
+                        },
+                        {
+                            "name": "Positive reciprocity",
+                            "size": 7,
+                            "desc": "Positive reactions to positively valued behaviours with the emphasis on rewarding someone else\u00e2\u0080\u0099s behaviour (Perugini, Gallucci, Presaghi, & Ercolani, 2003, p. 274)"
+                        },
+                        {
+                            "name": "Negative affect",
+                            "size": 7,
+                            "desc": "Individual differences in the tendency to experience negative moods and feelings, including sadness, worry, and anger (Stanton & Watson, 2014, p. 556)"
+                        },
+                        {
+                            "name": "Avoidance",
+                            "size": 7,
+                            "desc": "Sensitivity to the presence or absence of negative outcomes [and] vigilant avoidance of losses or failures (Lockwood, Jordan, & Kunda, 2002, p. 854)"
+                        },
+                        {
+                            "name": "Envy",
+                            "size": 6,
+                            "desc": "[Tendency to experience a] sense of inferiority [\u00e2\u0080\u00a6 and] ill will, frustration, and a subjective sense of injustice prompted by unflattering comparison (Smith, Parrott, Diener, Hoyle, & Kim, 1999, p. 1010). For coding: Justice sensitivity (victim perspective subscale has to be coded as envy) "
+                        },
+                        {
+                            "name": "Life history strategy",
+                            "size": 6,
+                            "desc": "Different allocation decisions to the various activities that comprise the life cycle between current and future reproduction, between quality and quantity of offspring, and\u00e2\u0080\u0094in sexual species\u00e2\u0080\u0094between mating and parenting effort (Del Giudice, 2014)"
+                        },
+                        {
+                            "name": "Narcissism",
+                            "size": 5,
+                            "desc": "A grandiose view of the self, a strong sense of entitlement and superiority, a lack of empathy, and a need for social admiration, as well as tendencies to show dominant, charming, bragging, impulsive, and aggressive behaviors (Back et al., 2013, p. 1014)"
+                        },
+                        {
+                            "name": "Self-efficacy",
+                            "size": 5,
+                            "desc": "People's beliefs in their ability to influence events that affect their lives (Bandura, 2010)"
+                        },
+                        {
+                            "name": "Integrity",
+                            "size": 5,
+                            "desc": "Integrity involves honesty, trustworthiness, fidelity in keeping one\u00e2\u0080\u0099s word and obligations, and incorruptibility, or an unwillingness to violate principles regardless of the temptations, costs, and preferences of others (Schlenker, 2008, p. 1081)\r"
+                        },
+                        {
+                            "name": "Locus of control",
+                            "size": 5,
+                            "desc": "The degree to which persons expect that a reinforcement or an outcome of their behavior is contingent on their own behavior or personal characteristics versus the degree to which persons expect that the reinforcement or outcome is a function of chance, luck, or fate, is under the control of powerful others, or is simply unpredictable (Rotter, 1990, p. 489)"
+                        },
+                        {
+                            "name": "Guilt proneness",
+                            "size": 5,
+                            "desc": "Predisposition to experience negative feelings about personal wrongdoing, even when the wrongdoing is private (T. R. Cohen, Panter, & Turan, 2012, p. 355)"
+                        },
+                        {
+                            "name": "Emotional intelligence",
+                            "size": 4,
+                            "desc": "Extent to which [individuals] attend to, process, and utilize affect-laden information of an intrapersonal (e.g., managing one\u00e2\u0080\u0099s own emotions) or interpersonal (e.g., managing others\u00e2\u0080\u0099 emotions) nature (Petrides & Furnham, 2006, p. 553)"
+                        },
+                        {
+                            "name": "Sadism",
+                            "size": 4,
+                            "desc": "The term sadistic personality describes a person who humiliates others, shows a longstanding pattern of cruel or demeaning behavior to others, or intentionally inflicts physical, sexual, or psychological pain or suffering on others in order to assert power and dominance or for pleasure and enjoyment (O\u00e2\u0080\u0099Meara, Davies, & Hammond, 2011, p. 523)"
+                        },
+                        {
+                            "name": "Aggression",
+                            "size": 4,
+                            "desc": "Trait aggressiveness [\u00e2\u0080\u00a6] identifies people who are prone to hostile cognitions and angry affect as well as a readiness to engage in physical and verbal aggression (Bettencourt, Talley, Benjamin, & Valentine, 2006, p. 752)"
+                        },
+                        {
+                            "name": "Greed",
+                            "size": 3,
+                            "desc": "An insatiable desire for more resources, monetary or other (Krekels & Pandelaere, 2015, p. 225)"
+                        },
+                        {
+                            "name": "Empathy",
+                            "size": 3,
+                            "desc": "Reactions of one individual to the observed experiences of others (Davis, 1983, p. 113)"
+                        },
+                        {
+                            "name": "Positive affect",
+                            "size": 3,
+                            "desc": "Individual differences in the tendency to experience positive emotions and feeling states (Stanton & Watson, 2014, p. 556)"
+                        },
+                        {
+                            "name": "Trust in self",
+                            "size": 3,
+                            "desc": "Beliefs about the trust that others have in themselves"
+                        },
+                        {
+                            "name": "Tolerance for ambiguity",
+                            "size": 2,
+                            "desc": "Desire for 'an answer on a given topic, any answer [\u00e2\u0080\u00a6] compared to confusion and ambiguity (Kruglanski, 1990; p. 337)"
+                        },
+                        {
+                            "name": "Power",
+                            "size": 2,
+                            "desc": "Desire for power and a drive to come out on top in a status hierarchy (Grina, Bergh, Akrami, & Sidanius, 2016, p. 114)"
+                        },
+                        {
+                            "name": "Intuitive thinking style",
+                            "size": 2,
+                            "desc": "Reliance on and enjoyment of feelings and intuitions in making decisions [and] a high level of ability with respect to one\u00e2\u0080\u0099s intuitive impressions and feelings (Pacini & Epstein, 1999, p. 974)"
+                        },
+                        {
+                            "name": "Shame proneness",
+                            "size": 2,
+                            "desc": "High shame-prone individuals attribute transgressions and negative outcomes to characterological faults, experiencing global feelings of self-debasement and enduring negative affect (Thompson, Altmann, & Davidson, 2004, p. 613)"
+                        },
+                        {
+                            "name": "Victimization",
+                            "size": 2,
+                            "desc": "Individuals who are a frequent target of aggressions"
+                        },
+                        {
+                            "name": "Affiliation",
+                            "size": 2,
+                            "desc": "[Desire] to establish and/or maintain warm and friendly interpersonal relations (French & Chadwick, 1956, p. 296)"
+                        },
+                        {
+                            "name": "Impulsivity",
+                            "size": 1,
+                            "desc": "Tendency to deliberate less than most people of equal ability before taking action (Dickman, 1990, p. 95)"
+                        },
+                        {
+                            "name": "Belief in a just world",
+                            "size": 1,
+                            "desc": "[Individuals\u00e2\u0080\u0099 tendency] to believe that they live in a world where people generally get what they deserve (Lerner & Miller, 1978, p. 1030)"
+                        },
+                        {
+                            "name": "Optimism",
+                            "size": 1,
+                            "desc": "Generalized expectations of the occurrence of good outcomes in one\u00e2\u0080\u0099s life (Scheier & Carver, 1985, p. 239)"
+                        },
+                        {
+                            "name": "Pro-environmentalism",
+                            "size": 1,
+                            "desc": "The collection of beliefs, affect, and behavioral intentions a person holds regarding environmentally related activities or issues (Schultz, Shriver, Tabanico, & Khazian, 2004, p. 31)"
+                        }
+                    ]
+                },
+                {
+                    "name": "SVO type",
+                    "children": [
+                        {
+                            "name": "Prosocial",
+                            "size": 153,
+                            "desc": "Prosocials aim to equalize and/or maximize joint outcomes"
+                        },
+                        {
+                            "name": "Proself",
+                            "size": 112,
+                            "desc": "Individualists (who aim to maximize their own outcomes, regardless of the others\u00e2\u0080\u0099 outcomes) and competitors (who aim to maximize the relative difference between their own and the others\u00e2\u0080\u0099 outcomes) are often combined in a proself category"
+                        },
+                        {
+                            "name": "Individualist",
+                            "size": 40,
+                            "desc": "Individualists aim to maximize their own outcomes, regardless of the others\u00e2\u0080\u0099 outcomes"
+                        },
+                        {
+                            "name": "Competitor",
+                            "size": 31,
+                            "desc": "Competitors aim to maximize the relative difference between their own and the others\u00e2\u0080\u0099 outcome"
+                        },
+                        {
+                            "name": "Altruist",
+                            "size": 6,
+                            "desc": "Altruists are more concerned with a positive outcome for others than for themselves (Bogaert, Boone, & Declerck, 2008)"
+                        },
+                        {
+                            "name": "Unclassified",
+                            "size": 4,
+                            "desc": "Participants could not be classified into any of the SVO types. It is common when using triple dominance measures."
+                        }
+                    ]
+                },
+                {
+                    "name": "Individual difference level",
+                    "children": [
+                        {
+                            "name": "High",
+                            "size": 69,
+                            "desc": "Participants were classified as high according to the specific individual difference"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 69,
+                            "desc": "Participants were classified as low according to the specific individual difference"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 9,
+                            "desc": "Participants were classified as medium according to the specific individual difference"
+                        }
+                    ]
+                },
+                {
+                    "name": "Psychopathology",
+                    "children": [
+                        {
+                            "name": "Control",
+                            "size": 14,
+                            "desc": "Control group that does not present the disorder under investigation"
+                        },
+                        {
+                            "name": "Depression",
+                            "size": 7,
+                            "desc": "Experience of persistent feelings of sadness and hopelessness and lose interest in activities they once enjoyed."
+                        },
+                        {
+                            "name": "Schizophrenia",
+                            "size": 5,
+                            "desc": "Condition characterized by presence of hallucinations, delusions, and disordered thinking and behavior that impairs daily functioning, among other symptoms"
+                        },
+                        {
+                            "name": "Autism spectrum disorders",
+                            "size": 4,
+                            "desc": "Deficits in social-emotional reciprocity, nonverbal communicative behaviors used for social interaction, and in developing, maintaining, and understanding relationships."
+                        },
+                        {
+                            "name": "Stress",
+                            "size": 4,
+                            "desc": "Experience of being over-aroused, tense, unable to relax touchy, easily upset, irritable, easily startled nervy, jumpy, fidgety, intolerant of interruption or delay (Lovibond & Lovibond, 1995)"
+                        },
+                        {
+                            "name": "Bipolar",
+                            "size": 2,
+                            "desc": "Group of brain disorders that cause extreme fluctuation in a person\u00e2\u0080\u0099s mood, energy, and ability to function (DSM-5)"
+                        },
+                        {
+                            "name": "Non-suicidal self-injury",
+                            "size": 2,
+                            "desc": "Deliberate destruction of one's body in the absence of intent to die (e.g., cutting, burning, or hitting oneself)"
+                        },
+                        {
+                            "name": "Borderline",
+                            "size": 2,
+                            "desc": "Diagnosed on the basis of a pervasive pattern of instability of interpersonal relationships, self-image, and affects, and marked impulsivity beginning by early adulthood and present in a variety of contexts (DSM-5)"
+                        },
+                        {
+                            "name": "Suicide attempt",
+                            "size": 2,
+                            "desc": "Individuals who attempted suicide"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Identification",
+            "children": [
+                {
+                    "name": "Knowledge of group membership",
+                    "children": [
+                        {
+                            "name": "Common",
+                            "size": 341,
+                            "desc": "The participant and their partner know each others' group membership"
+                        },
+                        {
+                            "name": "Unilateral",
+                            "size": 28,
+                            "desc": "The participant knows their partner's group membership, but not vice-versa"
+                        },
+                        {
+                            "name": "Unknown",
+                            "size": 14,
+                            "desc": "Neither the participant or their partner know each others' group membership"
+                        }
+                    ]
+                },
+                {
+                    "name": "Group type",
+                    "children": [
+                        {
+                            "name": "Experimentally induced group",
+                            "size": 216,
+                            "desc": "An experimentally induced group (e.g., minimal group paradigm)"
+                        },
+                        {
+                            "name": "Natural group",
+                            "size": 145,
+                            "desc": "A naturally occurring group (e.g., political partisans, nationalities)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Partner's group membership",
+                    "children": [
+                        {
+                            "name": "Ingroup",
+                            "size": 187,
+                            "desc": "Partner(s) is a member of the participant's group"
+                        },
+                        {
+                            "name": "Stranger",
+                            "size": 99,
+                            "desc": "Participants are not informed about whether their partner is an ingroup or outgroup member"
+                        },
+                        {
+                            "name": "Outgroup",
+                            "size": 88,
+                            "desc": "Partner(s) is a member of a different group than the participant"
+                        },
+                        {
+                            "name": "Ingroup and Outgroup",
+                            "size": 13,
+                            "desc": "When an experimental treatment explicitly provides information that a partner or group belongs to both an ingroup and an outgroup"
+                        }
+                    ]
+                },
+                {
+                    "name": "Identification level",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 10,
+                            "desc": "Participant's identification with their partner is low"
+                        },
+                        {
+                            "name": "High",
+                            "size": 10,
+                            "desc": "Participant's identification with their partner is high"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Participant's identification with their partner is medium"
+                        }
+                    ]
+                },
+                {
+                    "name": "Entitativity level",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 2,
+                            "desc": "Participants were classified as having low levels of entitativity"
+                        },
+                        {
+                            "name": "High",
+                            "size": 2,
+                            "desc": "Participants were classified as having high levels of entitativity"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Participants were classified as having medium levels of entitativity"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Gender",
+            "children": [
+                {
+                    "name": "Gender",
+                    "children": [
+                        {
+                            "name": "M",
+                            "size": 317,
+                            "desc": "Male"
+                        },
+                        {
+                            "name": "F",
+                            "size": 316,
+                            "desc": "Female"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "PDG",
+            "children": [
+                {
+                    "name": "Conflict index",
+                    "children": [
+                        {
+                            "name": "K index",
+                            "size": 279,
+                            "desc": "For 2-persons PDG, it is calculated as (R-P)/(T-S), and 0 < K < 1."
+                        },
+                        {
+                            "name": "Other",
+                            "size": 43,
+                            "desc": "None of the conflict index categories apply"
+                        },
+                        {
+                            "name": "b/c ratio",
+                            "size": 21,
+                            "desc": "Ratio between the cost c paid by a cooperator, and the correspondent benefit b received by the partner"
+                        },
+                        {
+                            "name": "g index",
+                            "size": 21,
+                            "desc": "Index that identifies the strength of the underlying structural impetus toward cooperation or competition in repeated, multitrial PD tasks with probabilistic endpoints. Their expected gain index, g = (1/(1 - p)][R - T + p(T -P)], where p is the probability that play will continue (Bettenhausen & Murnighan, 1991)"
+                        },
+                        {
+                            "name": "r index",
+                            "size": 5,
+                            "desc": "It is calculated as (R\u00e2\u0080\u0093S) / [(R\u00e2\u0088\u0092S) + (T\u00e2\u0088\u0092P)] (Au et al., 2012)"
+                        },
+                        {
+                            "name": "R' index",
+                            "size": 4,
+                            "desc": "It is calculated as (R-S)/(T-S)"
+                        },
+                        {
+                            "name": "S/T ratio",
+                            "size": 3,
+                            "desc": "It is calculated as the index log (T-S)/(R-P)"
+                        },
+                        {
+                            "name": "Index of correspondence",
+                            "size": 1,
+                            "desc": "It is calculated as the correlation between the row and the column players\u00e2\u0080\u0099 outcomes"
+                        },
+                        {
+                            "name": "K*-index",
+                            "size": 1,
+                            "desc": "For N-persons PDG, it is calculated as (A(n)-B(0))/(0(max)-0(min)), and 0 < K < 1"
+                        },
+                        {
+                            "name": "Average advantage of competition",
+                            "size": 1,
+                            "desc": "It is calculated as (T+P)/2-(R+S)/2"
+                        },
+                        {
+                            "name": "Index of competitive advantage",
+                            "size": 1,
+                            "desc": "It is calculated as S-T"
+                        }
+                    ]
+                },
+                {
+                    "name": "Conflict index level",
+                    "children": [
+                        {
+                            "name": "High",
+                            "size": 132,
+                            "desc": "High relative level of the specific conflict index"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 130,
+                            "desc": "Low relative level of the specific conflict index"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 82,
+                            "desc": "Medium relative level of the specific conflict index"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Communication",
+            "children": [
+                {
+                    "name": "Communication occurrence",
+                    "children": [
+                        {
+                            "name": "Ongoing",
+                            "size": 228,
+                            "desc": "Participants could communicate before multiple (all, or at least several) trials (If the game was one-shot, then communication was coded as ongoing)"
+                        },
+                        {
+                            "name": "One-shot",
+                            "size": 144,
+                            "desc": "Participants could only communicate once, before the first trial of the game"
+                        }
+                    ]
+                },
+                {
+                    "name": "Communication type",
+                    "children": [
+                        {
+                            "name": "Written",
+                            "size": 224,
+                            "desc": "Participants could communicate via written messages (either using free text entry or pre-written messages)"
+                        },
+                        {
+                            "name": "Verbal",
+                            "size": 140,
+                            "desc": "Participate could speak to each other, either in person or via phone/voice chat"
+                        },
+                        {
+                            "name": "Nonverbal",
+                            "size": 11,
+                            "desc": "Other modes of communication, including nonverbal eye gaze, touch, and sound"
+                        }
+                    ]
+                },
+                {
+                    "name": "Communication content",
+                    "children": [
+                        {
+                            "name": "Promise",
+                            "size": 95,
+                            "desc": "Promises (e.g., of own cooperation or reward)"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 36,
+                            "desc": "Other content of messages"
+                        },
+                        {
+                            "name": "Irrelevant",
+                            "size": 29,
+                            "desc": "Messages irrelevant to the game"
+                        },
+                        {
+                            "name": "Request",
+                            "size": 23,
+                            "desc": "Requests and suggestions (e.g., to cooperate or contribute)"
+                        },
+                        {
+                            "name": "Threat",
+                            "size": 14,
+                            "desc": "Threats (e.g., of non-cooperation or punishment)"
+                        },
+                        {
+                            "name": "nan",
+                            "size": 1,
+                            "desc": "If communication was not restricted, communication content is not coded."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Group Size",
+            "children": [
+                {
+                    "name": "Decision maker",
+                    "children": [
+                        {
+                            "name": "individual",
+                            "size": 203,
+                            "desc": "The decision maker is a single individual. Individuals make a single decision, to be then matched with others in the game, producing an outcome for all participants involved (e.g., each person making a decision in a 4-persons PGD)"
+                        },
+                        {
+                            "name": "group",
+                            "size": 52,
+                            "desc": "The decision maker is a group of participants. Each decision maker group makes a single decision, to be then matched with other decisions in the game and produce an outcome for all decision makers involved (e.g., two groups of three participants make two decisions to be matched in a  PDG)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Group size level",
+                    "children": [
+                        {
+                            "name": "High",
+                            "size": 8,
+                            "desc": "Large relative size of the group"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 8,
+                            "desc": "Small relative size of the group"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Medium relative size of the group"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Feedback",
+            "children": [
+                {
+                    "name": "Feedback content",
+                    "children": [
+                        {
+                            "name": "Choice",
+                            "size": 203,
+                            "desc": "Feedback about contributions, withdrawals, or binary decisions"
+                        },
+                        {
+                            "name": "Earnings",
+                            "size": 35,
+                            "desc": "Feedback about earnings (included ranks based on earnings and performance)"
+                        },
+                        {
+                            "name": "Failure",
+                            "size": 19,
+                            "desc": "Feedback about the failure of the group in reaching some payoff-relevant threshold in the game"
+                        },
+                        {
+                            "name": "Success",
+                            "size": 15,
+                            "desc": "Feedback about the success of the group in reaching some payoff-relevant threshold in the game"
+                        },
+                        {
+                            "name": "Others",
+                            "size": 9,
+                            "desc": "Feedback about other payoff-relevant information not mentioned in any of the Feedback content categories"
+                        },
+                        {
+                            "name": "Rank",
+                            "size": 8,
+                            "desc": "Feedback about the rank of participants in terms of their behavior (e.g., from the most cooperative to the least cooperative)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Feedback target",
+                    "children": [
+                        {
+                            "name": "Individual",
+                            "size": 145,
+                            "desc": "Feedback about each group member\u00e2\u0080\u0099s behavior is provided"
+                        },
+                        {
+                            "name": "Group",
+                            "size": 90,
+                            "desc": "Feedback about the group\u00e2\u0080\u0099s aggregate behavior (e.g., mean contribution, sum of contributions)"
+                        },
+                        {
+                            "name": "Absent",
+                            "size": 86,
+                            "desc": "No feedback is provided"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 22,
+                            "desc": "Feedback about behavior of other specific participants in the game that do not fall under any of the Feedback target categories (e.g., only feedback from a few individuals is provided)"
+                        },
+                        {
+                            "name": "Network",
+                            "size": 6,
+                            "desc": "Feedback about the aggregate behavior of all individuals belonging to the same network, if networks are present in the game"
+                        },
+                        {
+                            "name": "Leader",
+                            "size": 1,
+                            "desc": "Exclusively feedback about the leader's behavior, if a leader is present in the game"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Partner(s)' strategies",
+            "children": [
+                {
+                    "name": "Iterated strategy",
+                    "children": [
+                        {
+                            "name": "Preprogrammed Cooperation Rate",
+                            "size": 190,
+                            "desc": "The partner cooperates randomly with a given cooperation rate across the duration of the game"
+                        },
+                        {
+                            "name": "Tit-for-Tat",
+                            "size": 59,
+                            "desc": "The partner cooperates on the first trial, then copies the previous choices of the focal participant on each subsequent trial"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 53,
+                            "desc": "Other strategies"
+                        },
+                        {
+                            "name": "Predominantly Cooperative",
+                            "size": 47,
+                            "desc": "Partner cooperates over most trials, but the study doesn't specify the exact rate "
+                        },
+                        {
+                            "name": "Predominantly Competitive",
+                            "size": 41,
+                            "desc": "Partner competes over most trials, but the study doesn't specify the exact rate"
+                        },
+                        {
+                            "name": "Real Partner",
+                            "size": 11,
+                            "desc": "No experimental strategy is used and participants are playing according to actual game choices"
+                        },
+                        {
+                            "name": "Extortionate Zero Determinant",
+                            "size": 6,
+                            "desc": "Extortionate strategies have three properties: (1) they enforce a linear relationship between the player\u00e2\u0080\u0099s own payoff and the opponent\u00e2\u0080\u0099s payoff; (2) they prescribe to cooperate sufficiently often, such that the opponent\u00e2\u0080\u0099s best response is to be fully cooperative; (3) at the same time, extortioners aim to cooperate less often than their opponent, to gain higher payoffs"
+                        },
+                        {
+                            "name": "Generous Zero Determinant",
+                            "size": 6,
+                            "desc": "Generous ZD strategies share the first two properties of extortioners: they enforce a linear relationship between the payoffs of the two players, and they provide incentives for the opponent to cooperate. However, as opposed to extortioners who aim to outcompete their opponents, the payoff of generous players never exceeds the payoff of the co-player"
+                        },
+                        {
+                            "name": "Pavlov",
+                            "size": 5,
+                            "desc": "The partner cooperates with probability 0.5 in the first move, then cooperates if and only if both players opted for the same choice in the previous trial"
+                        },
+                        {
+                            "name": "Tit-for-Tat+1",
+                            "size": 3,
+                            "desc": "The partner cooperates on the first trial, and then copies the choices of the focal participant with a delay (i.e., cooperates when the focal agent cooperates, but defects only after two consecutive defections from the focal participant)"
+                        },
+                        {
+                            "name": "GRIT",
+                            "size": 3,
+                            "desc": "GRIT strategy involves a statement of intent prior to interaction, specific announcements of choices prior to making their choice, and some retaliation in response to being exploited."
+                        },
+                        {
+                            "name": "Unspecified",
+                            "size": 2,
+                            "desc": "The paper reports that the partner(s) was following a strategy, but does not specify which one"
+                        },
+                        {
+                            "name": "GRIM",
+                            "size": 1,
+                            "desc": "Initially, a partner using grim trigger will cooperate, but as soon as the participant defects (thus satisfying the trigger condition), a partner using grim trigger will defect for the remainder of the iterated game."
+                        }
+                    ]
+                },
+                {
+                    "name": "One-shot strategy",
+                    "children": [
+                        {
+                            "name": "Prior Contribution",
+                            "size": 82,
+                            "desc": "Target agent made a contribution (value to be specified in one-shot strategy value) or cooperated"
+                        },
+                        {
+                            "name": "Prior Withdrawal",
+                            "size": 1,
+                            "desc": "Target agent made a withdrawal (value to be specified in one-shot strategy value) or defected"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Reward",
+            "children": [
+                {
+                    "name": "Reward treatment",
+                    "children": [
+                        {
+                            "name": "1",
+                            "size": 167,
+                            "desc": "The reward treatment"
+                        },
+                        {
+                            "name": "-1",
+                            "size": 83,
+                            "desc": "The baseline treatment. This is the treatment compared against any treatment coded as reward treatment (= 1 identifies the reward effect). This means that the treatment is equal to the reward treatment, except for the availability of reward (which includes other concepts that are part of reward, such as reward effectiveness, etc.)"
+                        },
+                        {
+                            "name": "0",
+                            "size": 73,
+                            "desc": "Is not a reward treatment. This is any treatment that is neither a punishment treatment nor a baseline relative to the punishment treatment (In practice, these are ignored in the platform)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Sequential reward",
+                    "children": [
+                        {
+                            "name": "Simultaneous",
+                            "size": 165,
+                            "desc": "Participants make the reward decision at the same time (i.e., without receiving information about others' reward decisions)"
+                        },
+                        {
+                            "name": "Sequential leadership-by-example",
+                            "size": 2,
+                            "desc": "In a game with leadership by example, there is a single privileged participant that makes a reward decision before all others"
+                        },
+                        {
+                            "name": "Sequential turn-taking",
+                            "size": 2,
+                            "desc": "Each participant makes a reward decision in turn"
+                        }
+                    ]
+                },
+                {
+                    "name": "Reward incentive",
+                    "children": [
+                        {
+                            "name": "Monetary",
+                            "size": 123,
+                            "desc": "An amount of money often converted from game points"
+                        },
+                        {
+                            "name": "Non-monetary Social",
+                            "size": 26,
+                            "desc": "Participants receive social incentives, such as blame or praise, from others based on the outcomes of the game"
+                        },
+                        {
+                            "name": "Hypothetical",
+                            "size": 18,
+                            "desc": "Hypothetical value for participants (e.g., points)"
+                        },
+                        {
+                            "name": "Non-monetary Material",
+                            "size": 2,
+                            "desc": "Amount of other resources (e.g., candies, school supplies)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Reward agent",
+                    "children": [
+                        {
+                            "name": "Peer",
+                            "size": 80,
+                            "desc": "Other participants of the same role  "
+                        },
+                        {
+                            "name": "Institution",
+                            "size": 63,
+                            "desc": "Institutional mechanism inside (e.g., impersonal sanctioning system) or outside (e.g., public institutions like government)"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 13,
+                            "desc": "Other agent types not included in the current categories"
+                        },
+                        {
+                            "name": "Leader",
+                            "size": 7,
+                            "desc": "A participant with some form of higher, relative social power; see Power"
+                        },
+                        {
+                            "name": "Third Party",
+                            "size": 7,
+                            "desc": "A person who does not interact with the participants in the main game e.g., a third-party punisher"
+                        },
+                        {
+                            "name": "Experimenter",
+                            "size": 3,
+                            "desc": "The person in charge of running the experiment (e.g., principle investigator, research assistant)"
+                        },
+                        {
+                            "name": "Computer",
+                            "size": 1,
+                            "desc": "Computerized opponent, and players were informed to be interacting with a computer"
+                        },
+                        {
+                            "name": "Network",
+                            "size": 1,
+                            "desc": "A peer in a game with network structure"
+                        }
+                    ]
+                },
+                {
+                    "name": "Reward rule",
+                    "children": [
+                        {
+                            "name": "Contribution-based",
+                            "size": 61,
+                            "desc": "Participants who made a contribution less (or more) than a specified amount are rewarded"
+                        },
+                        {
+                            "name": "Rank-based",
+                            "size": 23,
+                            "desc": "The n lowest- (or highest-) ranked participants are rewarded"
+                        },
+                        {
+                            "name": "Random",
+                            "size": 3,
+                            "desc": "Random players are rewarded"
+                        },
+                        {
+                            "name": "Outcome-based",
+                            "size": 2,
+                            "desc": "Some set of players are rewarded if a collective threshold is (not) reached"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Symmetry",
+            "children": [
+                {
+                    "name": "Symmetry target",
+                    "children": [
+                        {
+                            "name": "Endowment",
+                            "size": 149,
+                            "desc": "Number of tokens participants were endowed with in a Public Goods Game"
+                        },
+                        {
+                            "name": "Payoff matrix",
+                            "size": 39,
+                            "desc": "The matrix that represents the possible behaviors and outcomes for the participants"
+                        },
+                        {
+                            "name": "MPCR",
+                            "size": 36,
+                            "desc": "The ratio of benefits to costs for a member to contribute one monetary unit to the group account (calculated as multiplier divided by group size)"
+                        },
+                        {
+                            "name": "Incentives",
+                            "size": 9,
+                            "desc": "How participants\u00e2\u0080\u0099 decisions in the game determine their payoffs in different forms"
+                        },
+                        {
+                            "name": "Return from public account",
+                            "size": 8,
+                            "desc": "Payoff obtained from the tokens invested in the public account"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 4,
+                            "desc": "Other aspects of the game that was manipulated with respect to symmetry"
+                        },
+                        {
+                            "name": "Punishment effectiveness",
+                            "size": 3,
+                            "desc": "The ratio of the cost of punishment to the punishing agent to the cost of punishment to the punished agent"
+                        },
+                        {
+                            "name": "Lottery prize",
+                            "size": 3,
+                            "desc": "Bonuses that were allocated through a lottery-like mechanism (this bonus is additional to return from private and public goods accounts)"
+                        },
+                        {
+                            "name": "Payment chance",
+                            "size": 3,
+                            "desc": "Chance to receive payment based on the outcome of the game"
+                        },
+                        {
+                            "name": "Private account return",
+                            "size": 3,
+                            "desc": "Private gain for each token contributed to the private account"
+                        },
+                        {
+                            "name": "Marginal rate of substitution",
+                            "size": 3,
+                            "desc": "Tradeoff between contribution and return from the public good, in order to keep the subjective utility constant"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Institutional Choice",
+            "children": [
+                {
+                    "name": "Institutional choice",
+                    "children": [
+                        {
+                            "name": "Endogenous",
+                            "size": 140,
+                            "desc": "With endogenous institutions, participants can influence the type of institution provided"
+                        },
+                        {
+                            "name": "Exogenous",
+                            "size": 82,
+                            "desc": "With exogenous institutions, the structure of the game is given and cannot be changed by players"
+                        }
+                    ]
+                },
+                {
+                    "name": "Institutional choice mechanism",
+                    "children": [
+                        {
+                            "name": "Vote",
+                            "size": 110,
+                            "desc": "Participants can establish different institutions by vote, requiring some threshold (simple majority, consensus, etc.)"
+                        },
+                        {
+                            "name": "Choice",
+                            "size": 22,
+                            "desc": "Individual participants can choose to impose an institution on themselves or others."
+                        },
+                        {
+                            "name": "Migration",
+                            "size": 10,
+                            "desc": "Participants can choose between groups with different institutions"
+                        }
+                    ]
+                },
+                {
+                    "name": "Vote target",
+                    "children": [
+                        {
+                            "name": "Establish",
+                            "size": 108,
+                            "desc": "Vote to establish a new institution"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 18,
+                            "desc": "Other votes (e.g., alter an existing institution)"
+                        },
+                        {
+                            "name": "Remove",
+                            "size": 7,
+                            "desc": "Vote to remove an existing institution"
+                        }
+                    ]
+                },
+                {
+                    "name": "Institution type",
+                    "children": [
+                        {
+                            "name": "Taxation",
+                            "size": 57,
+                            "desc": "Mandatory minimum contributions or taxation set that participants must make. Taxation is institutional (i.e., the threshold is set by an institution)"
+                        },
+                        {
+                            "name": "Punishment",
+                            "size": 51,
+                            "desc": "Punishment is the imposition of negative payoffs on a specific participant after a trial in the game"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 23,
+                            "desc": "Any other institution"
+                        },
+                        {
+                            "name": "Reward",
+                            "size": 20,
+                            "desc": "Reward is the imposition of positive payoffs on a specific participant after a trial in the game"
+                        },
+                        {
+                            "name": "Leadership",
+                            "size": 5,
+                            "desc": "There is a person in the dilemma known as the leader who has a specific role and can influence followers"
+                        },
+                        {
+                            "name": "Ostracism",
+                            "size": 2,
+                            "desc": "Participants can be avoided or rejected from a group"
+                        }
+                    ]
+                },
+                {
+                    "name": "Vote outcome",
+                    "children": [
+                        {
+                            "name": "Yes Vote",
+                            "size": 20,
+                            "desc": "The proposal reached the threshold (the institution was established, removed, altered, etc.)"
+                        },
+                        {
+                            "name": "No Vote",
+                            "size": 12,
+                            "desc": "The proposal did not reach the threshold (the institution was not established, removed, altered, etc.)"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Sequentiality",
+            "children": [
+                {
+                    "name": "Sequentiality",
+                    "children": [
+                        {
+                            "name": "Sequential turn-taking",
+                            "size": 119,
+                            "desc": "Participants make decisions one after another following some (endogenous or exogenous) order"
+                        },
+                        {
+                            "name": "Simultaneous",
+                            "size": 76,
+                            "desc": "Participants make decisions simultaneously"
+                        },
+                        {
+                            "name": "Sequential leadership-by-example",
+                            "size": 6,
+                            "desc": "One (endogenously or exogenously determined) participant makes a first decision, then all other participants make their decisions simultaneously. This does not include two-player sequential games, which should be coded as sequential turn-taking"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Leadership",
+            "children": [
+                {
+                    "name": "Endogenous leadership",
+                    "children": [
+                        {
+                            "name": "Exogenous",
+                            "size": 107,
+                            "desc": "Leader is assigned by the experimenter or some external mechanism"
+                        },
+                        {
+                            "name": "Endogenous",
+                            "size": 34,
+                            "desc": "Leader is selected by participants in the game"
+                        }
+                    ]
+                },
+                {
+                    "name": "Leadership assignment rule",
+                    "children": [
+                        {
+                            "name": "Random Appointment",
+                            "size": 90,
+                            "desc": "Leader is randomly appointed"
+                        },
+                        {
+                            "name": "Elected",
+                            "size": 18,
+                            "desc": "Leader is voted and elected by other participants "
+                        },
+                        {
+                            "name": "Volunteer",
+                            "size": 9,
+                            "desc": "Participants volunteer to be the leader"
+                        },
+                        {
+                            "name": "Fixed ",
+                            "size": 8,
+                            "desc": "Leader is fixed throughout the game"
+                        },
+                        {
+                            "name": "Authority",
+                            "size": 7,
+                            "desc": "Leader is selected by an authority figure (or by being an authority figure)"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 5,
+                            "desc": "Other unclassified rules to select leaders"
+                        },
+                        {
+                            "name": "Rotating",
+                            "size": 2,
+                            "desc": "Leader position rotates within the group"
+                        }
+                    ]
+                },
+                {
+                    "name": "Leadership role",
+                    "children": [
+                        {
+                            "name": "Follower",
+                            "size": 23,
+                            "desc": "Follower behavior in the game"
+                        },
+                        {
+                            "name": "Leader ",
+                            "size": 22,
+                            "desc": "Leader behavior in the game"
+                        }
+                    ]
+                },
+                {
+                    "name": "Leader's behavior",
+                    "children": [
+                        {
+                            "name": "Cooperative",
+                            "size": 16,
+                            "desc": "Leader behaved cooperatively in the game"
+                        },
+                        {
+                            "name": "Noncooperative",
+                            "size": 13,
+                            "desc": "Leader behaved noncooperatively in the game"
+                        },
+                        {
+                            "name": "Absent",
+                            "size": 1,
+                            "desc": "Information was not provided to participants about how the leader behaved in the game"
+                        }
+                    ]
+                },
+                {
+                    "name": "Leader's characteristic",
+                    "children": [
+                        {
+                            "name": "Strong",
+                            "size": 13,
+                            "desc": "Leader was strong (e.g., a stronger influence on followers)"
+                        },
+                        {
+                            "name": "Male",
+                            "size": 6,
+                            "desc": "Leader was male"
+                        },
+                        {
+                            "name": "Female",
+                            "size": 6,
+                            "desc": "Leader was female"
+                        },
+                        {
+                            "name": "Positive emotion",
+                            "size": 4,
+                            "desc": "Leader expressed positivity"
+                        },
+                        {
+                            "name": "Weak",
+                            "size": 4,
+                            "desc": "Leader was weak (e.g., a weaker influence on followers)"
+                        },
+                        {
+                            "name": "Negative emotion",
+                            "size": 4,
+                            "desc": "Leader expressed negativity"
+                        },
+                        {
+                            "name": "Outgroup",
+                            "size": 3,
+                            "desc": "Leader was an outgroup member"
+                        },
+                        {
+                            "name": "Ingroup",
+                            "size": 3,
+                            "desc": "Leader was an ingroup member"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Framing",
+            "children": [
+                {
+                    "name": "Context frame",
+                    "children": [
+                        {
+                            "name": "Cooperative",
+                            "size": 98,
+                            "desc": "Cooperative frames refer to the participants common interests"
+                        },
+                        {
+                            "name": "Competitive",
+                            "size": 67,
+                            "desc": "Competitive frames refer to discord and rivalry among the participants"
+                        },
+                        {
+                            "name": "Generic",
+                            "size": 57,
+                            "desc": "Generic frames refer to concepts of moral, competitive, or cooperative"
+                        },
+                        {
+                            "name": "Moral",
+                            "size": 6,
+                            "desc": "Moral frames refer to how one ought to behave, for example, in terms of fairness, religious appeals, and responsibility for each other\u00e2\u0080\u0099s payoffs"
+                        }
+                    ]
+                },
+                {
+                    "name": "Give-Take frame",
+                    "children": [
+                        {
+                            "name": "Give-some",
+                            "size": 58,
+                            "desc": "The game is framed as a give-some dilemma, i.e., endowments are allocated to the player and can be contributed to the public good."
+                        },
+                        {
+                            "name": "Take-some",
+                            "size": 58,
+                            "desc": "The game is framed as a take-some dilemma, i.e., endowment is allocated to the public good (or common resource) and can be extracted by the player."
+                        }
+                    ]
+                },
+                {
+                    "name": "Gain-Loss frame",
+                    "children": [
+                        {
+                            "name": "Gain",
+                            "size": 39,
+                            "desc": "The game is framed in terms of gains, i.e., outcomes of decisions are positively-valued."
+                        },
+                        {
+                            "name": "Loss",
+                            "size": 39,
+                            "desc": "The game is framed in terms of losses, i.e., outcomes of decisions are negatively-valued. This includes games in which only some outcomes are negatively valued."
+                        }
+                    ]
+                },
+                {
+                    "name": "Public Good-Bad frame",
+                    "children": [
+                        {
+                            "name": "Public Good",
+                            "size": 12,
+                            "desc": "The game is framed in terms of positive outcomes to others arising from contributions to the public good."
+                        },
+                        {
+                            "name": "Public Bad",
+                            "size": 12,
+                            "desc": "The game is framed in terms of negative outcomes to others arising from contributions to the public bad or in terms of negative externalities from contributions to the private good."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Power",
+            "children": [
+                {
+                    "name": "Power type",
+                    "children": [
+                        {
+                            "name": "Structural",
+                            "size": 96,
+                            "desc": "Structural manipulations of power involve varying control over one's own or others' resources (e.g., having more points to invest in a game or having stronger punishment ratios) (Nieper et al., 2018)"
+                        },
+                        {
+                            "name": "Experiential",
+                            "size": 7,
+                            "desc": "Experiential manipulations of power activate the experience of power via an episodic recall or an imagined role manipulation (e.g., recalling a time when one felt powerful, or imagining alternatives) (Nieper et al., 2018)"
+                        },
+                        {
+                            "name": "Conceptual",
+                            "size": 3,
+                            "desc": "Conceptual manipulations of power involve semantically or visually priming the concept of power (e.g. through word puzzles or scrambled-sentence tasks) (Nieper et al., 2018)"
+                        },
+                        {
+                            "name": "Physical",
+                            "size": 1,
+                            "desc": "Physical manipulations of power involve an individual\u00e2\u0080\u0099s physical posture or nonverbal behavior (e.g. power posing) (Nieper et al., 2018)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Power level",
+                    "children": [
+                        {
+                            "name": "High",
+                            "size": 47,
+                            "desc": "The participant has more control over resources relative to another person"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 47,
+                            "desc": "The participant has less control over resources relative to another person."
+                        },
+                        {
+                            "name": "Control",
+                            "size": 12,
+                            "desc": "The participant has equal control over resources relative to another person."
+                        }
+                    ]
+                },
+                {
+                    "name": "Power manipulation method",
+                    "children": [
+                        {
+                            "name": "Endowment",
+                            "size": 43,
+                            "desc": "One party has more resources available relative to another party in an interdependent situation. The one with more resources has more control over the outcome of the other and is thus more powerful (Nieper et al., 2018)"
+                        },
+                        {
+                            "name": "Benefit",
+                            "size": 25,
+                            "desc": "One party gains a greater benefit from the outcomes of the game (e.g., higher return from the public goods, higher MPCR, higher rewards in the PDG)"
+                        },
+                        {
+                            "name": "Recall",
+                            "size": 7,
+                            "desc": "Participants recall a time when they were powerful (Nieper et al., 2018)"
+                        },
+                        {
+                            "name": "Punishment",
+                            "size": 7,
+                            "desc": "In interdependent situations, if one party can punish or has a better punishment ratio in comparison to others with no/less punishment power, the person with the better ratio, is more powerful (Nieper et al., 2018)"
+                        },
+                        {
+                            "name": "Role Assignment",
+                            "size": 2,
+                            "desc": "A participant is assigned a role for the task that is either associated with high power (e.g. leader, boss) or low power (e.g. follower, subordinate) (Nieper et al., 2018)"
+                        },
+                        {
+                            "name": "Alternative",
+                            "size": 1,
+                            "desc": "When interacting with others, the person with a better alternative is less dependent on the other person that they are interacting with and thus more powerful (Nieper et al., 2018)"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Period",
+            "children": [
+                {
+                    "name": "Trial of cooperation (ordinal)",
+                    "children": [
+                        {
+                            "name": "first",
+                            "size": 90,
+                            "desc": "Cooperation assessed in the first trial"
+                        },
+                        {
+                            "name": "last",
+                            "size": 88,
+                            "desc": "Cooperation assessed in the last trial"
+                        },
+                        {
+                            "name": "other",
+                            "size": 10,
+                            "desc": "Cooperation assessed in a different trial than the first or last"
+                        }
+                    ]
+                },
+                {
+                    "name": "Block of cooperation (ordinal)",
+                    "children": [
+                        {
+                            "name": "first",
+                            "size": 14,
+                            "desc": "Cooperation assessed in the first block"
+                        },
+                        {
+                            "name": "last",
+                            "size": 14,
+                            "desc": "Cooperation assessed in the last block"
+                        },
+                        {
+                            "name": "other",
+                            "size": 13,
+                            "desc": "Cooperation assessed in a different block than the first or last"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Reputation",
+            "children": [
+                {
+                    "name": "Anonymity manipulation",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 84,
+                            "desc": "The treatment was classified as having a relative low level of anonymity"
+                        },
+                        {
+                            "name": "High",
+                            "size": 80,
+                            "desc": "The treatment was classified as having a relative high level of anonymity"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 12,
+                            "desc": "The treatment was classified as having a relative medium level of anonymity"
+                        }
+                    ]
+                },
+                {
+                    "name": "Knowledge of partner's prior behavior",
+                    "children": [
+                        {
+                            "name": "absent",
+                            "size": 35,
+                            "desc": "Participants were not provided information about how their partner behaved in the current game or had behaved with others in a previous game"
+                        },
+                        {
+                            "name": "present",
+                            "size": 34,
+                            "desc": "Participants were provided information about how their partner behaved in the current game or had behaved with others in a previous game"
+                        },
+                        {
+                            "name": "noncooperative",
+                            "size": 28,
+                            "desc": "Participants were provided with the information that their partner behaved noncooperatively"
+                        },
+                        {
+                            "name": "cooperative",
+                            "size": 27,
+                            "desc": "Participants were provided with the information that their partner behaved cooperatively"
+                        }
+                    ]
+                },
+                {
+                    "name": "Partner selection",
+                    "children": [
+                        {
+                            "name": "present",
+                            "size": 20,
+                            "desc": "Participants can be chosen for interactions based on past behavior"
+                        },
+                        {
+                            "name": "absent",
+                            "size": 16,
+                            "desc": "Participants can not be chosen for interactions based on past behavior"
+                        }
+                    ]
+                },
+                {
+                    "name": "Gossip",
+                    "children": [
+                        {
+                            "name": "Present",
+                            "size": 8,
+                            "desc": "Gossip was present in the study"
+                        },
+                        {
+                            "name": "Absent",
+                            "size": 5,
+                            "desc": "Gossip was absent in the study"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Uncertainty",
+            "children": [
+                {
+                    "name": "Uncertainty level",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 81,
+                            "desc": "The treatment was classified as having a relative low level of uncertainty"
+                        },
+                        {
+                            "name": "High",
+                            "size": 74,
+                            "desc": "The treatment was classified as having a relative high level of uncertainty"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 15,
+                            "desc": "The treatment was classified as having a relative medium level of uncertainty"
+                        }
+                    ]
+                },
+                {
+                    "name": "Uncertainty target",
+                    "children": [
+                        {
+                            "name": "Return from public account",
+                            "size": 28,
+                            "desc": "Payoff obtained from the tokens invested in the public account"
+                        },
+                        {
+                            "name": "Incentive structure",
+                            "size": 28,
+                            "desc": "Information about how payoffs in the game are determined. Stochastic vs deterministic payoff structures are included in this category"
+                        },
+                        {
+                            "name": "MPCR",
+                            "size": 26,
+                            "desc": "The ratio of benefits to costs for a member to contribute one monetary unit to the group account"
+                        },
+                        {
+                            "name": "Threshold",
+                            "size": 24,
+                            "desc": "The minimum threshold of total contribution by all group members for the public good to be provided or the occurrence of a loss (e.g., in case of public bad games)"
+                        },
+                        {
+                            "name": "Endowment size",
+                            "size": 23,
+                            "desc": "Information about maximum number of tokens participants were endowed with (or could contribute/harvest)"
+                        },
+                        {
+                            "name": "Provision probability",
+                            "size": 18,
+                            "desc": "Probability to obtain a group payoff as a result of the public goods allocation"
+                        },
+                        {
+                            "name": "Return from private account",
+                            "size": 14,
+                            "desc": "Payoff obtained from the tokens invested in the private account"
+                        },
+                        {
+                            "name": "Loss",
+                            "size": 9,
+                            "desc": "Negative payoff that resulted in a loss of resources due to endogenous (e.g., not reaching a threshold) or exogenous  (e.g., shocks) factors"
+                        },
+                        {
+                            "name": "Replenishment rate",
+                            "size": 5,
+                            "desc": "The replenishment rate in the resource dilemma. The remaining resource in the common pool is multiplied by the replenishment rate (\u00e2\u0089\u00a51) after each trial"
+                        },
+                        {
+                            "name": "Feedback",
+                            "size": 5,
+                            "desc": "information participants receive after each decision round"
+                        },
+                        {
+                            "name": "Group size",
+                            "size": 3,
+                            "desc": "Overall number of people affected by the outcome of the game"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Matching",
+            "children": [
+                {
+                    "name": "Partner choice",
+                    "children": [
+                        {
+                            "name": "Exogenous",
+                            "size": 79,
+                            "desc": "Players are matched based on some (non-random) characteristic (e.g., personality, prior play)"
+                        },
+                        {
+                            "name": "Endogenous",
+                            "size": 8,
+                            "desc": "Players choose with whom to interact"
+                        },
+                        {
+                            "name": "Migration",
+                            "size": 8,
+                            "desc": "Players can choose to enter different groups (but not specific players, as all players can migrate)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Matching",
+                    "children": [
+                        {
+                            "name": "Partner",
+                            "size": 51,
+                            "desc": "Participants interact with the same partner for multiple trials"
+                        },
+                        {
+                            "name": "Stranger",
+                            "size": 48,
+                            "desc": "Participants interact with one person for one trial (i.e., one-shot), or switch partners after each trial across many trials (i.e., one-shot repeated)"
+                        },
+                        {
+                            "name": "Partner's choice",
+                            "size": 3,
+                            "desc": "Partner choice involves matching of participants based on either the players' or the experimenter's decision. If partner choice is in place, code for partner choice"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Intergroup Competition ",
+            "children": [
+                {
+                    "name": "Intergroup competition",
+                    "children": [
+                        {
+                            "name": "Individual group",
+                            "size": 70,
+                            "desc": "Group of individuals making decisions that only affect that group"
+                        },
+                        {
+                            "name": "intergroup competition",
+                            "size": 45,
+                            "desc": "Two groups and the higher earning group wins, or earns more"
+                        },
+                        {
+                            "name": "intergroup comparison",
+                            "size": 28,
+                            "desc": "Two groups and the outcomes of the two groups are compared, but no tangible consequence results from the comparison"
+                        },
+                        {
+                            "name": "Intergroup Prisoner's Dilemma",
+                            "size": 18,
+                            "desc": "\u00e2\u0080\u009cThe individuals\u00e2\u0080\u0099 payoff for defecting or withholding contribution is higher than his or her payoff for contribution, regardless of what all others (ingroup and outgroup) players do. Withholding contribution, in other words, is the dominant individual strategy. The payoff for i when all in-group members contribute is higher than i\u00e2\u0080\u0099s payoff when none contributes, regardless of the number of out-group contributors. Thus, the dominant group strategy is for all group members to contribute. Player i\u00e2\u0080\u0099s payoff when all players in both groups contribute is lower than his or her payoff when none contributes. This means that the collectively (i.e., Pareto) optimal outcome, the one that maximizes the collective payoff to all players in both groups, is for all of them to withhold contribution\u00e2\u0080\u009d (Goren & Bornstein, 2000, p. 701)."
+                        },
+                        {
+                            "name": "intergroup harmony",
+                            "size": 3,
+                            "desc": "Two groups and decisions to cooperate within either group benefit both groups"
+                        },
+                        {
+                            "name": "intergroup conflict",
+                            "size": 3,
+                            "desc": "two groups and cooperating with own group, harms other group"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Perception of the partner(s)",
+            "children": [
+                {
+                    "name": "Partner perception",
+                    "children": [
+                        {
+                            "name": "Prosocial/Trustworthy",
+                            "size": 65,
+                            "desc": "Partner is perceived to be prosocial/trustworthy"
+                        },
+                        {
+                            "name": "Competent",
+                            "size": 18,
+                            "desc": "Partner is perceived to be competent"
+                        },
+                        {
+                            "name": "Moral",
+                            "size": 18,
+                            "desc": "Partner is perceived to be moral"
+                        },
+                        {
+                            "name": "Attractive",
+                            "size": 16,
+                            "desc": "Partner is perceived to be physically attractive"
+                        },
+                        {
+                            "name": "Liking",
+                            "size": 11,
+                            "desc": "Participants report to like the partner"
+                        },
+                        {
+                            "name": "Proself/Untrustworthy",
+                            "size": 9,
+                            "desc": "Partner is perceived to be proself/untrustworthy"
+                        },
+                        {
+                            "name": "Status",
+                            "size": 7,
+                            "desc": "Participans are perceived to have a relative social or professional standing"
+                        },
+                        {
+                            "name": "Positive ",
+                            "size": 3,
+                            "desc": "Partner is generally perceived with a positive connotation (coded when the other categories did not apply)"
+                        },
+                        {
+                            "name": "Close",
+                            "size": 3,
+                            "desc": "Partner is perceived to be close"
+                        },
+                        {
+                            "name": "Familiar",
+                            "size": 2,
+                            "desc": "Partner is perceived to be familiar"
+                        },
+                        {
+                            "name": "Dominant",
+                            "size": 2,
+                            "desc": "Partner is perceived to be dominant"
+                        },
+                        {
+                            "name": "Unattractive",
+                            "size": 2,
+                            "desc": "Partner is perceived to be physically unattractive"
+                        },
+                        {
+                            "name": "Negative",
+                            "size": 1,
+                            "desc": "Partner is generally perceived with a negative connotation  (coded when the other categories did not apply)"
+                        },
+                        {
+                            "name": "Warm",
+                            "size": 1,
+                            "desc": "Partner is perceived to be warm"
+                        },
+                        {
+                            "name": "Control",
+                            "size": 1,
+                            "desc": "Partner is perceived to be controlling"
+                        }
+                    ]
+                },
+                {
+                    "name": "Partner perception level",
+                    "children": [
+                        {
+                            "name": "high",
+                            "size": 43,
+                            "desc": "The partner is perceived as high in reference to a specific quality (this may be manipulated or measured in the study)"
+                        },
+                        {
+                            "name": "low",
+                            "size": 36,
+                            "desc": "The partner is perceived as low in reference to a specific quality (this may be manipulated or measured in the study)"
+                        },
+                        {
+                            "name": "control",
+                            "size": 20,
+                            "desc": "A control condition whereby no information is provided in reference to a specific quality"
+                        }
+                    ]
+                },
+                {
+                    "name": "Gender of the partner",
+                    "children": [
+                        {
+                            "name": "F",
+                            "size": 26,
+                            "desc": "Female"
+                        },
+                        {
+                            "name": "M",
+                            "size": 26,
+                            "desc": "Male"
+                        }
+                    ]
+                },
+                {
+                    "name": "Similarity level",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 14,
+                            "desc": "The similarity between the participant and their partner(s) is low"
+                        },
+                        {
+                            "name": "High",
+                            "size": 14,
+                            "desc": "The similarity between the participant and their partner(s) is high"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "The similarity between the participant and their partner(s) is medium"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Taxation",
+            "children": [
+                {
+                    "name": "Minimum contribution",
+                    "children": [
+                        {
+                            "name": "Mandatory Minimum",
+                            "size": 64,
+                            "desc": "Minimum contribution is automatically contributed to the public good"
+                        },
+                        {
+                            "name": "Suggested Minimum",
+                            "size": 33,
+                            "desc": "A minimum contribution is suggested, but not automatically transferred. May be enforced (e.g., through punishment)"
+                        },
+                        {
+                            "name": "None",
+                            "size": 1,
+                            "desc": "No minimum contribution"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Incentives",
+            "children": [
+                {
+                    "name": "Game incentive",
+                    "children": [
+                        {
+                            "name": "Monetary",
+                            "size": 55,
+                            "desc": "Decisions in the game resulted in monetary outcomes, often converted from game points"
+                        },
+                        {
+                            "name": "Hypothetical",
+                            "size": 27,
+                            "desc": "Decisions in the game resulted in outcomes with hypothetical value for participants (e.g., points)"
+                        },
+                        {
+                            "name": "Non-monetary Material",
+                            "size": 6,
+                            "desc": "Decisions in the game resulted in outcomes involving some amount of other (non-monetary) material resource (e.g., candies, school supplies)"
+                        },
+                        {
+                            "name": "Non-monetary Social",
+                            "size": 1,
+                            "desc": "Decisions in the game resulted players receiving social incentives, such as blame or praise, from others based on the outcome of the game"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Game Duration",
+            "children": [
+                {
+                    "name": "One-shot vs repeated",
+                    "children": [
+                        {
+                            "name": "Repeated",
+                            "size": 44,
+                            "desc": "Participants played the game repeatedly with the same person"
+                        },
+                        {
+                            "name": "One-shot",
+                            "size": 40,
+                            "desc": "Participants played the game with the same person only once"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Time Pressure",
+            "children": [
+                {
+                    "name": "Time pressure",
+                    "children": [
+                        {
+                            "name": "time pressure",
+                            "size": 40,
+                            "desc": "Participants are given a limited amount of time and asked to make their decision as quickly as possible"
+                        },
+                        {
+                            "name": "time delay",
+                            "size": 37,
+                            "desc": "Participants are given relatively more time to think carefully about their decision before making it"
+                        },
+                        {
+                            "name": "Control",
+                            "size": 7,
+                            "desc": "Participants do not receive any instructions regarding the time they have to spend to make a decision"
+                        }
+                    ]
+                },
+                {
+                    "name": "Decision time",
+                    "children": [
+                        {
+                            "name": "Fast",
+                            "size": 4,
+                            "desc": "Participants were categorized as fast in providing their decisions"
+                        },
+                        {
+                            "name": "Slow",
+                            "size": 4,
+                            "desc": "Participants were categorized as slow in providing their decisions"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Emotions",
+            "children": [
+                {
+                    "name": "Emotion",
+                    "children": [
+                        {
+                            "name": "Neutral",
+                            "size": 36,
+                            "desc": "Often used as a baseline in studies that elicit emotions. Participants are exposed either to stimuli with neutral emotional valence or engage in a non-emotional control task"
+                        },
+                        {
+                            "name": "Anger",
+                            "size": 24,
+                            "desc": "The response to interference with pursuit of a goal the participant cares about (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Empathy",
+                            "size": 13,
+                            "desc": "\u00e2\u0080\u009cOther\u00e2\u0080\u0090centered\u00e2\u0080\u009d emotion, which can result from observing another individual in need and imagining the person's situation (Batson, 1991)"
+                        },
+                        {
+                            "name": "Sadness",
+                            "size": 12,
+                            "desc": "The response to the loss of an object or person to which a person is very attached (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Guilt",
+                            "size": 10,
+                            "desc": "The response when a person regrets having violated an agreement, principle, or value (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Disgust",
+                            "size": 10,
+                            "desc": "The repulsion by the sight, smell, or taste of something; disgust may also be provoked by people whose actions are revolting or by ideas that are offensive (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Happiness",
+                            "size": 8,
+                            "desc": "Feelings that are enjoyed, that are sought by the person (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Fear",
+                            "size": 6,
+                            "desc": "The response to the threat of harm (physical or psychological; Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Other emotion",
+                            "size": 5,
+                            "desc": "None of the emotion categories apply"
+                        },
+                        {
+                            "name": "Self-consciousness",
+                            "size": 5,
+                            "desc": "Emotion(s) that involve self-reflection and self-evaluation (e.g., guilt, shame, pride, embarrassment; Tagney, 1999)"
+                        },
+                        {
+                            "name": "Gratitude",
+                            "size": 5,
+                            "desc": "Pleasant feelings toward a target about the benefits received"
+                        },
+                        {
+                            "name": "Shame",
+                            "size": 5,
+                            "desc": "The response when a person feels that if their true nature was to be known, others would be repulsed (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Disappointment",
+                            "size": 3,
+                            "desc": "A response to unfulfilled positive expectations (Van Dijk et al., 1999)"
+                        },
+                        {
+                            "name": "Regret",
+                            "size": 2,
+                            "desc": "Emotion elicited by a comparison between the outcome of a choice (reality) and the better outcome of foregone rejected alternatives (what might have been) (Coricelli et al. 2007)"
+                        },
+                        {
+                            "name": "Surprise",
+                            "size": 2,
+                            "desc": "The response to a sudden unexpected event (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Contempt",
+                            "size": 1,
+                            "desc": "Feeling morally superior to another person (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Envy",
+                            "size": 1,
+                            "desc": "The response to another person\u00e2\u0080\u0099s rewards which the envious person wishes to have (Ekman & Cordaro, 2011)."
+                        },
+                        {
+                            "name": "Embarrassment",
+                            "size": 1,
+                            "desc": "The response when people feel they have broken a social rule, and also when a person has been praised (Ekman & Cordaro, 2011)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Emotion valence",
+                    "children": [
+                        {
+                            "name": "positive",
+                            "size": 19,
+                            "desc": "The participant experiences an emotion considered as pleasant and attractive"
+                        },
+                        {
+                            "name": "negative",
+                            "size": 17,
+                            "desc": "The participant experiences an emotion considered as unpleasant and unattractive"
+                        },
+                        {
+                            "name": "neutral",
+                            "size": 7,
+                            "desc": "The participant experiences an emotional state that can not be classified as positive or negative"
+                        }
+                    ]
+                },
+                {
+                    "name": "Partner's emotion display",
+                    "children": [
+                        {
+                            "name": "Other",
+                            "size": 15,
+                            "desc": "None of the emotion display categories apply"
+                        },
+                        {
+                            "name": "Facial",
+                            "size": 12,
+                            "desc": "Participants learn about partner's emotions via facial expressions"
+                        },
+                        {
+                            "name": "Posture",
+                            "size": 1,
+                            "desc": "Participants learn about the partner's emotions via body position"
+                        },
+                        {
+                            "name": "Vocal",
+                            "size": 1,
+                            "desc": "Participants learn about the partner's emotions via vocal cues (e.g., tone of voice)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Partner's emotion",
+                    "children": [
+                        {
+                            "name": "Neutral",
+                            "size": 8,
+                            "desc": "Often used as a baseline in studies that elicit emotions. Participants are exposed either to stimuli with neutral emotional valence or engage in a non-emotional control task"
+                        },
+                        {
+                            "name": "Anger",
+                            "size": 7,
+                            "desc": "The response to interference with our pursuit of a goal an agent cares about (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Happiness",
+                            "size": 4,
+                            "desc": "Feelings that are enjoyed, that are sought by the person (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Disappointment",
+                            "size": 4,
+                            "desc": "Emotion experienced in response to unfulfilled positive expectations (Van Dijk et al., 1999)"
+                        },
+                        {
+                            "name": "Guilt",
+                            "size": 2,
+                            "desc": "The response when a person regrets having violated an agreement, principle, or value (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Embarrassment",
+                            "size": 1,
+                            "desc": "The response when people feel they have broken a social rule, and also when a person has been praised (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Disgust",
+                            "size": 1,
+                            "desc": "The repulsion by the sight, smell, or taste of something; disgust may also be provoked by people whose actions are revolting or by ideas that are offensive (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Shame",
+                            "size": 1,
+                            "desc": "The response when a person feels that if their true nature was to be known, others would be repulsed (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Fear",
+                            "size": 1,
+                            "desc": "The response to the threat of harm, physical or psychological (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Empathy",
+                            "size": 1,
+                            "desc": "\u00e2\u0080\u009cOther\u00e2\u0080\u0090centered\u00e2\u0080\u009d emotion, which can result from observing another individual in need and imagining the person's situation (Batson, 1991)"
+                        },
+                        {
+                            "name": "Envy",
+                            "size": 1,
+                            "desc": "The response to another person\u00e2\u0080\u0099s rewards which the envious person wishes to have (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Self-consciousness",
+                            "size": 1,
+                            "desc": "Emotion(s) that involve self-reflection and self-evaluation (e.g., guilt, shame, pride, embarrassment; Tagney, 1999)"
+                        },
+                        {
+                            "name": "Contempt",
+                            "size": 1,
+                            "desc": "Feeling morally superior to another person (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Gratitude",
+                            "size": 1,
+                            "desc": "Pleasant feelings toward a target about the benefits received"
+                        },
+                        {
+                            "name": "Other emotion",
+                            "size": 1,
+                            "desc": "None of the emotion categories apply"
+                        },
+                        {
+                            "name": "Surprise",
+                            "size": 1,
+                            "desc": "The response to a sudden unexpected event (Ekman & Cordaro, 2011)"
+                        },
+                        {
+                            "name": "Regret",
+                            "size": 1,
+                            "desc": "Emotion elicited by a comparison between the outcome of a choice (reality) and the better outcome of foregone rejected alternatives (what might have been) (Coricelli et al. 2007)"
+                        },
+                        {
+                            "name": "Sadness",
+                            "size": 1,
+                            "desc": "The response to the loss of an object or person to which you are very attached (Ekman & Cordaro, 2011)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Emotion intensity",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 6,
+                            "desc": "Low strength of the experience emotion"
+                        },
+                        {
+                            "name": "High",
+                            "size": 4,
+                            "desc": "High strength of the experience emotion"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Middle strength of the experience emotion"
+                        }
+                    ]
+                },
+                {
+                    "name": "Partner's emotion valence",
+                    "children": [
+                        {
+                            "name": "negative",
+                            "size": 3,
+                            "desc": "The partner experiences or displays an emotional state that can not be classified as positive or negative"
+                        },
+                        {
+                            "name": "positive",
+                            "size": 3,
+                            "desc": "The partner experiences or displays an emotion considered as pleasant and attractive"
+                        },
+                        {
+                            "name": "neutral",
+                            "size": 2,
+                            "desc": "The partner experiences or displays an emotion considered as unpleasant and unattractive"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Partner type",
+            "children": [
+                {
+                    "name": "Partner type",
+                    "children": [
+                        {
+                            "name": "Computer",
+                            "size": 36,
+                            "desc": "Computerized opponent. Players must be informed to be interacting with a computer"
+                        },
+                        {
+                            "name": "Stranger",
+                            "size": 28,
+                            "desc": "General others outside the game (in formulations such as 'most people'; 'others in general'...)"
+                        },
+                        {
+                            "name": "Peer",
+                            "size": 6,
+                            "desc": "Other player(s) of the same role as the participant (unless the participant is a Leader)"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 2,
+                            "desc": "Partner types not included in the other categories"
+                        },
+                        {
+                            "name": "Unspecified",
+                            "size": 2,
+                            "desc": "The type is not specified"
+                        },
+                        {
+                            "name": "Experimenter",
+                            "size": 2,
+                            "desc": "The person in charge of running the experiment (such as the principle investigator, research assistant)"
+                        },
+                        {
+                            "name": "Leader",
+                            "size": 1,
+                            "desc": "A person with some form of power over the other players"
+                        },
+                        {
+                            "name": "Institution",
+                            "size": 1,
+                            "desc": "Institutional mechanism inside (e.g., impersonal sanctioning system) or outside (e.g., public institutions like government)"
+                        },
+                        {
+                            "name": "Network",
+                            "size": 1,
+                            "desc": "A peer in a game with network structure"
+                        },
+                        {
+                            "name": "Third Party",
+                            "size": 1,
+                            "desc": "A person who does not interact with the participant in the main game, e.g. a third-party punisher"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Game Type",
+            "children": [
+                {
+                    "name": "Game type",
+                    "children": [
+                        {
+                            "name": "Other Game",
+                            "size": 36,
+                            "desc": "None of the game type categories apply"
+                        },
+                        {
+                            "name": "Prisoner's Dilemma Game",
+                            "size": 33,
+                            "desc": "In the standard prisoner's dilemma game, the relative value of the four outcomes reflects the following relationships: DC > CC > DD > CD"
+                        },
+                        {
+                            "name": "Continuous Public Goods Game",
+                            "size": 12,
+                            "desc": "In the continuous public goods game, subjects are provided an endowment and decide any portion to allocate to the public good, and the remaining about is kept for themselves. The group contributions in the public pool are multiplied by a factor (greater than one and less than the number of players, N) and it is divided among players, regardless of the players contributions"
+                        },
+                        {
+                            "name": "Chicken Game",
+                            "size": 8,
+                            "desc": "In the standard chicken game, the relative value of the four outcomes reflects the following relationships: DC > CC > CD > DD"
+                        },
+                        {
+                            "name": "Step-level Public Goods Game",
+                            "size": 6,
+                            "desc": "In the step level public goods game, subjects are provided an endowment and decide any portion of the endowment to allocate to the public good, and the remaining amonut is kept for themselves. The group contributions to the public pool are multiplied by a factor and it is divided among players (regardless of their contributions) only if a certain threshold (provision point) is met"
+                        },
+                        {
+                            "name": "Stag Hunt",
+                            "size": 5,
+                            "desc": "In the standard stag hunt, the relative value of the four outcomes reflects the following relationships: CC >  DC \u00e2\u0089\u00a5 DD > CD"
+                        },
+                        {
+                            "name": "Resource Dilemma",
+                            "size": 5,
+                            "desc": "In the standard resource dilemma game, players harvest resources from a common resource pool of known size, and after each trial the pool is replenished at a predetermined rate and is exhausted when the withdrawals exceed the resource in the pool"
+                        },
+                        {
+                            "name": "Intergroup Prisoner's Dilemma",
+                            "size": 4,
+                            "desc": "In the intergroup prisoner's dilemma game, different groups of players play together with a PDG structure. However, payoff to a player is an increasing (or at least nondecreasing) function of the total contribution made by members of his or her own group and a decreasing (or at least nonincreasing) function of the total contribution made by members of the opposing group"
+                        },
+                        {
+                            "name": "Dictator Game",
+                            "size": 2,
+                            "desc": "In standard dictator game, participants are assigned to either the role of dictator or recipient. The dictator is given a fixed amount of money and is entitled to decide how much money to keep and how much money to give to the recipient"
+                        },
+                        {
+                            "name": "Trust Game - receiver",
+                            "size": 2,
+                            "desc": "In the standard trust game, players are provided an endowment, paired, and assigned to either the role of sender or receiver. At stage one of the game, the sender may either pass nothing, or any portion of the endowment to the receiver. The sender then keeps the remaining endowment for themselves. The experimenter then triples the amount sent to the receiver. In stage two, the receiver may either pass nothing, or pass any portion of the money received back to the sender. "
+                        },
+                        {
+                            "name": "Trust Game - sender",
+                            "size": 2,
+                            "desc": "In the standard trust game, players are provided an endowment, paired, and assigned to either the role of sender or receiver. At stage one of the game, the sender may either pass nothing, or any portion of the endowment to the receiver. The sender then keeps the remaining endowment for themselves. The experimenter then triples the amount sent to the receiver. In stage two, the receiver may either pass nothing, or pass any portion of the money received back to the sender "
+                        },
+                        {
+                            "name": "Ultimatum game - Responder",
+                            "size": 2,
+                            "desc": "In standard ultimatum game, the first player proposes how to divide a sum of money with the second party. If the second player rejects this division, neither gets anything. If the second player accepts, the first gets her demand and the second gets the rest"
+                        },
+                        {
+                            "name": "Intergroup Prisoner's Dilemma-Maximizing Differences",
+                            "size": 1,
+                            "desc": "The game is played by two groups. Each player receives an endowment and can contribute any portion to the group\u00e2\u0080\u0099s fund. For each token contributed by a member of the in-group, each of its members, including the contributor, gains a specific amount and each member of the out-group loses a specified amount. The tokens kept for oneself are doubled."
+                        },
+                        {
+                            "name": "Ultimatum game - Proposer",
+                            "size": 1,
+                            "desc": "In standard ultimatum game, the first player proposes how to divide a sum of money with the second party. If the second player rejects this division, neither gets anything. If the second player accepts, the first gets her demand and the second gets the rest"
+                        },
+                        {
+                            "name": "Intergroup Public Goods Game",
+                            "size": 1,
+                            "desc": "In the intergroup public goods game, different groups of players play together with a PGD structure. However, payoff to a player is an increasing (or at least nondecreasing) function of the total contribution made by members of his or her own group and a decreasing (or at least nonincreasing) function of the total contribution made by members of the opposing group."
+                        }
+                    ]
+                },
+                {
+                    "name": "Behavior in different game",
+                    "children": [
+                        {
+                            "name": "Dictator Game",
+                            "size": 11,
+                            "desc": "In standard dictator game, participants are assigned to either the role of dictator or recipient. The dictator is given a fixed amount of money and is entitled to decide how much money to keep and how much money to give to the recipient"
+                        },
+                        {
+                            "name": "Ultimatum game - Responder",
+                            "size": 5,
+                            "desc": "In standard ultimatum game, the first player proposes how to divide a sum of money with the second party. If the second player rejects this division, neither gets anything. If the second player accepts, the first gets her demand and the second gets the rest"
+                        },
+                        {
+                            "name": "Ultimatum game - Proposer",
+                            "size": 5,
+                            "desc": "In standard ultimatum game, the first player proposes how to divide a sum of money with the second party. If the second player rejects this division, neither gets anything. If the second player accepts, the first gets her demand and the second gets the rest"
+                        },
+                        {
+                            "name": "Prisoner's Dilemma Game",
+                            "size": 4,
+                            "desc": "In the standard prisoner's dilemma game, the relative value of the four outcomes reflects the following relationships: DC > CC > DD > CD"
+                        },
+                        {
+                            "name": "Other Game",
+                            "size": 3,
+                            "desc": "None of the game type categories apply"
+                        },
+                        {
+                            "name": "Trust Game - sender",
+                            "size": 3,
+                            "desc": "In the standard trust game, players are provided an endowment, paired, and assigned to either the role of sender or receiver. At stage one of the game, the sender may either pass nothing, or any portion of the endowment to the receiver. The sender then keeps the remaining endowment for themselves. The experimenter then triples the amount sent to the receiver. In stage two, the receiver may either pass nothing, or pass any portion of the money received back to the sender "
+                        },
+                        {
+                            "name": "Trust Game - receiver",
+                            "size": 2,
+                            "desc": "In the standard trust game, players are provided an endowment, paired, and assigned to either the role of sender or receiver. At stage one of the game, the sender may either pass nothing, or any portion of the endowment to the receiver. The sender then keeps the remaining endowment for themselves. The experimenter then triples the amount sent to the receiver. In stage two, the receiver may either pass nothing, or pass any portion of the money received back to the sender. "
+                        },
+                        {
+                            "name": "Intergroup Public Goods Game",
+                            "size": 1,
+                            "desc": "In the intergroup public goods game, different groups of players play together with a PGD structure. However, payoff to a player is an increasing (or at least nondecreasing) function of the total contribution made by members of his or her own group and a decreasing (or at least nonincreasing) function of the total contribution made by members of the opposing group."
+                        },
+                        {
+                            "name": "Resource Dilemma",
+                            "size": 1,
+                            "desc": "In the standard resource dilemma game, players harvest resources from a common resource pool of known size, and after each trial the pool is replenished at a predetermined rate and is exhausted when the withdrawals exceed the resource in the pool"
+                        },
+                        {
+                            "name": "Intergroup Prisoner's Dilemma-Maximizing Differences",
+                            "size": 1,
+                            "desc": "The game is played by two groups. Each player receives an endowment and can contribute any portion to the group\u00e2\u0080\u0099s fund. For each token contributed by a member of the in-group, each of its members, including the contributor, gains a specific amount and each member of the out-group loses a specified amount. The tokens kept for oneself are doubled."
+                        },
+                        {
+                            "name": "Stag Hunt",
+                            "size": 1,
+                            "desc": "In the standard stag hunt, the relative value of the four outcomes reflects the following relationships: CC >  DC \u00e2\u0089\u00a5 DD > CD"
+                        },
+                        {
+                            "name": "Continuous Public Goods Game",
+                            "size": 1,
+                            "desc": "In the continuous public goods game, subjects are provided an endowment and decide any portion to allocate to the public good, and the remaining about is kept for themselves. The group contributions in the public pool are multiplied by a factor (greater than one and less than the number of players, N) and it is divided among players, regardless of the players contributions"
+                        },
+                        {
+                            "name": "Chicken Game",
+                            "size": 1,
+                            "desc": "In the standard chicken game, the relative value of the four outcomes reflects the following relationships: DC > CC > CD > DD"
+                        },
+                        {
+                            "name": "Intergroup Prisoner's Dilemma",
+                            "size": 1,
+                            "desc": "In the intergroup prisoner's dilemma game, different groups of players play together with a PDG structure. However, payoff to a player is an increasing (or at least nondecreasing) function of the total contribution made by members of his or her own group and a decreasing (or at least nonincreasing) function of the total contribution made by members of the opposing group"
+                        },
+                        {
+                            "name": "Step-level Public Goods Game",
+                            "size": 1,
+                            "desc": "In the step level public goods game, subjects are provided an endowment and decide any portion of the endowment to allocate to the public good, and the remaining amonut is kept for themselves. The group contributions to the public pool are multiplied by a factor and it is divided among players (regardless of their contributions) only if a certain threshold (provision point) is met"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Priming",
+            "children": [
+                {
+                    "name": "Primed construct",
+                    "children": [
+                        {
+                            "name": "Other",
+                            "size": 35,
+                            "desc": "Other primes"
+                        },
+                        {
+                            "name": "Neutral",
+                            "size": 28,
+                            "desc": "No prime or a neutral prime"
+                        },
+                        {
+                            "name": "Cooperation",
+                            "size": 20,
+                            "desc": "A prime that may increase cooperation; includes primes about the concept of cooperation, community, interdependence, shared identity"
+                        },
+                        {
+                            "name": "Competition",
+                            "size": 13,
+                            "desc": "A prime that may increase non-cooperation; such as conflict, business or economic context"
+                        },
+                        {
+                            "name": "Religion",
+                            "size": 8,
+                            "desc": "A prime that relates to religion"
+                        },
+                        {
+                            "name": "Power",
+                            "size": 6,
+                            "desc": "A prime that relates to the concept of power"
+                        },
+                        {
+                            "name": "Morality",
+                            "size": 6,
+                            "desc": "A prime that relates to the concept of morality"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Ethnicity",
+            "children": [
+                {
+                    "name": "Ethnicity (US)",
+                    "children": [
+                        {
+                            "name": "White",
+                            "size": 35,
+                            "desc": "Europe, Middle East, North Africa"
+                        },
+                        {
+                            "name": "Black or African American",
+                            "size": 22,
+                            "desc": "Africa"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 10,
+                            "desc": "nan"
+                        },
+                        {
+                            "name": "Asian",
+                            "size": 5,
+                            "desc": "Far East, Southeast Asia, Indian"
+                        },
+                        {
+                            "name": "American Indian or Alaska Native",
+                            "size": 1,
+                            "desc": "North America, South America, Central America"
+                        },
+                        {
+                            "name": "Native Hawaiian or Other Pacific Islander",
+                            "size": 1,
+                            "desc": "Hawaii, Guam, Samoa, Pacific Islands"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Acquaintance",
+            "children": [
+                {
+                    "name": "Relationship with the partner",
+                    "children": [
+                        {
+                            "name": "stranger",
+                            "size": 31,
+                            "desc": "Their partner is a stranger"
+                        },
+                        {
+                            "name": "friend",
+                            "size": 26,
+                            "desc": "Their partner is a friend"
+                        },
+                        {
+                            "name": "acquaintance",
+                            "size": 11,
+                            "desc": "Their partner is an acquaintance"
+                        },
+                        {
+                            "name": "spouse",
+                            "size": 2,
+                            "desc": "Their partner is a spouse"
+                        },
+                        {
+                            "name": "sibling",
+                            "size": 1,
+                            "desc": "Their partner is a sibling"
+                        },
+                        {
+                            "name": "parent",
+                            "size": 1,
+                            "desc": "Their partner is a parent"
+                        },
+                        {
+                            "name": "son/daughter",
+                            "size": 1,
+                            "desc": "Their partner is a son/daughter"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Expectations",
+            "children": [
+                {
+                    "name": "Expectations level",
+                    "children": [
+                        {
+                            "name": "High",
+                            "size": 28,
+                            "desc": "Participants have medium expectations about the other player(s)' behavior in the game"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 28,
+                            "desc": "Participants have low expectations about the other player(s)' behavior in the game"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 3,
+                            "desc": "Participants have medium expectations about the other player(s)' behavior in the game"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Institution  ",
+            "children": [
+                {
+                    "name": "Rebate vs refund",
+                    "children": [
+                        {
+                            "name": "Full Refund",
+                            "size": 28,
+                            "desc": "Participants are fully refunded any amount to contributed to the public good, often depending on contributions made by others"
+                        },
+                        {
+                            "name": "Absent",
+                            "size": 25,
+                            "desc": "No refund/rebate is provided"
+                        },
+                        {
+                            "name": "Partial Rebate",
+                            "size": 10,
+                            "desc": "Participants receive a partial refund (i.e., rebate) for their contribution to the public good, often depending on contributions made by others"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Motivational Orientation",
+            "children": [
+                {
+                    "name": "Motivational orientation",
+                    "children": [
+                        {
+                            "name": "Cooperative",
+                            "size": 25,
+                            "desc": "Cooperative goals aim to equalize and/or maximize joint outcomes"
+                        },
+                        {
+                            "name": "Competitive",
+                            "size": 22,
+                            "desc": "Competitive goals aim to maximize the relative difference between own and the others\u00e2\u0080\u0099 outcome"
+                        },
+                        {
+                            "name": "Individualistic",
+                            "size": 15,
+                            "desc": "Individualistic goals aim to maximize own outcomes, regardless of the others\u00e2\u0080\u0099 outcomes"
+                        }
+                    ]
+                },
+                {
+                    "name": "Endogenous motivational orientation",
+                    "children": [
+                        {
+                            "name": "Individualistic",
+                            "size": 6,
+                            "desc": "Individualistic goals aim to maximize own outcomes, regardless of the others\u00e2\u0080\u0099 outcomes"
+                        },
+                        {
+                            "name": "Cooperative",
+                            "size": 6,
+                            "desc": "Cooperative goals aim to equalize and/or maximize joint outcomes"
+                        },
+                        {
+                            "name": "Competitive",
+                            "size": 2,
+                            "desc": "Competitive goals aim to maximize the relative difference between own and the others\u00e2\u0080\u0099 outcome"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Religiosity",
+            "children": [
+                {
+                    "name": "Religiosity operationalization",
+                    "children": [
+                        {
+                            "name": "Religious affiliation",
+                            "size": 16,
+                            "desc": "Participants reported to be affiliated to a specific religion"
+                        },
+                        {
+                            "name": "Religious attendance",
+                            "size": 8,
+                            "desc": "Participants reported the frequency of attending religious services (e.g., going to church)"
+                        },
+                        {
+                            "name": "Religious beliefs",
+                            "size": 6,
+                            "desc": "Participants reported beliefs toward the religious sphere (e.g., beliefs in God, extent to which they consider themselves as religious) "
+                        },
+                        {
+                            "name": "Religious setting",
+                            "size": 3,
+                            "desc": "Participants interacted in a religious setting (e.g., church)"
+                        }
+                    ]
+                },
+                {
+                    "name": "Religious exposure level",
+                    "children": [
+                        {
+                            "name": "High",
+                            "size": 9,
+                            "desc": "Participants were classified as having a relative high religious exposure"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 7,
+                            "desc": "Participants were classified as having a relative low religious exposure"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 4,
+                            "desc": "Participants were classified as having a relative medium religious exposure"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Preferences for Conditional Cooperation",
+            "children": [
+                {
+                    "name": "Preference for conditional cooperation",
+                    "children": [
+                        {
+                            "name": "Conditional cooperators",
+                            "size": 15,
+                            "desc": "Using the strategy method of contributions to public goods by Fischbacher et al. (2001), participants who had an increasing amount of contributions or had a significant positive slope of own contribution with average group contribution"
+                        },
+                        {
+                            "name": "Freeriders",
+                            "size": 15,
+                            "desc": "Using the strategy method of contributions to public goods by Fischbacher et al. (2001), participants who always contributed nothing to the public good"
+                        },
+                        {
+                            "name": "Others",
+                            "size": 14,
+                            "desc": "Using the strategy method of contributions to public goods by Fischbacher et al. (2001), participants unable to be classified as (un)conditional cooperators, free riders or hump shaped contributors"
+                        },
+                        {
+                            "name": "Hump-shaped contributors",
+                            "size": 10,
+                            "desc": "Using the strategy method of contributions to public goods by Fischbacher et al. (2001), participants who initially provide increasing amounts to the public good according to increasing average group contributions, but then at some point give a significantly decreasing amount to the public good"
+                        },
+                        {
+                            "name": "Unconditional cooperator",
+                            "size": 2,
+                            "desc": "Using the strategy method of contributions to public goods by Fischbacher et al. (2001), participants who always contributed the full amount to the public good"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Experimental Setting",
+            "children": [
+                {
+                    "name": "Experimental setting",
+                    "children": [
+                        {
+                            "name": "Lab",
+                            "size": 13,
+                            "desc": "The experiment was conducted in a laboratory (Classrooms used as laboratory setting are considered as lab)"
+                        },
+                        {
+                            "name": "Online",
+                            "size": 5,
+                            "desc": "The experiment was conducted online on a web platform (e.g., MTurk)"
+                        },
+                        {
+                            "name": "Field",
+                            "size": 5,
+                            "desc": "The experiment involved a manipulation carried out in the field (Subjects may or may not be aware that they are part of an experiment)"
+                        },
+                        {
+                            "name": "Lab in the field",
+                            "size": 4,
+                            "desc": "The experiment had all the characteristics of a lab experiment but it is carried out at a field site"
+                        },
+                        {
+                            "name": "Natural experiment",
+                            "size": 1,
+                            "desc": "A quasi-experiment in the field in which randomization is not controlled by the experimenter (e.g., a study using a TV game show)"
+                        },
+                        {
+                            "name": "Classroom",
+                            "size": 1,
+                            "desc": "The experiment was conducted during a regular class (e.g., during some demonstration of a negotiation task for teaching purposes)"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Age",
+            "children": [
+                {
+                    "name": "Age cohort",
+                    "children": [
+                        {
+                            "name": "old",
+                            "size": 12,
+                            "desc": "Participants were classified as middle old with respect to their age"
+                        },
+                        {
+                            "name": "young",
+                            "size": 12,
+                            "desc": "Participants were classified as young with respect to their age"
+                        },
+                        {
+                            "name": "middle",
+                            "size": 3,
+                            "desc": "Participants were classified as middle with respect to their age"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Education",
+            "children": [
+                {
+                    "name": "Academic discipline",
+                    "children": [
+                        {
+                            "name": "Others",
+                            "size": 12,
+                            "desc": "Participants were students of other disciplines than economics, psychology, or sociology"
+                        },
+                        {
+                            "name": "Economics",
+                            "size": 6,
+                            "desc": "Participants were economics students"
+                        },
+                        {
+                            "name": "Psychology",
+                            "size": 3,
+                            "desc": "Participants were psychology students"
+                        },
+                        {
+                            "name": "Sociology",
+                            "size": 1,
+                            "desc": "Participants were sociology students"
+                        }
+                    ]
+                },
+                {
+                    "name": "Academic grade level",
+                    "children": [
+                        {
+                            "name": "Senior",
+                            "size": 4,
+                            "desc": "Participants were classified as senior with respect to their academic grade"
+                        },
+                        {
+                            "name": "Junior",
+                            "size": 4,
+                            "desc": "Participants were classified as junior with respect to their academic grade"
+                        },
+                        {
+                            "name": "Middle",
+                            "size": 2,
+                            "desc": "Participants were classified as middle with respect to their academic grade"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Criticality",
+            "children": [
+                {
+                    "name": "Criticality level",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 12,
+                            "desc": "Participants have relatively low amounts of criticality in providing the public good"
+                        },
+                        {
+                            "name": "High",
+                            "size": 11,
+                            "desc": "Participants have relatively high amounts of criticalilty in providing the public good"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 2,
+                            "desc": "Participants have relatively medium amounts of criticality in providing the public good"
+                        },
+                        {
+                            "name": "Absent",
+                            "size": 1,
+                            "desc": "Baseline. A comparison to treatments that provide information that manipulate participants (objective or subjective) criticality of behavior in providing a public good"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Behavior in the game",
+            "children": [
+                {
+                    "name": "Participant's behavior level",
+                    "children": [
+                        {
+                            "name": "High",
+                            "size": 11,
+                            "desc": "participants or groups are classified as displaying a high cooperative behavior"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 11,
+                            "desc": "participants or groups are classified as displaying a low cooperative behavior"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "participants or groups are classified as displaying a medium cooperative behavior"
+                        }
+                    ]
+                },
+                {
+                    "name": "Partner's behavior level",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 2,
+                            "desc": "Other players are classified as displaying a low cooperative behavior"
+                        },
+                        {
+                            "name": "High",
+                            "size": 2,
+                            "desc": "Other players are classified as displaying a high cooperative behavior"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Other players are classified as displaying a medium cooperative behavior"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Values",
+            "children": [
+                {
+                    "name": "Values (Schwartz)",
+                    "children": [
+                        {
+                            "name": "Universalism",
+                            "size": 10,
+                            "desc": "Defining goal: understanding, appreciation, tolerance, and protection for the welfare of all people and for nature (Schwartz, 2012)"
+                        },
+                        {
+                            "name": "Benevolence",
+                            "size": 10,
+                            "desc": "Defining goal: preserving and enhancing the welfare of those with whom one is in frequent personal contact (Schwartz, 2012)"
+                        },
+                        {
+                            "name": "Hedonism",
+                            "size": 8,
+                            "desc": "Defining goal: pleasure or sensuous gratification for oneself (Schwartz, 2012)"
+                        },
+                        {
+                            "name": "Achievement",
+                            "size": 8,
+                            "desc": "Defining goal: personal success through demonstrating competence according to social standards (Schwartz, 2012)"
+                        },
+                        {
+                            "name": "Power",
+                            "size": 8,
+                            "desc": "Defining goal: social status and prestige, control or dominance over people and resources (Schwartz, 2012)"
+                        },
+                        {
+                            "name": "Security",
+                            "size": 7,
+                            "desc": "Defining goal: safety, harmony, and stability of society, of relationships, and of self (Schwartz, 2012)"
+                        },
+                        {
+                            "name": "Self-direction",
+                            "size": 7,
+                            "desc": "Defining goal: independent thought and action\u00e2\u0080\u0093choosing, creating, exploring (Schwartz, 2012)"
+                        },
+                        {
+                            "name": "Conformity",
+                            "size": 7,
+                            "desc": "Defining goal: restraint of actions, inclinations, and impulses likely to upset or harm others and violate social expectations or norms (Schwartz, 2012)"
+                        },
+                        {
+                            "name": "Stimulation",
+                            "size": 7,
+                            "desc": "Defining goal: excitement, novelty, and challenge in life (Schwartz, 2012)"
+                        },
+                        {
+                            "name": "Tradition",
+                            "size": 7,
+                            "desc": "Defining goal: respect, commitment, and acceptance of the customs and ideas that one\u00e2\u0080\u0099s culture or religion provides (Schwartz, 2012)"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Normative Behavior",
+            "children": [
+                {
+                    "name": "Group variability",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 9,
+                            "desc": "Participants are told there is relatively low amounts of variability in group member behavior"
+                        },
+                        {
+                            "name": "High",
+                            "size": 7,
+                            "desc": "Participants are told there is relatively high amounts of variability in group member behavior"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Participants are told there is relatively medium amounts of variability in group member behavior"
+                        }
+                    ]
+                },
+                {
+                    "name": "Descriptive norm",
+                    "children": [
+                        {
+                            "name": "Low Cooperation",
+                            "size": 6,
+                            "desc": "Participants are told that people often displayed relatively low cooperation"
+                        },
+                        {
+                            "name": "High Cooperation",
+                            "size": 6,
+                            "desc": "Participants are told that people often displayed relatively high amounts of cooperation"
+                        },
+                        {
+                            "name": "Medium Cooperation",
+                            "size": 4,
+                            "desc": "Participants are told that people often displayed relatively medium amounts of cooperation"
+                        },
+                        {
+                            "name": "No Information",
+                            "size": 2,
+                            "desc": "Participants are not provided information about how others have previously behaved in the game"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Hormones",
+            "children": [
+                {
+                    "name": "Hormones administration",
+                    "children": [
+                        {
+                            "name": "Oxytocin",
+                            "size": 7,
+                            "desc": "Oxytocin hormone"
+                        },
+                        {
+                            "name": "Placebo",
+                            "size": 7,
+                            "desc": "Participants were administered a placebo"
+                        },
+                        {
+                            "name": "Vasopressin",
+                            "size": 3,
+                            "desc": "Vasopressin hormone"
+                        }
+                    ]
+                },
+                {
+                    "name": "Hormone",
+                    "children": [
+                        {
+                            "name": "Testosterone",
+                            "size": 5,
+                            "desc": "Testosterone hormone"
+                        },
+                        {
+                            "name": "Cortisol",
+                            "size": 2,
+                            "desc": "Cortisol hormone"
+                        }
+                    ]
+                },
+                {
+                    "name": "Hormone level",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 2,
+                            "desc": "Participants displayed low levels of a specific hormone"
+                        },
+                        {
+                            "name": "High",
+                            "size": 2,
+                            "desc": "Participants displayed high levels of a specific hormone"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 2,
+                            "desc": "Participants displayed medium levels of a specific hormone"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Gender Role",
+            "children": [
+                {
+                    "name": "Gender role",
+                    "children": [
+                        {
+                            "name": "tradition oriented",
+                            "size": 6,
+                            "desc": "high scoring individuals on this dimension give a greater importance to more traditional activities (e.g., the care of the family) as compared to the career "
+                        },
+                        {
+                            "name": "career oriented",
+                            "size": 6,
+                            "desc": "high scoring individuals give a greater importance to the career as compared to more traditional activities (e.g., the care of the family)"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Anchor",
+            "children": [
+                {
+                    "name": "Anchor",
+                    "children": [
+                        {
+                            "name": "low cooperation",
+                            "size": 6,
+                            "desc": "Participants are provided a suggestion to contribute a relatively low amount to the public good"
+                        },
+                        {
+                            "name": "high cooperation ",
+                            "size": 6,
+                            "desc": "Participants are provided a suggestion to contribute a relatively high amount to the public good"
+                        },
+                        {
+                            "name": "Absent",
+                            "size": 4,
+                            "desc": "Participants are not provided any suggested level of contribution"
+                        },
+                        {
+                            "name": "medium cooperation ",
+                            "size": 1,
+                            "desc": "Participants are provided a suggestion to contribute a relatively medium amount to the public good"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Monitoring",
+            "children": [
+                {
+                    "name": "Monitoring cost",
+                    "children": [
+                        {
+                            "name": "Medium",
+                            "size": 5,
+                            "desc": "Medium monitoring cost"
+                        },
+                        {
+                            "name": "High",
+                            "size": 5,
+                            "desc": "High monitoring cost"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 3,
+                            "desc": "Low monitoring cost"
+                        },
+                        {
+                            "name": "None",
+                            "size": 1,
+                            "desc": "Free monitoring"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Physical Proximity",
+            "children": [
+                {
+                    "name": "Physical proximity",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 4,
+                            "desc": "Participants were placed at a relatively low physical distance during the game"
+                        },
+                        {
+                            "name": "High",
+                            "size": 4,
+                            "desc": "Participants were placed at a relatively high physical distance during the game"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Participants were placed at a relatively medium physical distance during the game"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Partner real",
+            "children": [
+                {
+                    "name": "Real partner",
+                    "children": [
+                        {
+                            "name": "Real",
+                            "size": 4,
+                            "desc": "Participants involved in real-time interactions with real participant(s)"
+                        },
+                        {
+                            "name": "Hypothetical",
+                            "size": 3,
+                            "desc": "Participants imagined interactions with others or played with a computer"
+                        },
+                        {
+                            "name": "Deception",
+                            "size": 1,
+                            "desc": "Participants believe that they are interacting with real participants, but experimenter strategy was used"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "PGG",
+            "children": [
+                {
+                    "name": "Endowment level",
+                    "children": [
+                        {
+                            "name": "High",
+                            "size": 4,
+                            "desc": "High relative level of tokens participants were endowed with in the game"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 4,
+                            "desc": "Low relative level of tokens participants were endowed with in the game"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Medium relative level of tokens participants were endowed with in the game"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "State Trust",
+            "children": [
+                {
+                    "name": "State trust level",
+                    "children": [
+                        {
+                            "name": "Medium",
+                            "size": 3,
+                            "desc": "Participants were classified as having a relative state trust"
+                        },
+                        {
+                            "name": "High",
+                            "size": 3,
+                            "desc": "Participants were classified as having a relative high state trust"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 2,
+                            "desc": "Participants were classified as having a relative low state trust"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Social Capital",
+            "children": [
+                {
+                    "name": "Social capital level",
+                    "children": [
+                        {
+                            "name": "High",
+                            "size": 3,
+                            "desc": "Participants were classified as having a relative high social capital"
+                        },
+                        {
+                            "name": "Low",
+                            "size": 3,
+                            "desc": "Participants were classified as having a relative low social capital"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Participants were classified as having a relative medium social capital"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Re-Start Effect",
+            "children": [
+                {
+                    "name": "Restart",
+                    "children": [
+                        {
+                            "name": "Last",
+                            "size": 2,
+                            "desc": "Last trial of previous block"
+                        },
+                        {
+                            "name": "First",
+                            "size": 2,
+                            "desc": "First trial of subsequent block"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Game Comprehension",
+            "children": [
+                {
+                    "name": "Comprehension of the game level",
+                    "children": [
+                        {
+                            "name": "Low",
+                            "size": 2,
+                            "desc": "Participants had a low level of comprehension of the game"
+                        },
+                        {
+                            "name": "High",
+                            "size": 2,
+                            "desc": "Participants had a high level of comprehension of the game"
+                        },
+                        {
+                            "name": "Medium",
+                            "size": 1,
+                            "desc": "Participants had a medium level of comprehension of the game"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Extra annotation",
+            "children": [
+                {
+                    "name": "Other coding",
+                    "children": [
+                        {
+                            "name": "Task Structure",
+                            "size": 1,
+                            "desc": "Task structure includes any variable that affects how the social dilemma game is implemented and how the structure of the situation varies. This group of variables includes the variables labeled as \u00e2\u0080\u009cStudy Characteristics\u00e2\u0080\u009d in the Ontology and in the Interface, such as: game type, conflict indices, payoff structure, MPCR, returns from the public good, provision points, experimental setting, game duration, sequentiality, choice options, matching protocols, group size, network structure, incentives, feedback, procedure, power, order effects, and manipulations of uncertainty and heterogeneity of any of the above mentioned variables."
+                        },
+                        {
+                            "name": "Institutions",
+                            "size": 1,
+                            "desc": "Institutions includes any variable that is about rules that regulate how people interact in the dilemma. This group of variables includes the implementation of communication, punishment, reward, taxations, auctions, and voting"
+                        },
+                        {
+                            "name": "Country",
+                            "size": 1,
+                            "desc": "Country coding includes variables measured at the country/city/ethnic group level that are correlated with cooperative behavior in the social dilemma. This group of variables is only composed by country/city/ethnic group level indicators and, thus, this variable does not vary for participants from the same country country/city/ethnic group"
+                        },
+                        {
+                            "name": "Other",
+                            "size": 1,
+                            "desc": "Other coding includes any other variables that cannot be classified using any of the above-mentioned categories. Example of these variables are: game framing, priming, fmri scanner, singing, University affiliation, classifications of participants based on social categorization (e.g., job), Language of the experiment, performance in other unrelated tasks, default options, others\u00e2\u0080\u0099 behavior and outcomes, response to strategy method "
+                        },
+                        {
+                            "name": "Individual Differences",
+                            "size": 1,
+                            "desc": "Individual differences include any variable that was measured at the individual level and on which individuals vary (e.g.,  personality traits, beliefs, attitudes, values, preferences, emotions, behavior, mood, socio-economic background, gender, age, and education)"
+                        },
+                        {
+                            "name": "Interactions in the Game",
+                            "size": 1,
+                            "desc": "Interactions in the Game includes variables that relate to the relationships between individuals interacting in the social dilemmas or the perceptions of the partner(s) based on impressions or on their behavior in the game. This group of variables includes partner strategy, anonymity, closeness, similarity, acquaintance, reputational information, content of communication, credibility of promises, information about the partner(s), eye contact, partner\u00e2\u0080\u0099s goal, and group identification"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
