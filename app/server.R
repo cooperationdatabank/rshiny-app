@@ -70,11 +70,11 @@ observationData <- observationData %>%
   separate_rows(valueNameSupport,sep = "\\|") %>%
   separate(valueNameSupport, c("treat", "valuepairs"),  " ~ ") %>%
   group_by(observation, treat) %>%
-  summarise(valuepairs = paste(valuepairs, collapse = ",")) %>%
+  summarise(valuepairs = paste(valuepairs, collapse = "|")) %>%
   unite(treatprops, treat, valuepairs, sep = "~") %>%
   group_by(observation) %>%
-  summarise(treatprops = paste(treatprops, collapse = "|")) %>%
-  separate(treatprops, c("treatmentValue1", "treatmentValue2"),  "\\|") %>%
+  summarise(treatprops = paste(treatprops, collapse = "+")) %>%
+  separate(treatprops, c("treatmentValue1", "treatmentValue2"),  "\\+") %>%
   mutate(treatmentValue1 = str_remove(treatmentValue1, ".*~")) %>%
   mutate(treatmentValue2 = str_remove(treatmentValue2, ".*~")) %>%
   inner_join(observationData, by = "observation")
@@ -91,7 +91,10 @@ observationData <- observationData %>%
   mutate(paperYear = substr(paperDate, 1, 4)) %>%
   # Create an indicator for substudies
   mutate(substudy = case_when(nchar(studyName) == 16 ~ 0,
-                              nchar(studyName) == 17 ~ 1))
+                              nchar(studyName) == 17 ~ 1)) %>%
+  modify(~ ifelse(. == "False", "FALSE", .)) %>%
+  modify(~ ifelse(. == "True", "TRUE", .)) %>%
+  modify(~ ifelse(. == "False,True", "FALSE,TRUE", .))
 
 # Citations should be generated from DOIs, but this information is incomplete.
 # Instead of using dois, generate citations from a static file;
@@ -579,31 +582,54 @@ shinyServer(function(input, output, session) {
   # for the subproperty specified by var
   splitValueName <- function(var, valueName){
     value <- lapply(valueName,
-                    function(x) unlist(strsplit(x, ","))[grepl(var, unlist(strsplit(x, ",")))]) %>%
-      sapply(., function(s) if (length(s) == 0) NA_character_ else paste(s, collapse = " "))
+                    function(x) unlist(strsplit(x, "\\|"))[grepl(var, unlist(strsplit(x, "\\|")))]) # %>%
+    #  sapply(., function(s) if (length(s) == 0) NA_character_ else paste(s, collapse = "|"))
     return(value)
   }
 
-  # Function to extract only the value from splitValueName output
+  # Function to split valueName columns and select only the value(s)
+  # for the subproperty specified by var
   getValueName <- function(var, valueName){
-    value <- splitValueName(var, valueName)
-    value <- lapply(value, function(x) strsplit(x, " : ")[[1]][2])
+    value <- lapply(valueName,
+                    function(x) unlist(strsplit(x, "\\|"))[grepl(var, unlist(strsplit(x, "\\|")))]) %>%
+      lapply(., function(x) strsplit(x, " : ")) %>% 
+      lapply(., function(x) map_chr(x, 2)) %>% 
+      sapply(., function(s) if (length(s) == 0) NA_character_ else paste(s, collapse = ","))
     value <- unlist(value)
     return(value)
   }
 
-  # Function to create moderators
+  # Function to create moderator variables for meta-analysis
   # `mod` takes a value from input$definemod
   # valueName1 and valueName2 take filteredObservationData$valueName1 and
   # filteredObservationData$valueName2
+  # Creates three types of moderator variables:
+  # 1) Both Treatment 1 and Treatment 2 have a value
+  # 2) Only Treatment 1 has a non-numeric value
+  # 3) Only Treatment 1 has a numeric value (continuous)
+  
   defineModerators <- function(mod, valueName1, valueName2){
     value1 <- getValueName(mod, valueName1)
     value2 <- getValueName(mod, valueName2)
-    values <- cbind(value1, value2) %>%
+    
+    if(any(!is.na(value2))){
+      values <- cbind(value1, value2) %>%
       data.frame() %>%
-      mutate(!!mod := paste(value1, " vs. ", value2)) %>%
-      select(!!mod) # %>%
-    #    mutate_all(~gsub("NA", "none", .))
+      mutate(!!mod := paste("Treatment 1: ", value1, " vs. Treatment 2: ", value2)) %>%
+      select(!!mod) %>%
+      mutate(across(everything(), ~gsub("NA", "none/NA", .)))
+    } else if(all(is.na(value2)) & any(grepl("^[A-Za-z]+$", value1))){
+      values <- cbind(value1, value2) %>%
+        data.frame() %>%
+        mutate(!!mod := paste("Treatment 1: ", value1)) %>%
+        select(!!mod) %>%
+        mutate(across(everything(), ~gsub("NA", "none/NA", .)))
+    } else if(all(is.na(value2)) & all(!grepl("^[A-Za-z]+$", value1))){
+      values <- cbind(value1, value2) %>%
+        data.frame() %>%
+        mutate(!!mod := as.numeric(value1)) %>%
+        select(!!mod)
+    }
     return(values)
   }
 
@@ -624,12 +650,21 @@ shinyServer(function(input, output, session) {
   # valueName1 takes filteredObservationData$valueName1
   defineRegModerators <- function(mod, valueName1){
     value <- getValueName(mod, valueName1)
-    value <- value %>%
-      data.frame() %>%
-      mutate(!!mod := value) %>%
-      select(!!mod) # %>%
-    #    mutate_all(~gsub("NA", "none", .))
-    return(value)
+    
+    if(any(grepl("^[A-Za-z]+$", value))){
+      values <- value %>%
+        data.frame() %>%
+        mutate(!!mod := value) %>%
+        select(!!mod) %>%
+        mutate(across(everything(), ~gsub("NA", "none/NA", .)))
+    } else if(all(!grepl("^[A-Za-z]+$", value))){
+      values <- value %>%
+        data.frame() %>%
+        mutate(!!mod := as.numeric(value)) %>%
+        select(!!mod)
+    }
+    
+    return(values)
   }
   
   # Function to create the moderator columns for each moderator in
@@ -1681,12 +1716,52 @@ shinyServer(function(input, output, session) {
   
        ## Downloads ######
   
+  downloadableData <- reactive({
+    
+    filtered <- selectedObservationData() 
+    
+    col1 <- filtered %>%
+      select(observationName, treatmentValue1) %>%
+      separate_rows(treatmentValue1, sep = "\\|") %>%
+      separate(treatmentValue1, sep = " : ", into = c("var", "val")) %>%
+      group_by(observationName, var) %>%
+      mutate(val = paste0(val, collapse = "|")) %>%
+      ungroup() %>%
+      distinct() %>%
+      filter(var != "NA")
+    
+    col2 <- filtered %>%
+      select(observationName, treatmentValue2) %>%
+      separate_rows(treatmentValue2, sep = "\\|") %>%
+      separate(treatmentValue2, sep = " : ", into = c("var", "val")) %>%
+      drop_na() %>%
+      group_by(observationName, var) %>%
+      mutate(val = paste0(val, collapse = "|")) %>%
+      ungroup() %>%
+      distinct()
+    
+    test <- merge(col1, col2, by = c("observationName", "var"), all = TRUE) %>%
+      mutate(valuepair = paste(val.x, val.y, sep = " vs. ")) %>%
+      mutate(valuepair = gsub("NA", "none", valuepair)) %>%
+      drop_na()
+      
+    test <- test %>%  
+      pivot_wider(id_cols = observationName, names_from = var, values_from = valuepair) 
+    
+    filtered <- test %>%
+      merge(filtered, ., by = "observationName", all.x = TRUE) %>%
+      select(observationName, citation, paperTitle, effectSize:effectSizeUpperLimit,
+             country:yearSource, observationNameGeneric, sort(names(test)))
+    
+    filtered
+  })
+  
   output$downloadData <- downloadHandler(
     filename = function() {
       paste('data-', Sys.Date(), '.csv', sep='')
     },
     content = function(con) {
-      write.csv(selectedObservationData(), con, col.names = TRUE)
+      write.csv(downloadableData(), con, col.names = TRUE, row.names = FALSE)
     }
   )
   
@@ -3575,277 +3650,277 @@ shinyServer(function(input, output, session) {
   })
 
 
-  insert_treatment <- function (treatmentId) {
-        insertUI(
-          selector = "#addAnotherVariable",
-          where = "beforeBegin",
-          ui = tags$div(
-            id = treatmentId,
-            hr(style="border-color: green;"),
-            h4(paste0('Add another treatment: ', treatmentId)),
-            fluidRow(
-                  column(6, selectInput(inputId = paste0("addGenIVselection",treatmentId),
-                            label = p(labelMandatory("Generic Independent Variable"), br(),
-                            helpText('Example: Punishment', br(),
-                            em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
-                            ),
-                            choices = c("",sort(selections$ivname))),),
-                ),
-                fluidRow(column(6,
-                                checkboxInput(paste0("addDescriptionGenericIV", treatmentId),
-                                              "Add description for Generic Independent Variable")
-                                )
-                ),
-                conditionalPanel(
-                                  condition = paste0('input.addDescriptionGenericIV',treatmentId,' == 1'),
-                                  fluidRow(column(8, textAreaInput(paste0("addDescriptionGenericIVText", treatmentId),
-                                                          "Description for Generic Independent Variable"))),
-                                   ),
-                conditionalPanel(
-                                  condition = paste0('input.addGenIVselection', treatmentId,' != ""'),
-                  fluidRow(
-                    column(6, selectInput(inputId = paste0("addTreatmentSubpropSelection", treatmentId), #name of input used to be "gen_iv", also removed selectInput for current_iv
-                               label = p("Specific Independent Variable",
-                                         helpText("Example: Punishment treatment", br(),
-                                                  em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
-                               ),
-                               choices = '', selected = ""),),
-                    ),
-                  fluidRow(column(6,
-                                checkboxInput(paste0("addDescriptionSpecificIV", treatmentId),
-                                              "Add description for Specific Independent Variable")
-                                )
-                  ),
-                  conditionalPanel(
-                                  condition = paste0('input.addDescriptionSpecificIV', treatmentId,' == 1'),
-                                  fluidRow(column(8, textAreaInput(paste0("addDescriptionSpecificIVText", treatmentId),
-                                                          "Description for Specific Independent Variable"))),
-                                   ),
-                     fluidRow(
-                       column(6, selectizeInput(inputId = paste0("addValueOptionsSelection", treatmentId),
-                               label = p("Specific Independent Variable values", br(),
-                               helpText("The possible values of a treatment.")
-                               ), #label displayed in ui
-                               choices = "", selected = "",
-                                                #options = list(create = TRUE)
-                       ),),
-                    ),
-                ),
-
-
-                fluidRow(column(8,
-                radioButtons(paste0('quantitativeMethod', treatmentId),
-                             "Please provide quantitative variables (either a or b) ",
-                              choices = c("a: Provide correlation and sample size" = "a", "b: Provide Mean, Standard Deviation, and sample size" = "b"),
-                             selected = character(0)
-                )
-                )),
-
-                conditionalPanel(
-                                  condition = paste0('input.quantitativeMethod',treatmentId,' == "a"'),
-
-                #fluidRow(column(
-                #4, selectInput(paste0('addEsMeasure', treatmentId), 'Choose an effect measure:',
-                #                 choices =c('',"Standardised Mean Difference" = "d", "Raw correlation coefficient" = "r"))
-                #)),
-                fluidRow(column(
-                4, numericInput(paste0('addCorrelation', treatmentId), labelMandatory('Correlation'), NULL)
-                )),
-                                  fluidRow(column(
-                4, numericInput(paste0('addSampleSizeA', treatmentId), labelMandatory('Sample size'), NULL)
-                )),
-
-                ),
-
-                conditionalPanel(
-                                  condition = paste0('input.quantitativeMethod', treatmentId,' == "b"'),
-                    fluidRow(column(
-                    4, selectInput(paste0('DVBehavior', treatmentId), labelMandatory('Behavior (dependent variable)'),
-                      choices = c('', 'Contributions', 'Cooperation', 'Withdrawals')
-                      )
-                    )),
-                    conditionalPanel(
-                                  condition = paste0('input.DVBehavior',treatmentId,' == "Contributions" || input.DVBehavior', treatmentId,' =="Withdrawals"'),
-
-                    fluidRow(column(
-                    4, numericInput(paste0('addMean', treatmentId), labelMandatory('Mean'), NULL)
-                    )),
-                    fluidRow(column(
-                    4, numericInput(paste0('addStandardDeviation', treatmentId), labelMandatory('Standard Deviation'), NULL)
-                    )),
-                    ),
-
-                    conditionalPanel(
-                                  condition = paste0('input.DVBehavior',treatmentId,' == "Cooperation" '),
-                                        fluidRow(column(
-                    4, numericInput(paste0('addProportionOfCooperation', treatmentId), labelMandatory('P(C) (proportion of cooperation'), NULL)
-                    )),
-
-                    ),
-                    fluidRow(column(
-                    4, numericInput(paste0('addSampleSizeB', treatmentId), labelMandatory('Sample size'), NULL)
-                    )),
-                    fluidRow(column(
-                    4, selectInput(paste0('betweenOrWithinSubjects', treatmentId), labelMandatory('Between or Within Subjects'),
-                                     choices = c('', "Between", "Within", 'Mixed'),)
-                    ))
-
-                )
-
-          )
-    )
-
-    observe({
-      updateSelectInput(session, paste0("addTreatmentSubpropSelection", treatmentId),
-                        choices = c("",ivLabelsGen(input[[paste0('addGenIVselection', treatmentId)]])))
-    })
-
-    observe({
-      value_choice <- valueOptionUpdateGen(input[[paste0('addTreatmentSubpropSelection',treatmentId)]])
-      allow_create <- FALSE
-      if (identical(value_choice, character(0))){
-        allow_create <- TRUE
-      }
-      updateSelectizeInput(session, paste0("addValueOptionsSelection", treatmentId),
-                        choices = c("", value_choice), options = list(create = allow_create))
-    })
-  }
+  #insert_treatment <- function (treatmentId) {
+  #      insertUI(
+  #        selector = "#addAnotherVariable",
+  #        where = "beforeBegin",
+  #        ui = tags$div(
+  #          id = treatmentId,
+  #          hr(style="border-color: green;"),
+  #          h4(paste0('Add another treatment: ', treatmentId)),
+  #          fluidRow(
+  #                column(6, selectInput(inputId = paste0("addGenIVselection",treatmentId),
+  #                          label = p(labelMandatory("Generic Independent Variable"), br(),
+  #                          helpText('Example: Punishment', br(),
+  #                          em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
+  #                          ),
+  #                          choices = c("",sort(selections$ivname))),),
+  #              ),
+  #              fluidRow(column(6,
+  #                              checkboxInput(paste0("addDescriptionGenericIV", treatmentId),
+  #                                            "Add description for Generic Independent Variable")
+  #                              )
+  #              ),
+  #              conditionalPanel(
+  #                                condition = paste0('input.addDescriptionGenericIV',treatmentId,' == 1'),
+  #                                fluidRow(column(8, textAreaInput(paste0("addDescriptionGenericIVText", treatmentId),
+  #                                                        "Description for Generic Independent Variable"))),
+  #                                 ),
+  #              conditionalPanel(
+  #                                condition = paste0('input.addGenIVselection', treatmentId,' != ""'),
+  #                fluidRow(
+  #                  column(6, selectInput(inputId = paste0("addTreatmentSubpropSelection", treatmentId), #name of input used to be "gen_iv", also removed selectInput for current_iv
+  #                             label = p("Specific Independent Variable",
+  #                                       helpText("Example: Punishment treatment", br(),
+  #                                                em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
+  #                             ),
+  #                             choices = '', selected = ""),),
+  #                  ),
+  #                fluidRow(column(6,
+  #                              checkboxInput(paste0("addDescriptionSpecificIV", treatmentId),
+  #                                            "Add description for Specific Independent Variable")
+  #                              )
+  #                ),
+  #                conditionalPanel(
+  #                                condition = paste0('input.addDescriptionSpecificIV', treatmentId,' == 1'),
+  #                                fluidRow(column(8, textAreaInput(paste0("addDescriptionSpecificIVText", treatmentId),
+  #                                                        "Description for Specific Independent Variable"))),
+  #                                 ),
+  #                   fluidRow(
+  #                     column(6, selectizeInput(inputId = paste0("addValueOptionsSelection", treatmentId),
+  #                             label = p("Specific Independent Variable values", br(),
+  #                             helpText("The possible values of a treatment.")
+  #                             ), #label displayed in ui
+  #                             choices = "", selected = "",
+  #                                              #options = list(create = TRUE)
+  #                     ),),
+  #                  ),
+  #              ),
+  #
+  #
+  #              fluidRow(column(8,
+  #              radioButtons(paste0('quantitativeMethod', treatmentId),
+  #                           "Please provide quantitative variables (either a or b) ",
+  #                            choices = c("a: Provide correlation and sample size" = "a", "b: Provide Mean, Standard Deviation, and sample size" = "b"),
+  #                           selected = character(0)
+  #              )
+  #              )),
+  #
+  #              conditionalPanel(
+  #                                condition = paste0('input.quantitativeMethod',treatmentId,' == "a"'),
+  #
+  #              #fluidRow(column(
+  #              #4, selectInput(paste0('addEsMeasure', treatmentId), 'Choose an effect measure:',
+  #              #                 choices =c('',"Standardised Mean Difference" = "d", "Raw correlation coefficient" = "r"))
+  #              #)),
+  #              fluidRow(column(
+  #              4, numericInput(paste0('addCorrelation', treatmentId), labelMandatory('Correlation'), NULL)
+  #              )),
+  #                                fluidRow(column(
+  #              4, numericInput(paste0('addSampleSizeA', treatmentId), labelMandatory('Sample size'), NULL)
+  #              )),
+  #
+  #              ),
+  #
+  #              conditionalPanel(
+  #                                condition = paste0('input.quantitativeMethod', treatmentId,' == "b"'),
+  #                  fluidRow(column(
+  #                  4, selectInput(paste0('DVBehavior', treatmentId), labelMandatory('Behavior (dependent variable)'),
+  #                    choices = c('', 'Contributions', 'Cooperation', 'Withdrawals')
+  #                    )
+  #                  )),
+  #                  conditionalPanel(
+  #                                condition = paste0('input.DVBehavior',treatmentId,' == "Contributions" || input.DVBehavior', treatmentId,' =="Withdrawals"'),
+  #
+  #                  fluidRow(column(
+  #                  4, numericInput(paste0('addMean', treatmentId), labelMandatory('Mean'), NULL)
+  #                  )),
+  #                  fluidRow(column(
+  #                  4, numericInput(paste0('addStandardDeviation', treatmentId), labelMandatory('Standard Deviation'), NULL)
+  #                  )),
+  #                  ),
+  #
+  #                  conditionalPanel(
+  #                                condition = paste0('input.DVBehavior',treatmentId,' == "Cooperation" '),
+  #                                      fluidRow(column(
+  #                  4, numericInput(paste0('addProportionOfCooperation', treatmentId), labelMandatory('P(C) (proportion of cooperation'), NULL)
+  #                  )),
+  #
+  #                  ),
+  #                  fluidRow(column(
+  #                  4, numericInput(paste0('addSampleSizeB', treatmentId), labelMandatory('Sample size'), NULL)
+  #                  )),
+  #                  fluidRow(column(
+  #                  4, selectInput(paste0('betweenOrWithinSubjects', treatmentId), labelMandatory('Between or Within Subjects'),
+  #                                   choices = c('', "Between", "Within", 'Mixed'),)
+  #                  ))
+  #
+  #              )
+  #
+  #        )
+  #  )
+  #
+  #  observe({
+  #    updateSelectInput(session, paste0("addTreatmentSubpropSelection", treatmentId),
+  #                      choices = c("",ivLabelsGen(input[[paste0('addGenIVselection', treatmentId)]])))
+  #  })
+  #
+  #  observe({
+  #    value_choice <- valueOptionUpdateGen(input[[paste0('addTreatmentSubpropSelection',treatmentId)]])
+  #    allow_create <- FALSE
+  #    if (identical(value_choice, character(0))){
+  #      allow_create <- TRUE
+  #    }
+  #    updateSelectizeInput(session, paste0("addValueOptionsSelection", treatmentId),
+  #                      choices = c("", value_choice), options = list(create = allow_create))
+  #  })
+  #}
 
   # todo: remove duplicate code
-  insert_variable <- function (treatmentId) {
-        insertUI(
-          selector = "#addAnotherVariable",
-          where = "beforeBegin",
-          ui = tags$div(
-            id = treatmentId,
-            hr(),
-            h4(paste0('Add another variable for ', addedTreatments[length(addedTreatments)]
-                      )),
-            fluidRow(
-                  column(6, selectInput(inputId = paste0("addGenIVselection",treatmentId),
-                            label = p("Generic Independent Variable", br(),
-                            helpText('Example: Punishment', br(),
-                            em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
-                            ),
-                            choices = c("",sort(selections$ivname))),),
-                ),
-                fluidRow(column(6,
-                                checkboxInput(paste0("addDescriptionGenericIV", treatmentId),
-                                              "Add description for Generic Independent Variable")
-                                )
-                ),
-                conditionalPanel(
-                                  condition = paste0('input.addDescriptionGenericIV',treatmentId,' == 1'),
-                                  fluidRow(column(8, textAreaInput(paste0("addDescriptionGenericIVText", treatmentId),
-                                                          "Description for Generic Independent Variable"))),
-                                   ),
-                conditionalPanel(
-                                  condition = paste0('input.addGenIVselection', treatmentId,' != ""'),
-                  fluidRow(
-                    column(6, selectInput(inputId = paste0("addTreatmentSubpropSelection", treatmentId), #name of input used to be "gen_iv", also removed selectInput for current_iv
-                               label = p("Specific Independent Variable",
-                                         helpText("Example: Punishment treatment", br(),
-                                                  em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
-                               ),
-                               choices = '', selected = ""),),
-                    ),
-                  fluidRow(column(6,
-                                checkboxInput(paste0("addDescriptionSpecificIV", treatmentId),
-                                              "Add description for Specific Independent Variable")
-                                )
-                  ),
-                  conditionalPanel(
-                                  condition = paste0('input.addDescriptionSpecificIV', treatmentId,' == 1'),
-                                  fluidRow(column(8, textAreaInput(paste0("addDescriptionSpecificIVText", treatmentId),
-                                                          "Description for Specific Independent Variable"))),
-                                   ),
-                     fluidRow(
-                       column(6, selectizeInput(inputId = paste0("addValueOptionsSelection", treatmentId),
-                               label = p("Specific Independent Variable values", br(),
-                               helpText("The possible values of a treatment.")
-                               ), #label displayed in ui
-                               choices = "", selected = "",
-                                                #options = list(create = TRUE)
-                       ),),
-                    ),
-                ),
+  #insert_variable <- function (treatmentId) {
+  #      insertUI(
+  #        selector = "#addAnotherVariable",
+  #        where = "beforeBegin",
+  #        ui = tags$div(
+  #          id = treatmentId,
+  #          hr(),
+  #          h4(paste0('Add another variable for ', addedTreatments[length(addedTreatments)]
+  #                    )),
+  #          fluidRow(
+  #                column(6, selectInput(inputId = paste0("addGenIVselection",treatmentId),
+  #                          label = p("Generic Independent Variable", br(),
+  #                          helpText('Example: Punishment', br(),
+  #                          em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
+  #                          ),
+  #                          choices = c("",sort(selections$ivname))),),
+  #              ),
+  #              fluidRow(column(6,
+  #                              checkboxInput(paste0("addDescriptionGenericIV", treatmentId),
+  #                                            "Add description for Generic Independent Variable")
+  #                              )
+  #              ),
+  #              conditionalPanel(
+  #                                condition = paste0('input.addDescriptionGenericIV',treatmentId,' == 1'),
+  #                                fluidRow(column(8, textAreaInput(paste0("addDescriptionGenericIVText", treatmentId),
+  #                                                        "Description for Generic Independent Variable"))),
+  #                                 ),
+  #              conditionalPanel(
+  #                                condition = paste0('input.addGenIVselection', treatmentId,' != ""'),
+  #                fluidRow(
+  #                  column(6, selectInput(inputId = paste0("addTreatmentSubpropSelection", treatmentId), #name of input used to be "gen_iv", also removed selectInput for current_iv
+  #                             label = p("Specific Independent Variable",
+  #                                       helpText("Example: Punishment treatment", br(),
+  #                                                em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
+  #                             ),
+  #                             choices = '', selected = ""),),
+  #                  ),
+  #                fluidRow(column(6,
+  #                              checkboxInput(paste0("addDescriptionSpecificIV", treatmentId),
+  #                                            "Add description for Specific Independent Variable")
+  #                              )
+  #                ),
+  #                conditionalPanel(
+  #                                condition = paste0('input.addDescriptionSpecificIV', treatmentId,' == 1'),
+  #                                fluidRow(column(8, textAreaInput(paste0("addDescriptionSpecificIVText", treatmentId),
+  #                                                        "Description for Specific Independent Variable"))),
+  #                                 ),
+  #                   fluidRow(
+  #                     column(6, selectizeInput(inputId = paste0("addValueOptionsSelection", treatmentId),
+  #                             label = p("Specific Independent Variable values", br(),
+  #                             helpText("The possible values of a treatment.")
+  #                             ), #label displayed in ui
+  #                             choices = "", selected = "",
+  #                                              #options = list(create = TRUE)
+  #                     ),),
+  #                  ),
+  #              ),
+  #
+  #        )
+  #  )
+  #
+  #  observe({
+  #    updateSelectInput(session, paste0("addTreatmentSubpropSelection", treatmentId),
+  #                      choices = c("",ivLabelsGen(input[[paste0('addGenIVselection', treatmentId)]])))
+  #  })
+  #
+  #  observe({
+  #    value_choice <- valueOptionUpdateGen(input[[paste0('addTreatmentSubpropSelection',treatmentId)]])
+  #    allow_create <- FALSE
+  #    if (identical(value_choice, character(0))){
+  #      allow_create <- TRUE
+  #    }
+  #    updateSelectizeInput(session, paste0("addValueOptionsSelection", treatmentId),
+  #                      choices = c("", value_choice), options = list(create = allow_create))
+  #  })
+  #}
 
-          )
-    )
-
-    observe({
-      updateSelectInput(session, paste0("addTreatmentSubpropSelection", treatmentId),
-                        choices = c("",ivLabelsGen(input[[paste0('addGenIVselection', treatmentId)]])))
-    })
-
-    observe({
-      value_choice <- valueOptionUpdateGen(input[[paste0('addTreatmentSubpropSelection',treatmentId)]])
-      allow_create <- FALSE
-      if (identical(value_choice, character(0))){
-        allow_create <- TRUE
-      }
-      updateSelectizeInput(session, paste0("addValueOptionsSelection", treatmentId),
-                        choices = c("", value_choice), options = list(create = allow_create))
-    })
-  }
-
-  observeEvent(input$addAnotherTreatment, {
-    treatmentId <- paste0('Treatment',length(addedTreatments)+1)
-    insert_treatment(treatmentId)
-    addedTreatments <<- c(addedTreatments, treatmentId)
-    shinyjs::show('removeTreatment')
-  })
-
-  observeEvent(input$addAnotherVariable, {
-    treatmentId <- paste0(addedTreatments[length(addedTreatments)],'Variable',input$addAnotherVariable)
-    insert_variable(treatmentId)
-    addedVariables <<- c(addedVariables, treatmentId)
-    shinyjs::show('removeVariable')
-  })
-
-
-  observeEvent(input$removeTreatmentLink, {
-    removeUI(
-      selector = paste0('#', addedTreatments[length(addedTreatments)])
-    )
-    # also remove the variables under the treatment
-    remove_variables <- c()
-    for (v in addedVariables) {
-      if (startsWith(v, addedTreatments[length(addedTreatments)])) {
-            removeUI(
-              selector = paste0('#', v)
-            )
-            remove_variables <- c(remove_variables, v)
-      }
-    }
-
-    addedVariables <<- addedVariables[! addedVariables %in% remove_variables]
-
-    cat('\n removing', addedTreatments[length(addedTreatments)])
-
-    if  (length(addedTreatments) > 1) {
-      addedTreatments <<- addedTreatments[-length(addedTreatments)]
-    }
-  })
-  observe({
-    if (length(addedTreatments) == 1) {
-      shinyjs::hide('removeTreatment')
-    }
-  })
-
-  observeEvent(input$removeVariableLink, {
-    removeUI(
-      ## pass in appropriate div id
-      selector = paste0('#', addedVariables[length(addedVariables)])
-    )
-    cat('removing', addedVariables[length(addedVariables)])
-    addedVariables <<- addedVariables[-length(addedVariables)]
-  })
-  observe({
-    if (length(addedVariables) == 1) {
-      shinyjs::hide('removeVariable')
-    }
-  })
+  #observeEvent(input$addAnotherTreatment, {
+  #  treatmentId <- paste0('Treatment',length(addedTreatments)+1)
+  #  insert_treatment(treatmentId)
+  #  addedTreatments <<- c(addedTreatments, treatmentId)
+  #  shinyjs::show('removeTreatment')
+  #})
+  #
+  #observeEvent(input$addAnotherVariable, {
+  #  treatmentId <- paste0(addedTreatments[length(addedTreatments)],'Variable',input$addAnotherVariable)
+  #  insert_variable(treatmentId)
+  #  addedVariables <<- c(addedVariables, treatmentId)
+  #  shinyjs::show('removeVariable')
+  #})
+  #
+  #
+  #observeEvent(input$removeTreatmentLink, {
+  #  removeUI(
+  #    selector = paste0('#', addedTreatments[length(addedTreatments)])
+  #  )
+  #  # also remove the variables under the treatment
+  #  remove_variables <- c()
+  #  for (v in addedVariables) {
+  #    if (startsWith(v, addedTreatments[length(addedTreatments)])) {
+  #          removeUI(
+  #            selector = paste0('#', v)
+  #          )
+  #          remove_variables <- c(remove_variables, v)
+  #    }
+  #  }
+  #
+  #  addedVariables <<- addedVariables[! addedVariables %in% remove_variables]
+  #
+  #  cat('\n removing', addedTreatments[length(addedTreatments)])
+  #
+  #  if  (length(addedTreatments) > 1) {
+  #    addedTreatments <<- addedTreatments[-length(addedTreatments)]
+  #  }
+  #})
+  #observe({
+  #  if (length(addedTreatments) == 1) {
+  #    shinyjs::hide('removeTreatment')
+  #  }
+  #})
+  #
+  #observeEvent(input$removeVariableLink, {
+  #  removeUI(
+  #    ## pass in appropriate div id
+  #    selector = paste0('#', addedVariables[length(addedVariables)])
+  #  )
+  #  cat('removing', addedVariables[length(addedVariables)])
+  #  addedVariables <<- addedVariables[-length(addedVariables)]
+  #})
+  #observe({
+  #  if (length(addedVariables) == 1) {
+  #    shinyjs::hide('removeVariable')
+  #  }
+  #})
   observeEvent(input$showTerms, {
       showModal(modalDialog(
         title = "Privacy statement: Cooperation Databank",
@@ -3908,18 +3983,177 @@ shinyServer(function(input, output, session) {
           HTML('&emsp;'),"functionarisgegevensbescherming@vu.nl ", br(),
           "To be able to deal with your request, you will be asked to provide proof of identity. In this way it will be verified that the request has been made by the right person. If you are not satisfied with the way in which we deal with your personal data, you have the right to submit a complaint with a supervisory authority."
 
-
-
-
-
-
-
-
-
-
         ),
 
         footer = modalButton("Agree")
       ))
   })
+
+  output$variables <- renderUI({
+    numVar <- as.integer(input$numberOfVariables)
+    lapply(1:numVar, function(k) {
+      tags$div(
+        h4(paste0('Variable', k, ' :')),
+        h4('Specify the number of Treatments for Variable', k),
+         fluidRow(
+          column(6, numericInput(inputId = paste0("treatmentNum",k),
+                    label = p(labelMandatory("Number of Treatments")
+                    ), 1
+                    ),),
+        ),
+
+        output[[paste0("TreatmentsOutput", k)]] <- renderUI({
+          numTreatments <- as.integer(input[[paste0("treatmentNum", k)]])
+          lapply(1:numTreatments, function(i) {
+            tags$div(
+
+              h5('Specify the number of Generic Independent Variable for Variable', k, 'Treatment', i),
+              fluidRow(
+                column(6, numericInput(inputId = paste0("GIVNum", k, '_', i),
+                 label = p(labelMandatory("Number of Generic Independent Variable")), value = 1
+                ),),
+              ),
+              output[[paste0("GIVoutput", k, '_', i)]] <- renderUI({
+                numGeneric <- as.integer(input[[paste0("GIVNum", k, '_', i)]])
+                lapply(1:numGeneric, function(m) {
+                tags$div(
+                  fluidRow(
+                    column(6, selectInput(inputId = paste0("addGenIV", k, '_', i, '_', m),
+                    label = p(labelMandatory("Generic Independent Variable"), br(),
+                    helpText('Example: Punishment', br(),
+                    em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
+                    ),
+                    choices = c("",sort(selections$ivname))),),
+                  ),
+
+                  fluidRow(column(6,
+                      checkboxInput(paste0("addDescriptionGenericIV", k, '_', i, '_', m),
+                                    "Add description for Generic Independent Variable")
+                      )
+                  ),
+
+                  conditionalPanel(
+                    condition = paste0('input.addDescriptionGenericIV', k, '_', i, '_', m, ' == 1'),
+                    fluidRow(column(8, textAreaInput(paste0("addDescriptionGenericIVText", k, '_', i, '_', m),
+                                  "Description for Generic Independent Variable"))),
+                  ),
+
+                  conditionalPanel(condition = paste0('input.addGenIV', k, '_', i, '_', m,' != ""'),
+                    h5('Specify the number of Specific Independent Variable for Variable', k , 'Treatment', i, 'Generic IV', m),
+                    fluidRow(
+                      column(6, numericInput(inputId = paste0("SIVNumber",k, '_', i, '_', m),
+                       label = p(labelMandatory("Number of Specific Independent Variable")), 1
+                      ),),
+                    ),
+
+                    output[[paste0("SIVNumber",k, '_', i)]] <- renderUI({
+                      numSpecific <- as.integer(input[[paste0("SIVNumber",k, '_', i, '_', m)]])
+                      lapply(1:numSpecific, function(n) {
+                        tags$div(
+                          fluidRow(
+                            column(6, selectInput(inputId = paste0("SubpropSelection", k, '_', i, '_', m, '_', n), #name of input used to be "gen_iv", also removed selectInput for current_iv
+                                 label = p("Specific Independent Variable",
+                                           helpText("Example: Punishment treatment", br(),
+                                                    em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
+                                 ),
+                                 choices = c("", ivLabelsGen(input[[paste0("addGenIV", k, '_', i, '_', m)]]))),),
+                          ),
+                          fluidRow(column(6,
+                                  checkboxInput( paste0("DescriptionSpecificIV", k, '_', i, '_', m, '_', n),
+                                                "Add description for Specific Independent Variable")
+                                  )
+                          ),
+                          conditionalPanel(
+                                    condition = paste0('input.','DescriptionSpecificIV', k, '_', i, '_', m, '_', n, ' == 1'),
+                                    fluidRow(column(8, textAreaInput(paste0("DescriptionSpecificIVText", k, '_', i, '_', m, '_', n),
+                                                            "Description for Specific Independent Variable"))),
+                                     ),
+                          fluidRow(
+                            column(6, selectizeInput(inputId = paste0("ValueOptionsSelection",  k, '_', i, '_', m, '_', n),
+                                 label = p("Specific Independent Variable values", br(),
+                                 helpText("The possible values of a treatment.")
+                                 ), #label displayed in ui
+                                 choices = c("", valueOptionUpdateGen(isolate(input[[paste0("SubpropSelection",  k, '_', i, '_', m, '_', n)]]))
+                                             ), options = list(create = TRUE)
+
+                             ),),
+                          ),
+
+                        )# div
+                      })
+
+                    })
+
+                  ),
+
+                )
+              })
+              }),
+
+                  # quantitative variables for treatment
+                  fluidRow(column(8,
+                  radioButtons(paste0('quantitativeMethod', k, '_', i),
+                               "Please provide quantitative variables (either a or b) ",
+                                choices = c("a: Provide correlation and sample size" = "a", "b: Provide Mean, Standard Deviation, and sample size" = "b"),
+                               selected = character(0)
+                  )
+                  )),
+
+                  conditionalPanel(
+                                    condition = paste0('input.', 'quantitativeMethod', k, '_', i,' == "a"'),
+                  #fluidRow(column(
+                  #4, selectInput('addEsMeasure0', 'Choose an effect measure:',
+                  #                 choices =c('',"Standardised Mean Difference" = "d", "Raw correlation coefficient" = "r"))
+                  #)),
+                  fluidRow(column(
+                  4, numericInput(paste0('addCorrelation', k, '_', i), labelMandatory('Correlation'), NULL)
+                  )),
+                                    fluidRow(column(
+                  4, numericInput(paste0('addSampleSizeA', k, '_', i), labelMandatory('Sample size'), NULL)
+                  )),
+
+                  ),
+
+                  conditionalPanel(
+                                    condition = paste0('input.', 'quantitativeMethod', k, '_', i,' == "b"'),
+
+                      fluidRow(column(
+                      4, selectInput(paste0('DVBehavior', k, '_', i), labelMandatory('Behavior (dependent variable)'),
+                        choices = c('', 'Contributions', 'Cooperation', 'Withdrawals')
+                        )
+                      )),
+                      conditionalPanel(
+                                    condition = paste0('input.', 'DVBehavior', k, '_', i,' == "Contributions" || input.', 'DVBehavior', k, '_', i,' =="Withdrawals"'),
+
+                      fluidRow(column(
+                      4, numericInput(paste0('addMean', k, '_', i), labelMandatory('Mean'), NULL)
+                      )),
+                      fluidRow(column(
+                      4, numericInput(paste0('addStandardDeviation', k, '_', i), labelMandatory('Standard Deviation'), NULL)
+                      )),
+                      ),
+
+                      conditionalPanel(
+                                    condition = paste0('input.', 'DVBehavior', k, '_', i,' == "Cooperation" '),
+                                          fluidRow(column(
+                      4, numericInput(paste0('addProportionOfCooperation', k, '_', i), labelMandatory('P(C) (proportion of cooperation'), NULL)
+                      )),
+
+                      ),
+
+                      fluidRow(column(
+                      4, numericInput(paste0('addSampleSizeB', k, '_', i), labelMandatory('Sample size'), NULL)
+                      )),
+                  )
+
+            )
+          })
+        }),
+           HTML('<hr style="color: purple;">')
+      )
+    })
+
+  })
+
+
 })

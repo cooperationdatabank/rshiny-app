@@ -925,7 +925,7 @@ body <- dashboardBody(
             box(
               width=12, status = "warning", title=p( class="customtitle","Independent Variables details"), solidHeader = F,
               
-              p(class="text-muted","Below a description of the independent variables, their moderators, and their possible values. For further details, see also ", a("https://data.cooperationdatabank.org/"), "."),
+              p(class="text-muted","Below a description of the independent variables, their moderators, and their possible values. For further details, see also the ", a(href = "https://cooperationdatabank.org/codebook-2/", "codebook"), "."),
               DT::dataTableOutput("infotable")
             )  
     ),
@@ -1027,138 +1027,153 @@ br(),br(),)
                 what variables were manipulated or measured.', br(),
                 'The CoDa editorial board will review this content and either re-annotate it according to the
                  current codebook or add this variable to the list of the new ones to be implemented in the future.'),
-                    h4('Add Treatment1'),
-                fluidRow(
-                  column(6, selectInput(inputId = "addGenIVselectionTreatment1",
-                            label = p(labelMandatory("Generic Independent Variable"), br(),
-                            helpText('Example: Punishment', br(),
-                            em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
-                            ),
 
-                             choices = ""),),
-                ),
-                fluidRow(column(6,
-                                checkboxInput("addDescriptionGenericIVTreatment1",
-                                              "Add description for Generic Independent Variable")
-                                )
-                ),
-                conditionalPanel(
-                                  condition = 'input.addDescriptionGenericIVTreatment1 == 1',
-                                  fluidRow(column(8, textAreaInput("addDescriptionGenericIVTextTreatment1",
-                                                          "Description for Generic Independent Variable"))),
-                                   ),
-                conditionalPanel(
-                                  condition = 'input.addGenIVselectionTreatment1 != ""',
-                  fluidRow(
-                    column(6, selectInput(inputId = "addTreatmentSubpropSelectionTreatment1", #name of input used to be "gen_iv", also removed selectInput for current_iv
-                               label = p("Specific Independent Variable",
-                                         helpText("Example: Punishment treatment", br(),
-                                                  em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
-                               ),
-                               choices = "", selected = ""),),
-                    ),
-                  fluidRow(column(6,
-                                checkboxInput("addDescriptionSpecificIVTreatment1",
-                                              "Add description for Specific Independent Variable")
-                                )
-                  ),
-                  conditionalPanel(
-                                  condition = 'input.addDescriptionSpecificIVTreatment1 == 1',
-                                  fluidRow(column(8, textAreaInput("addDescriptionSpecificIVTextTreatment1",
-                                                          "Description for Specific Independent Variable"))),
-                                   ),
-                     fluidRow(
-                       column(6, selectInput(inputId = "addValueOptionsSelectionTreatment1",
-                               label = p("Specific Independent Variable values", br(),
-                               helpText("The possible values of a treatment.")
-                               ), #label displayed in ui
-                               choices = "", selected = ""),),
-                    ),
+                 h4('Specify the number of variables'),
+                 fluidRow(
+                  column(6, numericInput(inputId = "numberOfVariables",
+                            label = p(labelMandatory("Number of variables")
+                            ), 1
+                            ),),
                 ),
 
-                fluidRow(column(8,
-                radioButtons('quantitativeMethodTreatment1',
-                             "Please provide quantitative variables (either a or b) ",
-                              choices = c("a: Provide correlation and sample size" = "a", "b: Provide Mean, Standard Deviation, and sample size" = "b"),
-                             selected = character(0)
-                )
-                )),
+                 uiOutput("variables"),
 
-                conditionalPanel(
-                                  condition = 'input.quantitativeMethodTreatment1 == "a"',
-                #fluidRow(column(
-                #4, selectInput('addEsMeasure0', 'Choose an effect measure:',
-                #                 choices =c('',"Standardised Mean Difference" = "d", "Raw correlation coefficient" = "r"))
+
+
+
+
+                    #h4('Add Treatment1'),
+                #fluidRow(
+                #  column(6, selectInput(inputId = "addGenIVselectionTreatment1",
+                #            label = p(labelMandatory("Generic Independent Variable"), br(),
+                #            helpText('Example: Punishment', br(),
+                #            em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
+                #            ),
+                #
+                #             choices = ""),),
+                #),
+                #fluidRow(column(6,
+                #                checkboxInput("addDescriptionGenericIVTreatment1",
+                #                              "Add description for Generic Independent Variable")
+                #                )
+                #),
+                #conditionalPanel(
+                #                  condition = 'input.addDescriptionGenericIVTreatment1 == 1',
+                #                  fluidRow(column(8, textAreaInput("addDescriptionGenericIVTextTreatment1",
+                #                                          "Description for Generic Independent Variable"))),
+                #                   ),
+                #conditionalPanel(
+                #                  condition = 'input.addGenIVselectionTreatment1 != ""',
+                #  fluidRow(
+                #    column(6, selectInput(inputId = "addTreatmentSubpropSelectionTreatment1", #name of input used to be "gen_iv", also removed selectInput for current_iv
+                #               label = p("Specific Independent Variable",
+                #                         helpText("Example: Punishment treatment", br(),
+                #                                  em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
+                #               ),
+                #               choices = "", selected = ""),),
+                #    ),
+                #  fluidRow(column(6,
+                #                checkboxInput("addDescriptionSpecificIVTreatment1",
+                #                              "Add description for Specific Independent Variable")
+                #                )
+                #  ),
+                #  conditionalPanel(
+                #                  condition = 'input.addDescriptionSpecificIVTreatment1 == 1',
+                #                  fluidRow(column(8, textAreaInput("addDescriptionSpecificIVTextTreatment1",
+                #                                          "Description for Specific Independent Variable"))),
+                #                   ),
+                #     fluidRow(
+                #       column(6, selectInput(inputId = "addValueOptionsSelectionTreatment1",
+                #               label = p("Specific Independent Variable values", br(),
+                #               helpText("The possible values of a treatment.")
+                #               ), #label displayed in ui
+                #               choices = "", selected = ""),),
+                #    ),
+                #),
+                #
+                #fluidRow(column(8,
+                #radioButtons('quantitativeMethodTreatment1',
+                #             "Please provide quantitative variables (either a or b) ",
+                #              choices = c("a: Provide correlation and sample size" = "a", "b: Provide Mean, Standard Deviation, and sample size" = "b"),
+                #             selected = character(0)
+                #)
                 #)),
-                fluidRow(column(
-                4, numericInput('addCorrelationTreatment1', labelMandatory('Correlation'), NULL)
-                )),
-                                  fluidRow(column(
-                4, numericInput('addSampleSizeATreatment1', labelMandatory('Sample size'), NULL)
-                )),
-
-                ),
-
-                conditionalPanel(
-                                  condition = 'input.quantitativeMethodTreatment1 == "b"',
-
-                    fluidRow(column(
-                    4, selectInput('DVBehaviorTreatment1', labelMandatory('Behavior (dependent variable)'),
-                      choices = c('', 'Contributions', 'Cooperation', 'Withdrawals')
-                      )
-                    )),
-                    conditionalPanel(
-                                  condition = 'input.DVBehaviorTreatment1 == "Contributions" || input.DVBehaviorTreatment1 =="Withdrawals"',
-
-                    fluidRow(column(
-                    4, numericInput('addMeanTreatment1', labelMandatory('Mean'), NULL)
-                    )),
-                    fluidRow(column(
-                    4, numericInput('addStandardDeviationTreatment1', labelMandatory('Standard Deviation'), NULL)
-                    )),
-                    ),
-
-                    conditionalPanel(
-                                  condition = 'input.DVBehaviorTreatment1 == "Cooperation" ',
-                                        fluidRow(column(
-                    4, numericInput('addProportionOfCooperationTreatment1', labelMandatory('P(C) (proportion of cooperation'), NULL)
-                    )),
-
-                    ),
-
-                    fluidRow(column(
-                    4, numericInput('addSampleSizeBTreatment1', labelMandatory('Sample size'), NULL)
-                    )),
-
-                    #fluidRow(column(
-                    #4, numericInput('addLowestChoiceTreatment1', 'Lowest Choice', NULL)
-                    #)),
-                    #fluidRow(column(
-                    #4, numericInput('addHighestChoiceTreatment1', 'Highest Choice', NULL)
-                    #)),
-                    fluidRow(column(
-                    4, selectInput('betweenOrWithinSubjectsTreatment1', labelMandatory('Between or Within Subjects'),
-                                     choices = c('', "Between", "Within", "Mixed"),
-                      )
-                    )),
-                ),
-
-
-
-                      actionLink('addAnotherVariable', "Add another treatment for this variable"), br(),
-                      shinyjs::hidden(
-                      div(id = 'removeVariable',
-                                      actionLink('removeVariableLink', "Remove this treatment", style="color: red"), br(),
-
-                      )),
+                #
+                #conditionalPanel(
+                #                  condition = 'input.quantitativeMethodTreatment1 == "a"',
+                ##fluidRow(column(
+                ##4, selectInput('addEsMeasure0', 'Choose an effect measure:',
+                ##                 choices =c('',"Standardised Mean Difference" = "d", "Raw correlation coefficient" = "r"))
+                ##)),
+                #fluidRow(column(
+                #4, numericInput('addCorrelationTreatment1', labelMandatory('Correlation'), NULL)
+                #)),
+                #                  fluidRow(column(
+                #4, numericInput('addSampleSizeATreatment1', labelMandatory('Sample size'), NULL)
+                #)),
+                #
+                #),
+                #
+                #conditionalPanel(
+                #                  condition = 'input.quantitativeMethodTreatment1 == "b"',
+                #
+                #    fluidRow(column(
+                #    4, selectInput('DVBehaviorTreatment1', labelMandatory('Behavior (dependent variable)'),
+                #      choices = c('', 'Contributions', 'Cooperation', 'Withdrawals')
+                #      )
+                #    )),
+                #    conditionalPanel(
+                #                  condition = 'input.DVBehaviorTreatment1 == "Contributions" || input.DVBehaviorTreatment1 =="Withdrawals"',
+                #
+                #    fluidRow(column(
+                #    4, numericInput('addMeanTreatment1', labelMandatory('Mean'), NULL)
+                #    )),
+                #    fluidRow(column(
+                #    4, numericInput('addStandardDeviationTreatment1', labelMandatory('Standard Deviation'), NULL)
+                #    )),
+                #    ),
+                #
+                #    conditionalPanel(
+                #                  condition = 'input.DVBehaviorTreatment1 == "Cooperation" ',
+                #                        fluidRow(column(
+                #    4, numericInput('addProportionOfCooperationTreatment1', labelMandatory('P(C) (proportion of cooperation'), NULL)
+                #    )),
+                #
+                #    ),
+                #
+                #    fluidRow(column(
+                #    4, numericInput('addSampleSizeBTreatment1', labelMandatory('Sample size'), NULL)
+                #    )),
+                #
+                #    #fluidRow(column(
+                #    #4, numericInput('addLowestChoiceTreatment1', 'Lowest Choice', NULL)
+                #    #)),
+                #    #fluidRow(column(
+                #    #4, numericInput('addHighestChoiceTreatment1', 'Highest Choice', NULL)
+                #    #)),
+                #    fluidRow(column(
+                #    4, selectInput('betweenOrWithinSubjectsTreatment1', labelMandatory('Between or Within Subjects'),
+                #                     choices = c('', "Between", "Within", "Mixed"),
+                #      )
+                #    )),
+                #),
 
 
-                      actionLink('addAnotherTreatment', "Add another variable"), br(),
-                      shinyjs::hidden(
-                      div(id = 'removeTreatment',
-                                      actionLink('removeTreatmentLink', "Remove this variable", style="color: red"), br(),
 
-                      ))
+                      #actionLink('addAnotherVariable', "Add another treatment for this variable"), br(),
+                      #shinyjs::hidden(
+                      #div(id = 'removeVariable',
+                      #                actionLink('removeVariableLink', "Remove this treatment", style="color: red"), br(),
+                      #
+                      #)),
+                      #
+                      #
+                      #actionLink('addAnotherTreatment', "Add another variable"), br(),
+                      #shinyjs::hidden(
+                      #div(id = 'removeTreatment',
+                      #                actionLink('removeTreatmentLink', "Remove this variable", style="color: red"), br(),
+                      #
+                      #))
 
 
                 ),

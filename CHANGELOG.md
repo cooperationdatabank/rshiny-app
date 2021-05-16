@@ -1,5 +1,13 @@
 # CoDa Shiny app changelog
 
+## 2021-05-16
+
+* Fixed an error by which dichotomous study characteristics could not be used in selection
+* Included moderators as separate columns in the data download on the frontpage
+* Cleaned up the downloadable data file on the frontpage (removed various irrelevant columns)
+* Cleaned up the coding of moderators on the meta-analysis and meta-regression tabs (the value names should be cleaner now)
+* Continuous treatment-level moderators (e.g., punishment effectiveness) are now treated as continuous in meta-analysis and meta-regression
+
 ## 2021-03-10
 
 * Added the option to add additional effect sizes in meta-analyses and meta-regressions

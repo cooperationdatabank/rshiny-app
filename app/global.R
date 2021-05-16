@@ -40,17 +40,19 @@ fieldsAll <- c(
                "userEmail", 'userName'
 )
 
-treatmentFields <- c("addGenIVselection", "addDescriptionGenericIVText",
-                     "addTreatmentSubpropSelection","addDescriptionSpecificIVText", "addValueOptionsSelection",
-                     "quantitativeMethod",
-                     "addCorrelation",
-                     "addSampleSizeA",
-                     "DVBehavior",
-                     "addMean", "addStandardDeviation",
-                     "addSampleSizeB",
-                     "addProportionOfCooperation",
-                     "addLowestChoice", "addHighestChoice",
-                     "betweenOrWithinSubjects"
+treatmentFields <- c(
+  #"addGenIVselection", "addDescriptionGenericIVText",
+  #                   "addTreatmentSubpropSelection","addDescriptionSpecificIVText", "addValueOptionsSelection",
+  #                   "quantitativeMethod",
+  #                   "addCorrelation",
+  #                   "addSampleSizeA",
+  #                   "DVBehavior",
+  #                   "addMean", "addStandardDeviation",
+  #                   "addSampleSizeB",
+  #                   "addProportionOfCooperation",
+  #                   "addLowestChoice", "addHighestChoice",
+  #                   "betweenOrWithinSubjects"
+
 )
 
 metaAnalysisFields <- c(
