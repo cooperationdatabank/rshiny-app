@@ -1,5 +1,14 @@
 # CoDa Shiny app changelog
 
+## 2022-11-13
+
+* Fixed an error which caused some effects to be incorrectly inverted when combining multiple criteria with 'or'
+* Added a filter to omit observations for which both treatments match the selected criteria from meta-analyses
+
+## 2022-03-10 
+
+* Fixed an error by which some confidence intervals were inverted in the downloadable data
+
 ## 2021-05-16
 
 * Fixed an error by which dichotomous study characteristics could not be used in selection
