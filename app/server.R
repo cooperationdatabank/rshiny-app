@@ -24,16 +24,16 @@ sparqlendpoint <- "https://api.cooperationdatabank.org/datasets/coda-dev/databan
 
 # Retrieve all study data from saved sparql queries in the coda instance. 
 # Retrieve observations (need two queries)
-observations1 <- content(GET(paste0(api, "dashboard-0-10/run"), add_headers(Accept = "text/csv")))
-observations2 <- content(GET(paste0(api, "dashboard-11-17/run"), add_headers(Accept = "text/csv")))
-observations3 <- content(GET(paste0(api, "dashboard-20-30/run"), add_headers(Accept = "text/csv")))
+observations1 <- content(GET(paste0(api, "dashboard/run?page=1&pageSize=10000"), add_headers(Accept = "text/csv")))
+observations2 <- content(GET(paste0(api, "dashboard/run?page=2&pageSize=10000"), add_headers(Accept = "text/csv")))
+observations3 <- content(GET(paste0(api, "dashboard/run?page=3&pageSize=10000"), add_headers(Accept = "text/csv")))
 observationData <- bind_rows(observations1, observations2, observations3) %>%
   mutate(observationName = substr(observationName, 17, nchar(observationName))) # Remove "Effect size no. "
 
 # Retrieve treatment info (also needs 2 queries)
-supportData1 <- content(GET(paste0(api, "dashboard-support-0-10/run"), add_headers(Accept = "text/csv")))
-supportData2 <- content(GET(paste0(api, "dashboard-support-10-17k/run"), add_headers(Accept = "text/csv")))
-supportData3 <- content(GET(paste0(api, "dashboard-support-20-30/run"), add_headers(Accept = "text/csv")))
+supportData3 <- content(GET(paste0(api, "dashboard-support/run?page=1&pageSize=10000"), add_headers(Accept = "text/csv")))
+supportData2 <- content(GET(paste0(api, "dashboard-support/run?page=2&pageSize=10000"), add_headers(Accept = "text/csv")))
+supportData1 <- content(GET(paste0(api, "dashboard-support/run?page=3&pageSize=10000"), add_headers(Accept = "text/csv")))
 supportData <- bind_rows(supportData1, supportData2, supportData3) %>%
   mutate(observationName = substr(observationName, 17, nchar(observationName))) # Remove "Effect size no. "
 
@@ -44,21 +44,22 @@ observationData <- left_join(observationData, supportData,by = "observationName"
 # Retrieve studyInfo as text/html to preserve fields with multiple values
 # If there are fields with multiple values, the values are comma-separated
 # without spaces (i.e., a,b)
-studyInfo <- content(GET(paste0(api, "study-characteristics/run"), add_headers(Accept = "text/html")))
+studyInfo <- content(GET(paste0(api, "study-characteristics/run"), add_headers(Accept = "application/json")))
 
 # getStudyInfo is an alternative to rbind.fill that creates a data.frame from
 # a list of (named) lists of unequal length.
-getStudyInfo <- function (...) 
-{
-  dargs <- list(...)
-  all.names <- unique(names(unlist(dargs)))
-  out <- do.call(rbind, lapply(dargs, `[`, all.names))
-  colnames(out) <- all.names
-  as.data.frame(out, stringsAsFactors=FALSE) %>%
-    unnest(., cols = all.names)
-}
+# getStudyInfo <- function (...) 
+# {
+#   dargs <- list(...)
+#   all.names <- unique(names(unlist(dargs)))
+#   out <- do.call(rbind, lapply(dargs, `[`, all.names))
+#   colnames(out) <- all.names
+#   as.data.frame(out, stringsAsFactors=FALSE) %>%
+#     unnest(., cols = all.names)
+# }
+# studyInfo <- do.call(getStudyInfo, studyInfo)
 
-studyInfo <- do.call(getStudyInfo, studyInfo)
+studyInfo <- bind_rows(studyInfo)
 
 # Join observation-level data (observationData) and study-level data (studyInfo)
 observationData <- inner_join(observationData, studyInfo, 
@@ -514,8 +515,12 @@ shinyServer(function(input, output, session) {
 
        ## Helper functions ####
   # helper function for evaluating selection input
+  # evaluateList <- function(datalist, criteria){
+  #   return (sapply(datalist, function(x) { all(str_detect(x, fixed(criteria, ignore_case = TRUE)))}, USE.NAMES = FALSE))
+  # }
+  
   evaluateList <- function(datalist, criteria){
-      return (sapply(datalist, function(x) { all(str_contains(x, criteria, ignore.case = TRUE))}, USE.NAMES = FALSE))
+    return (sapply(datalist, function(x) { all(str_contains(x, criteria, ignore.case = TRUE))}, USE.NAMES = FALSE))
   }
 
   remove_url <- function(x) {
@@ -523,70 +528,36 @@ shinyServer(function(input, output, session) {
     x <- gsub(">", "", x)
     return(x)
   }
-
-  evaluateBoolOperator <- function(operator, list1, list2){
-    if (is.null(operator)){
-      return (list1 & list2)
-    }
-    else if (operator == 'AND'){
-      return (list1 & list2)
-    } else if (operator == 'OR') {
-      return(list1 | list2)
-    }
-  }
-
-  evaluateOptionalCriteria <- function(valueNames, number){
-    # Check whether optional criteria have been selected; otherwise return a
-    # list the same length as the input evaluating to TRUE
-    if(is.null(input[[paste0("extraCriteria",number)]])){
-      return(valueNames != "We need to return a list with only true")
-    } else if(input[[paste0("extraCriteria",number)]] < 1){
-      return(valueNames != "We need to return a list with only true")
-    } else {
-      # Evaluate optional criteria using evaluateList
-      result <- evaluateList(valueNames, paste0(input[[paste0("treatmentSubpropSelection",number,"b")]], 
-                                                " : ", 
-                                                input[[paste0("valueOptionsSelection",number,"b")]]))
-      if (input[[paste0("extraCriteria",number)]] > 1) {
-        for (i in 1:input[[paste0("extraCriteria",number)]]-1){
-          result <- evaluateBoolOperator(input[[paste0("combinator",number)]], result,
-                                         evaluateList(valueNames, 
-                                                      paste0(input[[paste0("treatmentSubpropSelection",number,letters[i+2])]], 
-                                                             " : ", 
-                                                             input[[paste0("valueOptionsSelection",number,letters[i+2])]])))
-        }
-      }
-      return(result)
-    }
-  }
   
   # A function to select observations based on treatmentSubpropSelection and valueOptionsSelection
   # selectorNumber indicates the first vs. second treatment in the selection interface
   # treatmentNumber indicates the treatmentValue column (treatmentValue1 vs. treatmentValue2)
+  
   selectObservations <- function(data, selectorNumber, treatmentNumber){
-    treatmentSelection <- ifelse(is.null(input[[paste0("treatmentSubpropSelection", selectorNumber, "a")]]) |
-                                   input[[paste0("treatmentSubpropSelection", selectorNumber, "a")]] == "",
-                                 "",
-                                 paste0(input[[paste0("treatmentSubpropSelection", selectorNumber, "a")]], 
-                                        " : ", 
-                                        input[[paste0("valueOptionsSelection", selectorNumber, "a")]]))
+    selectedObservations <- list()
+    for(number in 1:(as.numeric(input[[paste0("extraCriteria", selectorNumber)]])+1)){
+      letter <- letters[number]
+      
+      treatmentSelection <- ifelse(is.null(input[[paste0("treatmentSubpropSelection", selectorNumber, letter)]]) |
+                                     input[[paste0("treatmentSubpropSelection", selectorNumber, letter)]] == "",
+                                   "",
+                                   paste0(input[[paste0("treatmentSubpropSelection", selectorNumber, letter)]], 
+                                          " : ", 
+                                          input[[paste0("valueOptionsSelection", selectorNumber, letter)]]))
+      
+      selectedObservations[[number]] <- (evaluateList(data[[paste0("treatmentValue", treatmentNumber)]],
+                                            treatmentSelection))
+    }
     
-    evaluateBoolOperator(input[[paste0("combinator", selectorNumber)]],
-                         evaluateList(data[[paste0("treatmentValue", treatmentNumber)]], 
-                                      treatmentSelection),
-                         evaluateOptionalCriteria(data[[paste0("treatmentValue", treatmentNumber)]], 
-                                                  selectorNumber))
+    selectedObservations <- if(input[[paste0("combinator", selectorNumber)]] == "AND"){
+      Reduce("&", selectedObservations)
+    } else {
+      Reduce("|", selectedObservations)
+    }
+    
+    return(selectedObservations)
   }
   
-  # Function to split valueName columns and select only the value
-  # for the subproperty specified by var
-  splitValueName <- function(var, valueName){
-    value <- lapply(valueName,
-                    function(x) unlist(strsplit(x, "\\|"))[grepl(var, unlist(strsplit(x, "\\|")))]) # %>%
-    #  sapply(., function(s) if (length(s) == 0) NA_character_ else paste(s, collapse = "|"))
-    return(value)
-  }
-
   # Function to split valueName columns and select only the value(s)
   # for the subproperty specified by var
   getValueName <- function(var, valueName){
@@ -692,7 +663,7 @@ shinyServer(function(input, output, session) {
        ## Filter data based on selections ####
   filteredObservationData <- reactive({
     
-    # Function to check whether any value within a comma-separated string falls
+    # Function to check whether any value within a comma-separated string
     # matches any value in a vector of strings.
     checkSelection <- function(value, criterion){
       map_lgl(str_split(value, ","), ~ any(.x %in% criterion))
@@ -1079,11 +1050,7 @@ shinyServer(function(input, output, session) {
     }
     
     # Check whether the first selected property is contained in treatment 1
-    orderMatch <- (evaluateList(filteredObservationData$treatmentValue1,
-                                paste0(input$treatmentSubpropSelection1a,
-                                       " : ",
-                                       input$valueOptionsSelection1a)) &
-                     evaluateOptionalCriteria(filteredObservationData$treatmentValue1, 1))
+    orderMatch <- selectObservations(filteredObservationData, 1, 1)
     
     # For each continuous variable with a levels equivalent, check whether 
     # the level treatments were ordered in line with selection.
@@ -1178,7 +1145,12 @@ shinyServer(function(input, output, session) {
     
     # Reverse effect size estimate
     filteredObservationData <- filteredObservationData %>%
-      mutate(effectSize = ifelse(orderMatch, effectSize, effectSize * (-1)))
+      mutate(effectSize = ifelse(orderMatch, effectSize, effectSize * (-1)),
+             LL = effectSizeLowerLimit,
+             UL = effectSizeUpperLimit,
+             effectSizeLowerLimit = ifelse(orderMatch, LL, UL * (-1)),
+             effectSizeUpperLimit = ifelse(orderMatch, UL, LL * (-1))) %>%
+      select(-LL, -UL)
     
     # Reverse the two 'valueName' columns
     filteredObservationData <- filteredObservationData %>%
@@ -1278,6 +1250,10 @@ shinyServer(function(input, output, session) {
       group_by(studyNameGeneral) %>%
       filter(all(substudy == 1) | all(substudy == 0) | substudy == 1) %>%
       ungroup()
+    
+    # Filter out cases where both treatments have equivalent values
+    filteredObservationData <- filteredObservationData %>%
+      filter(!(selectObservations(., 1, 1) == selectObservations(., 1, 2) & selectObservations(., 2, 1) == selectObservations(., 2, 2)))
     
     # Create references for meta-analysis output
     filteredObservationData <- filteredObservationData %>%
@@ -2474,7 +2450,7 @@ shinyServer(function(input, output, session) {
     get_metaforSummary_output(get_meta_analysis())
   })
   
-  #### Data table ####
+       ## Data table ####
   metaTableData <- reactive({
     metaAnalysisSelection() %>%
       mutate(effectSize = round(effectSize, 2),
@@ -2847,7 +2823,7 @@ shinyServer(function(input, output, session) {
     return(dataSelection)
   })
 
-  #### Meta-regression interpretation ####
+       ## Meta-regression interpretation ####
   get_interpretation_reg <- reactive({
     
     # Function to generate strings describing treatments from inputs
@@ -3457,26 +3433,56 @@ shinyServer(function(input, output, session) {
   ## Add time at file name to indicate the submission time
   humanTime <- function() format(Sys.time(), "%Y%m%d-%H%M%OS")
   # Define the data to be saved
-  addedTreatments <- c('Treatment1')
-  addedVariables <- c()
   longFormData <- reactive({
     data <- sapply(fieldsAll, function(x) toString(input[[x]]))
-    treatments <- c()
-    for (i in c(addedTreatments, addedVariables)) {
-          treatmentFieldsWithID <- c()
-          #treatmentID <- paste0('treatment', i)
-          for (treatmentField in treatmentFields) {
-            treatmentFieldsWithID <- c(treatmentFieldsWithID, paste0(treatmentField, i))
-          }
-          treatment <- sapply(treatmentFieldsWithID, function(x) input[[x]])
-          #treatment[is.null(treatment)] <- ''
-          #treatment[is.na(treatment)] <- ''
 
-          treatment_dict <- c()
-          treatment_dict[[i]] <- as.list(treatment)
-          treatments <- c(treatments, treatment_dict)
+    numVar <- as.integer(input$numberOfVariables)
+    variables <- c()
+    for (k in 1:numVar) {
+      numTreatments <- as.integer(input[[paste0("treatmentNum", k)]])
+      treatments <- c()
+      for (i in 1:numTreatments) {
+        treatment <- c()
+        numGeneric <- as.integer(input[[paste0("GIVNum", k, '_', i)]])
+
+        treatment[[paste0('quantitativeMethod', k, '_', i)]] <- input[[paste0('quantitativeMethod', k, '_', i)]]
+        treatment[[paste0('addCorrelation', k, '_', i)]] <- input[[paste0('addCorrelation', k, '_', i)]]
+        treatment[[paste0('addSampleSizeA', k, '_', i)]] <- input[[paste0('addSampleSizeA', k, '_', i)]]
+        treatment[[paste0('DVBehavior', k, '_', i)]] <- input[[paste0('DVBehavior', k, '_', i)]]
+        treatment[[paste0('addMean', k, '_', i)]] <- input[[paste0('addMean', k, '_', i)]]
+        treatment[[paste0('addStandardDeviation', k, '_', i)]] <- input[[paste0('addStandardDeviation', k, '_', i)]]
+        treatment[[paste0('addSampleSizeB', k, '_', i)]] <- input[[paste0('addSampleSizeB', k, '_', i)]]
+        treatment[[paste0('addProportionOfCooperation', k, '_', i)]] <- input[[paste0('addProportionOfCooperation', k, '_', i)]]
+        treatment[[paste0('addLowestChoice', k, '_', i)]] <- input[[paste0('addLowestChoice', k, '_', i)]]
+        treatment[[paste0('addHighestChoice', k, '_', i)]] <- input[[paste0('addHighestChoice', k, '_', i)]]
+        treatment[[paste0('betweenOrWithinSubjects', k, '_', i)]] <- input[[paste0('betweenOrWithinSubjects', k, '_', i)]]
+        generic_ivs <- c()
+        for (m in 1:numGeneric) {
+          generic_iv <- c()
+          numSpecific <- as.integer(input[[paste0("SIVNumber",k, '_', i, '_', m)]])
+          treatment[[paste0("addGenIV", k, '_', i, '_', m)]] <- input[[paste0("addGenIV", k, '_', i, '_', m)]]
+          treatment[[paste0("addDescriptionGenericIV", k, '_', i, '_', m)]] <- input[[paste0("addDescriptionGenericIV", k, '_', i, '_', m)]]
+          treatment[['specificVariables']] <- c()
+          for (n in 1:numSpecific) {
+
+            treatment[['specificVariables']][[paste0("SubpropSelection", k, '_', i, '_', m, '_', n)]] <- input[[paste0("SubpropSelection", k, '_', i, '_', m, '_', n)]]
+            treatment[['DescriptionSpecificIV']][[paste0("DescriptionSpecificIV", k, '_', i, '_', m, '_', n)]] <- input[[paste0("DescriptionSpecificIV", k, '_', i, '_', m, '_', n)]]
+            treatment[['ValueOptionsSelection']][[paste0("ValueOptionsSelection", k, '_', i, '_', m, '_', n)]] <- input[[paste0("ValueOptionsSelection", k, '_', i, '_', m, '_', n)]]
+
+          }
+
+        }
+        treatment_with_name <- c()
+        treatment_with_name[[paste0('treatment_', i)]] <- treatment
+        treatments <- c(treatments, treatment_with_name)
+      }
+
+      variables[[paste0('variable', k)]] <- treatments
+
     }
-    treatmentsJSON <- toJSON(treatments)
+
+
+    treatmentsJSON <- toJSON(variables)
     data <- c(data, treatmentsValue = treatmentsJSON)
 
     data <- c(data, timestamp = humanTime())
@@ -3512,14 +3518,14 @@ shinyServer(function(input, output, session) {
       shinyjs::hide("removeTreatment")
 
       # remove UI for treatment variables
-      for (i in c(addedTreatments, addedVariables)) {
-       removeUI(
-          selector = paste0('#', i)
-        )
-      }
-
-      addedTreatments <<- c('Treatment1')
-      addedVariables <<- c()
+      #for (i in c(addedTreatments, addedVariables)) {
+      # removeUI(
+      #    selector = paste0('#', i)
+      #  )
+      #}
+      #
+      #addedTreatments <<- c('Treatment1')
+      #addedVariables <<- c()
 
     },
     error = function(err) {
@@ -3650,277 +3656,6 @@ shinyServer(function(input, output, session) {
   })
 
 
-  #insert_treatment <- function (treatmentId) {
-  #      insertUI(
-  #        selector = "#addAnotherVariable",
-  #        where = "beforeBegin",
-  #        ui = tags$div(
-  #          id = treatmentId,
-  #          hr(style="border-color: green;"),
-  #          h4(paste0('Add another treatment: ', treatmentId)),
-  #          fluidRow(
-  #                column(6, selectInput(inputId = paste0("addGenIVselection",treatmentId),
-  #                          label = p(labelMandatory("Generic Independent Variable"), br(),
-  #                          helpText('Example: Punishment', br(),
-  #                          em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
-  #                          ),
-  #                          choices = c("",sort(selections$ivname))),),
-  #              ),
-  #              fluidRow(column(6,
-  #                              checkboxInput(paste0("addDescriptionGenericIV", treatmentId),
-  #                                            "Add description for Generic Independent Variable")
-  #                              )
-  #              ),
-  #              conditionalPanel(
-  #                                condition = paste0('input.addDescriptionGenericIV',treatmentId,' == 1'),
-  #                                fluidRow(column(8, textAreaInput(paste0("addDescriptionGenericIVText", treatmentId),
-  #                                                        "Description for Generic Independent Variable"))),
-  #                                 ),
-  #              conditionalPanel(
-  #                                condition = paste0('input.addGenIVselection', treatmentId,' != ""'),
-  #                fluidRow(
-  #                  column(6, selectInput(inputId = paste0("addTreatmentSubpropSelection", treatmentId), #name of input used to be "gen_iv", also removed selectInput for current_iv
-  #                             label = p("Specific Independent Variable",
-  #                                       helpText("Example: Punishment treatment", br(),
-  #                                                em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
-  #                             ),
-  #                             choices = '', selected = ""),),
-  #                  ),
-  #                fluidRow(column(6,
-  #                              checkboxInput(paste0("addDescriptionSpecificIV", treatmentId),
-  #                                            "Add description for Specific Independent Variable")
-  #                              )
-  #                ),
-  #                conditionalPanel(
-  #                                condition = paste0('input.addDescriptionSpecificIV', treatmentId,' == 1'),
-  #                                fluidRow(column(8, textAreaInput(paste0("addDescriptionSpecificIVText", treatmentId),
-  #                                                        "Description for Specific Independent Variable"))),
-  #                                 ),
-  #                   fluidRow(
-  #                     column(6, selectizeInput(inputId = paste0("addValueOptionsSelection", treatmentId),
-  #                             label = p("Specific Independent Variable values", br(),
-  #                             helpText("The possible values of a treatment.")
-  #                             ), #label displayed in ui
-  #                             choices = "", selected = "",
-  #                                              #options = list(create = TRUE)
-  #                     ),),
-  #                  ),
-  #              ),
-  #
-  #
-  #              fluidRow(column(8,
-  #              radioButtons(paste0('quantitativeMethod', treatmentId),
-  #                           "Please provide quantitative variables (either a or b) ",
-  #                            choices = c("a: Provide correlation and sample size" = "a", "b: Provide Mean, Standard Deviation, and sample size" = "b"),
-  #                           selected = character(0)
-  #              )
-  #              )),
-  #
-  #              conditionalPanel(
-  #                                condition = paste0('input.quantitativeMethod',treatmentId,' == "a"'),
-  #
-  #              #fluidRow(column(
-  #              #4, selectInput(paste0('addEsMeasure', treatmentId), 'Choose an effect measure:',
-  #              #                 choices =c('',"Standardised Mean Difference" = "d", "Raw correlation coefficient" = "r"))
-  #              #)),
-  #              fluidRow(column(
-  #              4, numericInput(paste0('addCorrelation', treatmentId), labelMandatory('Correlation'), NULL)
-  #              )),
-  #                                fluidRow(column(
-  #              4, numericInput(paste0('addSampleSizeA', treatmentId), labelMandatory('Sample size'), NULL)
-  #              )),
-  #
-  #              ),
-  #
-  #              conditionalPanel(
-  #                                condition = paste0('input.quantitativeMethod', treatmentId,' == "b"'),
-  #                  fluidRow(column(
-  #                  4, selectInput(paste0('DVBehavior', treatmentId), labelMandatory('Behavior (dependent variable)'),
-  #                    choices = c('', 'Contributions', 'Cooperation', 'Withdrawals')
-  #                    )
-  #                  )),
-  #                  conditionalPanel(
-  #                                condition = paste0('input.DVBehavior',treatmentId,' == "Contributions" || input.DVBehavior', treatmentId,' =="Withdrawals"'),
-  #
-  #                  fluidRow(column(
-  #                  4, numericInput(paste0('addMean', treatmentId), labelMandatory('Mean'), NULL)
-  #                  )),
-  #                  fluidRow(column(
-  #                  4, numericInput(paste0('addStandardDeviation', treatmentId), labelMandatory('Standard Deviation'), NULL)
-  #                  )),
-  #                  ),
-  #
-  #                  conditionalPanel(
-  #                                condition = paste0('input.DVBehavior',treatmentId,' == "Cooperation" '),
-  #                                      fluidRow(column(
-  #                  4, numericInput(paste0('addProportionOfCooperation', treatmentId), labelMandatory('P(C) (proportion of cooperation'), NULL)
-  #                  )),
-  #
-  #                  ),
-  #                  fluidRow(column(
-  #                  4, numericInput(paste0('addSampleSizeB', treatmentId), labelMandatory('Sample size'), NULL)
-  #                  )),
-  #                  fluidRow(column(
-  #                  4, selectInput(paste0('betweenOrWithinSubjects', treatmentId), labelMandatory('Between or Within Subjects'),
-  #                                   choices = c('', "Between", "Within", 'Mixed'),)
-  #                  ))
-  #
-  #              )
-  #
-  #        )
-  #  )
-  #
-  #  observe({
-  #    updateSelectInput(session, paste0("addTreatmentSubpropSelection", treatmentId),
-  #                      choices = c("",ivLabelsGen(input[[paste0('addGenIVselection', treatmentId)]])))
-  #  })
-  #
-  #  observe({
-  #    value_choice <- valueOptionUpdateGen(input[[paste0('addTreatmentSubpropSelection',treatmentId)]])
-  #    allow_create <- FALSE
-  #    if (identical(value_choice, character(0))){
-  #      allow_create <- TRUE
-  #    }
-  #    updateSelectizeInput(session, paste0("addValueOptionsSelection", treatmentId),
-  #                      choices = c("", value_choice), options = list(create = allow_create))
-  #  })
-  #}
-
-  # todo: remove duplicate code
-  #insert_variable <- function (treatmentId) {
-  #      insertUI(
-  #        selector = "#addAnotherVariable",
-  #        where = "beforeBegin",
-  #        ui = tags$div(
-  #          id = treatmentId,
-  #          hr(),
-  #          h4(paste0('Add another variable for ', addedTreatments[length(addedTreatments)]
-  #                    )),
-  #          fluidRow(
-  #                column(6, selectInput(inputId = paste0("addGenIVselection",treatmentId),
-  #                          label = p("Generic Independent Variable", br(),
-  #                          helpText('Example: Punishment', br(),
-  #                          em('Check our codebook for the list of all the Generic Independent Variables and their definitions')),
-  #                          ),
-  #                          choices = c("",sort(selections$ivname))),),
-  #              ),
-  #              fluidRow(column(6,
-  #                              checkboxInput(paste0("addDescriptionGenericIV", treatmentId),
-  #                                            "Add description for Generic Independent Variable")
-  #                              )
-  #              ),
-  #              conditionalPanel(
-  #                                condition = paste0('input.addDescriptionGenericIV',treatmentId,' == 1'),
-  #                                fluidRow(column(8, textAreaInput(paste0("addDescriptionGenericIVText", treatmentId),
-  #                                                        "Description for Generic Independent Variable"))),
-  #                                 ),
-  #              conditionalPanel(
-  #                                condition = paste0('input.addGenIVselection', treatmentId,' != ""'),
-  #                fluidRow(
-  #                  column(6, selectInput(inputId = paste0("addTreatmentSubpropSelection", treatmentId), #name of input used to be "gen_iv", also removed selectInput for current_iv
-  #                             label = p("Specific Independent Variable",
-  #                                       helpText("Example: Punishment treatment", br(),
-  #                                                em("Check our codebook for the list of all the Specific Independent Variables and their definitions"))
-  #                             ),
-  #                             choices = '', selected = ""),),
-  #                  ),
-  #                fluidRow(column(6,
-  #                              checkboxInput(paste0("addDescriptionSpecificIV", treatmentId),
-  #                                            "Add description for Specific Independent Variable")
-  #                              )
-  #                ),
-  #                conditionalPanel(
-  #                                condition = paste0('input.addDescriptionSpecificIV', treatmentId,' == 1'),
-  #                                fluidRow(column(8, textAreaInput(paste0("addDescriptionSpecificIVText", treatmentId),
-  #                                                        "Description for Specific Independent Variable"))),
-  #                                 ),
-  #                   fluidRow(
-  #                     column(6, selectizeInput(inputId = paste0("addValueOptionsSelection", treatmentId),
-  #                             label = p("Specific Independent Variable values", br(),
-  #                             helpText("The possible values of a treatment.")
-  #                             ), #label displayed in ui
-  #                             choices = "", selected = "",
-  #                                              #options = list(create = TRUE)
-  #                     ),),
-  #                  ),
-  #              ),
-  #
-  #        )
-  #  )
-  #
-  #  observe({
-  #    updateSelectInput(session, paste0("addTreatmentSubpropSelection", treatmentId),
-  #                      choices = c("",ivLabelsGen(input[[paste0('addGenIVselection', treatmentId)]])))
-  #  })
-  #
-  #  observe({
-  #    value_choice <- valueOptionUpdateGen(input[[paste0('addTreatmentSubpropSelection',treatmentId)]])
-  #    allow_create <- FALSE
-  #    if (identical(value_choice, character(0))){
-  #      allow_create <- TRUE
-  #    }
-  #    updateSelectizeInput(session, paste0("addValueOptionsSelection", treatmentId),
-  #                      choices = c("", value_choice), options = list(create = allow_create))
-  #  })
-  #}
-
-  #observeEvent(input$addAnotherTreatment, {
-  #  treatmentId <- paste0('Treatment',length(addedTreatments)+1)
-  #  insert_treatment(treatmentId)
-  #  addedTreatments <<- c(addedTreatments, treatmentId)
-  #  shinyjs::show('removeTreatment')
-  #})
-  #
-  #observeEvent(input$addAnotherVariable, {
-  #  treatmentId <- paste0(addedTreatments[length(addedTreatments)],'Variable',input$addAnotherVariable)
-  #  insert_variable(treatmentId)
-  #  addedVariables <<- c(addedVariables, treatmentId)
-  #  shinyjs::show('removeVariable')
-  #})
-  #
-  #
-  #observeEvent(input$removeTreatmentLink, {
-  #  removeUI(
-  #    selector = paste0('#', addedTreatments[length(addedTreatments)])
-  #  )
-  #  # also remove the variables under the treatment
-  #  remove_variables <- c()
-  #  for (v in addedVariables) {
-  #    if (startsWith(v, addedTreatments[length(addedTreatments)])) {
-  #          removeUI(
-  #            selector = paste0('#', v)
-  #          )
-  #          remove_variables <- c(remove_variables, v)
-  #    }
-  #  }
-  #
-  #  addedVariables <<- addedVariables[! addedVariables %in% remove_variables]
-  #
-  #  cat('\n removing', addedTreatments[length(addedTreatments)])
-  #
-  #  if  (length(addedTreatments) > 1) {
-  #    addedTreatments <<- addedTreatments[-length(addedTreatments)]
-  #  }
-  #})
-  #observe({
-  #  if (length(addedTreatments) == 1) {
-  #    shinyjs::hide('removeTreatment')
-  #  }
-  #})
-  #
-  #observeEvent(input$removeVariableLink, {
-  #  removeUI(
-  #    ## pass in appropriate div id
-  #    selector = paste0('#', addedVariables[length(addedVariables)])
-  #  )
-  #  cat('removing', addedVariables[length(addedVariables)])
-  #  addedVariables <<- addedVariables[-length(addedVariables)]
-  #})
-  #observe({
-  #  if (length(addedVariables) == 1) {
-  #    shinyjs::hide('removeVariable')
-  #  }
-  #})
   observeEvent(input$showTerms, {
       showModal(modalDialog(
         title = "Privacy statement: Cooperation Databank",
@@ -4144,7 +3879,15 @@ shinyServer(function(input, output, session) {
                       fluidRow(column(
                       4, numericInput(paste0('addSampleSizeB', k, '_', i), labelMandatory('Sample size'), NULL)
                       )),
-                  )
+                  ),
+
+                   fluidRow(column(
+                    4, radioButtons(paste0('betweenOrWithinSubjects',k, '_', i ), 'Between or Within Subjects',
+                                     choices = c("Between Subjects" = "Between", "Within Subjects" = "Within"),
+                                    selected = character(0)
+                      )
+                    )),
+              HTML('<hr style="color: orange;">')
 
             )
           })

@@ -1685,7 +1685,7 @@ side <- dashboardSidebar(
     menuItem("Meta-regression",tabName = "metaregression", icon = icon("line-chart")),
     menuItem("Citation explorer",tabName = "citations", icon = icon("share-alt")),
     menuItem("Ontology explorer",tabName = "ontology", icon = icon("spinner")),
-#    menuItem("Add Study",tabName = "addPaper", icon = icon("plus")),
+    menuItem("Add Study",tabName = "addPaper", icon = icon("plus")),
     menuItem("Tutorials", href = "https://cooperationdatabank.org/tutorials", newtab = TRUE, icon = icon("graduation-cap")),
     menuItem("Website", href = "https://cooperationdatabank.org", newtab = TRUE, icon = icon("home"))
   ),

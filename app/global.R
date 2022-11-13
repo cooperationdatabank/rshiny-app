@@ -1,6 +1,5 @@
 # Mandatory fields for Long InputForm (add papers)
 fieldsMandatory <- c("addAuthors", "addTitle", "addYearConducted", "addLanguage",
-                     "addGenIVselectionTreatment1",
                      "addStudyNumberOfChoices", "addChoiceLow", "addChoiceHigh",
                      "addStudyDilemmaType",
                      'userName','userEmail')
@@ -38,21 +37,6 @@ fieldsAll <- c(
                "addOverallPercentageEndowmentContributed","addNumberOfObservations",
 
                "userEmail", 'userName'
-)
-
-treatmentFields <- c(
-  #"addGenIVselection", "addDescriptionGenericIVText",
-  #                   "addTreatmentSubpropSelection","addDescriptionSpecificIVText", "addValueOptionsSelection",
-  #                   "quantitativeMethod",
-  #                   "addCorrelation",
-  #                   "addSampleSizeA",
-  #                   "DVBehavior",
-  #                   "addMean", "addStandardDeviation",
-  #                   "addSampleSizeB",
-  #                   "addProportionOfCooperation",
-  #                   "addLowestChoice", "addHighestChoice",
-  #                   "betweenOrWithinSubjects"
-
 )
 
 metaAnalysisFields <- c(
